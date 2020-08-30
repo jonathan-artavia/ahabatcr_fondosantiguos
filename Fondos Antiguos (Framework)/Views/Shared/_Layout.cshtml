@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Fondos Antiguos</title>
+    @Styles.Render("~/Content/css")
+    <script src="~/Scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/Site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                    <img src="~/Content/logo-arquisanjose-122x162.png" style="height: 3.8rem;" />
+                    <label>Fondos Antiguos</label>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    @Html.Partial("_LoginPartial")
+                    <hr />
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            @Html.ActionLink("Inicio", "Index", "Home", null, new { @class = "nav-link text-dark" })
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("Catálogo", "Index", "Catalogo", null, new { @class = "nav-link text-dark" })
+                        </li>
+                        @{
+                            if (!string.IsNullOrEmpty(User.Identity.Name) && this.User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    @Html.ActionLink("Manejar Cuentas", "ListaCuentas", "Cuenta", null, new { @class = "nav-link text-dark" })
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top page-footer font-small blue"><div class="footer-copyright text-center py-3">&copy; @DateTime.Now.Year - Archivo Histórico Arquidiocesano Monseñor Bernardo Augusto Thiel</div></footer>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

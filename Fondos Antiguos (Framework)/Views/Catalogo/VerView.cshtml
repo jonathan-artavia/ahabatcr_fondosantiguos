@@ -1,0 +1,103 @@
+﻿@model Fondos_Antiguos.Models.CatalogoModel
+
+@{
+    ViewData["Title"] = "Registro: " + @Model.ID;
+}
+    <div>
+        <h4>@Html.DisplayFor(model => model.Signatura)</h4>
+        <hr />
+        @Html.HiddenFor(model => model.ID)
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Contenido)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Contenido)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdSerie)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdSerie)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Fichero)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Fichero)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NumCaja)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NumCaja)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NumTomo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NumTomo)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Folio)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Folio)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Libro)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Libro)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NumExpediente)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NumExpediente)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NumCarpeta)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NumCarpeta)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Lugar)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Lugar)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Observaciones)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Observaciones)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Materias)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Materias)
+        </dd>
+    </dl>
+    </div>
+<div>
+    @Html.ActionLink("Editar", "Editar", new { /* id = Model.PrimaryKey */ }) |
+    <a href="@{
+        if(Context.Request.Headers["Referer"]!= null)
+        {
+            @Context.Request.Headers["Referer"].ToString();
+        }
+        else
+        {
+            @Url.Action("Index");
+        }
+        }">Devolverse a lista</a>
+</div>

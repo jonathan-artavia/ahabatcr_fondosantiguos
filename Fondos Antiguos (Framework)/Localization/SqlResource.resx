@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SqlCatalogoActualizarResource" xml:space="preserve">
+    <value>UPDATE `tblCatalogo` SET `Contenido` = @contenido, `Fecha` = @Fecha, `Signatura` = @Signatura, `Observaciones` = @Observaciones, `IdSerie` = @IdSerie, `Fichero` = @Fichero, `NumCaja` = @NumCaja, `NumTomo` = @NumTomo, `Folio` = @Folio, `Libro` = @Libro, `NumExpediente` = @NumExpediente, `NumCarpeta` = @NumCarpeta,`Lugar` = @Lugar, `Año` = @Año,`Mes` = @Mes, `FechaIngreso` = @FechaIngreso WHERE `ID` = @id</value>
+  </data>
+  <data name="SqlCatalogoAmbosCountResource" xml:space="preserve">
+    <value>SELECT COUNT(*)
+FROM (
+SELECT Contenido, Signatura, Fecha, Fichero, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, Lugar, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, 0 as `Hist`
+FROM `aha`.`tblCatalogo`
+UNION 
+SELECT Descripcion as Contenido, Signatura, Fecha, Fichero, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones`, `FechaCod`, 1 as `Hist`
+FROM `aha`.`tblHistCatalogo`) ds WHERE {0}</value>
+  </data>
+  <data name="SqlCatalogoAmbosResource" xml:space="preserve">
+    <value>SELECT * FROM
+(SELECT ID, Contenido, Signatura, Fecha, Materias, IdSerie, Fichero, Libro, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, Lugar, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, 0 as `Hist`
+FROM `aha`.`tblCatalogo`
+UNION
+SELECT ID, Descripcion as Contenido, Signatura, Fecha, Materias, NULL as IdSerie, Fichero, NULL as Libro, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones`, `FechaCod`, 1 as `Hist`
+FROM `aha`.`tblHistCatalogo`) ds
+WHERE {0}</value>
+  </data>
+  <data name="SqlCatalogoCountResource" xml:space="preserve">
+    <value>SELECT COUNT(*) FROM `tblCatalogo` WHERE {0}</value>
+  </data>
+  <data name="SqlCatalogoEliminar" xml:space="preserve">
+    <value>DELETE FROM `tblCatalogo` WHERE ID = @id</value>
+  </data>
+  <data name="SqlCatalogoInsert" xml:space="preserve">
+    <value>INSERT INTO `tblCatalogo`(`Contenido`, `Fecha`, `Signatura`, `Observaciones`, `IdSerie`, `Fichero`, `NumCaja`, `NumTomo`, `Folio`,`Libro`,`NumExpediente`,`NumCarpeta`,`Lugar`,`Año`,`Mes`,`FechaIngreso`) VALUES (@contenido,@Fecha,@Signatura,@Observaciones,@IdSerie,@Fichero,@NumCaja,@NumTomo,@Folio,@Libro,@NumExpediente,@NumCarpeta,@Lugar,@Año,@Mes,@FechaIngreso);</value>
+  </data>
+  <data name="SqlCatalogoResource" xml:space="preserve">
+    <value>SELECT * FROM `tblCatalogo` WHERE {0}</value>
+  </data>
+  <data name="SqlHistCatalogoCountResource" xml:space="preserve">
+    <value>SELECT COUNT(*) FROM `tblHistCatalogo` WHERE {0}</value>
+  </data>
+  <data name="SqlHistCatalogoEliminar" xml:space="preserve">
+    <value>DELETE FROM `tblHistCatalogo` WHERE ID = @id</value>
+  </data>
+  <data name="SqlHistCatalogoResource" xml:space="preserve">
+    <value>SELECT * FROM `tblHistCatalogo` WHERE {0}</value>
+  </data>
+  <data name="SqlPagingFormat" xml:space="preserve">
+    <value>LIMIT {0}{1}</value>
+  </data>
+  <data name="SqlRoleResource" xml:space="preserve">
+    <value>SELECT `IdRol` FROM `tblUsuarios` WHERE {0}</value>
+  </data>
+  <data name="SqlRolesDelete" xml:space="preserve">
+    <value>DELETE FROM `tblRoles` WHERE `Id` = @id</value>
+  </data>
+  <data name="SqlRolesGetId" xml:space="preserve">
+    <value>SELECT IdRol FROM tblRoles WHERE `Nombre` = @name</value>
+  </data>
+  <data name="SqlRolesInsert" xml:space="preserve">
+    <value>INSERT INTO `tblRoles` (`IdRol`, `Name`) VALUES (@id, @name)</value>
+  </data>
+  <data name="SqlRolesNombreById" xml:space="preserve">
+    <value>SELECT `Nombre` FROM `tblRoles` WHERE `Id` = @id</value>
+  </data>
+  <data name="SqlRolesNombreByIdRol" xml:space="preserve">
+    <value>SELECT `Nombre` FROM `tblRoles` WHERE `IdRol` = @id</value>
+  </data>
+  <data name="SqlRolesUpdate" xml:space="preserve">
+    <value>UPDATE `tblRoles` SET `Name` = @name WHERE `Id` = @id</value>
+  </data>
+  <data name="SqlSeriesResource" xml:space="preserve">
+    <value>SELECT * FROM tblSerie WHERE {0}</value>
+  </data>
+  <data name="SqlUsuarioClaimDelete" xml:space="preserve">
+    <value>DELETE FROM `tblUsuarioClaims` WHERE `UserId` = @userId</value>
+  </data>
+  <data name="SqlUsuarioClaimDeleteSingle" xml:space="preserve">
+    <value>DELETE FROM `tblUsuarioClaims` WHERE `IdUsuario` = @userId and @ClaimValue = @value and `ClaimType` = @type</value>
+  </data>
+  <data name="SqlUsuarioClaimInsert" xml:space="preserve">
+    <value>INSERT INTO `tblUsuarioClaims` (ClaimValue, ClaimType, IdUsuario) values (@value, @type, @userId)</value>
+  </data>
+  <data name="SqlUsuarioClaimSelect" xml:space="preserve">
+    <value>SELECT * FROM `tblUsuarioClaims` WHERE `UserId` = @userId</value>
+  </data>
+  <data name="SqlUsuarioRolesByUserId" xml:space="preserve">
+    <value>SELECT tblRoles.Nombre FROM tblUsuarios, tblRoles WHERE tblUsuarios.IdUsuario = @userId and tblRoles.IdRol = tblUsuarios.IdRol</value>
+    <comment>Roles are limited to 1 per user</comment>
+  </data>
+  <data name="SqlUsuarioRolesDelete" xml:space="preserve">
+    <value>UPDATE tblUsuarios SET IdRol = 0 WHERE IdUsuario = @userId</value>
+    <comment>Roles are limited to 1 per user</comment>
+  </data>
+  <data name="SqlUsuarioRolesInsert" xml:space="preserve">
+    <value>UPDATE `tblUsuarios` SET `IdRol` = @rolId WHERE `IdUsuario` = @userId</value>
+    <comment>Roles are limited to 1 per user</comment>
+  </data>
+  <data name="SqlUsuariosByIdUsuario" xml:space="preserve">
+    <value>SELECT * FROM `tblUsuarios` WHERE `IdUsuario` = @id</value>
+  </data>
+  <data name="SqlUsuariosByUsuario" xml:space="preserve">
+    <value>SELECT * FROM `tblUsuarios` where `Usuario` = @name</value>
+  </data>
+  <data name="SqlUsuariosDeleteByIdUsuario" xml:space="preserve">
+    <value>DELETE FROM `tblUsuarios` WHERE `IdUsuario` = @userId</value>
+  </data>
+  <data name="SqlUsuariosIdUsuarioByUsuario" xml:space="preserve">
+    <value>Select `IdUsuario` from `tblUsuarios` where `Usuario` = @name</value>
+  </data>
+  <data name="SqlUsuariosInsert" xml:space="preserve">
+    <value>INSERT INTO `tblUsuarios` (`Usuario`, `IdUsuario`, `Cntrña`. `FechaIngreso`) VALUES (@name, @id, @pwdHash, @fechaIngreso)</value>
+  </data>
+  <data name="SqlUsuariosResource" xml:space="preserve">
+    <value>SELECT * FROM `tblUsuarios` WHERE {0}</value>
+  </data>
+  <data name="SqlUsuariosResourceCount" xml:space="preserve">
+    <value>SELECT COUNT(*) FROM `tblUsuarios` WHERE {0}</value>
+  </data>
+  <data name="SqlUsuariosUpdateByIdUsuario" xml:space="preserve">
+    <value>UPDATE `tblUsuarios` SET `Usuario` = @userName, `IntentosFallidos` = @intentos, `EstaBloqueado` = @bloqueado, `FechaDesbloqueo` = @fechaDesb  WHERE `IdUsuario` = @userId</value>
+  </data>
+  <data name="SqlUsuariosUpdatePasswordHash" xml:space="preserve">
+    <value>UPDATE `tblUsuarios` SET `Cntrña` = @pwdHash, `ReqCambioCntrña` = @req WHERE `IdUsuario` = @id</value>
+  </data>
+  <data name="SqlUsuariosUsuarioByIdUsuario" xml:space="preserve">
+    <value>SELECT `Usuario` FROM `tblUsuarios` WHERE `IdUsuario` = @id </value>
+  </data>
+</root>

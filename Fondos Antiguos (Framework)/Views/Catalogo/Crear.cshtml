@@ -1,0 +1,128 @@
+﻿@model Fondos_Antiguos.Models.CatalogoModel
+
+@{
+    ViewData["Title"] = "Crear Registro";
+}
+<script src="~/Scripts/CatalogoCrearScript.js"></script>
+<h4>Crear registro</h4>
+<hr />
+<div>
+    @{
+        using (Html.BeginForm("Crear", "Catalogo", FormMethod.Post, new { @class = "row" }))
+        {
+            <div class="col-lg-6">
+                @Html.ValidationSummary()
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Fecha, new { @class = "control-label" })
+                    @Html.EditorFor(m => m.Fecha, null, new { @htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Fecha, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Contenido, new { @class = "control-label" })
+                    @Html.TextAreaFor(m => m.Contenido, 2, 1, new Dictionary<string, object>() { { "class", "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Contenido, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Observaciones, new { @class = "control-label" })
+                    @Html.TextAreaFor(m => m.Observaciones, 2, 1, new Dictionary<string, object>() { { "class", "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Observaciones, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Lugar, new { @class = "control-label" })
+                    @Html.TextBoxFor(m => m.Lugar, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Lugar, null, new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col-sm-6">
+                            @Html.LabelFor(modelItem => modelItem.IdSerie, new { @class = "control-label", id = "lblSeriesNombre" })
+                            @Html.HiddenFor(modelItem => modelItem.IdSerie)
+                            @Html.TextBoxFor(modelItem => modelItem.SeriesNombre, null, new { @class = "form-control", id = "SeriesNombre" })
+                            @Html.ValidationMessageFor(modelItem => modelItem.IdSerie, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-6 text-center" style="display: flex; align-items: flex-end; /* vertically aligned! */ justify-content: center;">
+                            <button id="modalActivate" type="button" class="btn btn-danger" data-toggle="modal" data-target="#seriesModal" style="vertical-align: middle">
+                                @Fondos_Antiguos.Localization.CatalogoRes.btnSeleccionarSerie
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Fichero, new { @class = "control-label" })
+                    @Html.EditorFor(m => m.Fichero, null, new { @htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Fichero, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.NumCaja, new { @class = "control-label" })
+                    @Html.EditorFor(m => m.NumCaja , null, new { @htmlAttributes = new { @class = "form-control", @step = "1", @pattern = "\\d*" } })
+                    @Html.ValidationMessageFor(m => m.NumCaja, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.NumTomo, new { @class = "control-label" })
+                    @Html.EditorFor(m => m.NumTomo, null, new { @htmlAttributes = new { @class = "form-control", @step = "1", @pattern = "\\d*" } })
+                    @Html.ValidationMessageFor(m => m.NumTomo, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Folio, new { @class = "control-label" })
+                    @Html.EditorFor(m => m.Folio, null, new { @htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Folio, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Libro, new { @class = "control-label" })
+                    @Html.EditorFor(m => m.Libro, null, new { @htmlAttributes = new { @class = "form-control", @step = "1", @pattern = "\\d*" } })
+                    @Html.ValidationMessageFor(m => m.Libro, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.NumExpediente, new { @class = "control-label" })
+                    @Html.EditorFor(m => m.NumExpediente, null, new { @htmlAttributes = new { @class = "form-control", @step = "1", @pattern = "\\d*" } })
+                    @Html.ValidationMessageFor(m => m.NumExpediente, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.NumCarpeta, new { @class = "control-label" })
+                    @Html.EditorFor(m => m.NumCarpeta, null, new { @htmlAttributes = new { @class = "form-control", @step = "1", @pattern = "\\d*" } })
+                    @Html.ValidationMessageFor(m => m.NumCarpeta, null, new { @class = "text-danger" })
+                </div>
+
+            </div>
+            <div class="col form-group">
+                <input type="submit" value="@Fondos_Antiguos.Localization.CatalogoRes.btnCrear" class="btn btn-primary" />
+            </div>
+            <!-- Modal -->
+            <div class="modal fade left" id="seriesModal" tabindex="-1" role="dialog" aria-labelledby="modalTitulo" aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-side modal-bottom-left" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalTitulo">Seleccione una serie existente...</h5>
+                        </div>
+                        <div class="modal-body">
+                            @{
+                                IEnumerable<Fondos_Antiguos.Models.SerieModel> list = ViewBag.SerieList;
+                                var r = list.Select(x =>
+                                {
+                                    return new SelectListItem()
+                                    {
+                                        Text = x.Nombre,
+                                        Value = x.ID.ToString()
+                                    };
+                                });
+                                @Html.DropDownList("IdSerieDropDown", r, "", new { @class = "form-control" });
+                            }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Elejir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+<!-- Modal -->
+<div>
+    <a asp-action="Index">@Fondos_Antiguos.Localization.ComunResource.lnkVolverALista</a>
+</div>
+@*@section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }*@

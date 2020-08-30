@@ -1,0 +1,346 @@
+﻿@using Fondos_Antiguos.Models
+@model PagingResult<CatalogoModel>
+
+@{
+    ViewData["Title"] = "Catalogo";
+}
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/CatalogoVerScript.js" asp-append-version="true"></script>
+
+@*@{ Html.BeginForm(FormMethod.Get, new { id = "frmIncludeHist" });*@
+<div class="table-responsive-sm">
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    @Html.ActionLink("Agregar Nuevo", "Crear", null, new { @class = "btn btn-outline-dark" })
+                </li>
+                <li class="nav-item dropdown">
+                    @Html.HiddenFor(modelItem => modelItem.OrigenIncluido)
+                    <a class="btn btn-outline-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Origen:
+                        @{
+                            if (Context.Request.QueryString.AllKeys.Contains("incluirHist") && Context.Request.QueryString["incluirHist"] != null && Context.Request.QueryString["incluirHist"] != "")
+                            {
+                                @ViewUtil.ObtenerDescrOrigen(Convert.ToByte(Context.Request.QueryString["incluirHist"]))
+                            }
+                            else
+                            {
+                                @ViewUtil.ObtenerDescrOrigen(0);
+                            }
+                        }
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#" onclick="OrigenSeleccionado(0)">@ViewUtil.ObtenerDescrOrigen(0)</a>
+                        <a class="dropdown-item" href="#" onclick="OrigenSeleccionado(2)">@ViewUtil.ObtenerDescrOrigen(2)</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" onclick="OrigenSeleccionado(1)">@ViewUtil.ObtenerDescrOrigen(1)</a>
+                    </div>
+                </li>
+            </ul>
+            <hr />
+            <a class="btn btn-secondary dropdown-toggle" data-toggle="collapse" href="#panelFiltros" role="button" aria-expanded="false" aria-pressed="false" autocomplete="off" aria-controls="panelFiltros">
+                Filtros
+            </a>
+        </div>
+    </nav>
+    <div class="form-group">
+        <div class="collapse card" id="panelFiltros">
+
+            <div class="card-header">
+                Filtros
+            </div>
+            <!-- Empieza Bodies de la Card principal (uno por cada tipo de filtro-->
+            <div class="card">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <h6 class="card-title text-muted">Fecha</h6>
+                        @Html.DropDownListFor(modelItem => modelItem.Operacion, Enum.GetValues(typeof(OperacionEnum)).OfType<OperacionEnum>().Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op), Value = ((byte)op).ToString() }), "", new { @class = "form-control", onchange = "OperacionFechaSeleccionado()" })
+                    </li>
+                    @{
+                        if (Model != null && Model.Operacion.HasValue)
+                        {
+                            if (Model.Operacion == 32 || Model.Operacion == 64)
+                            {
+                                <li id="divFechaFiltro" class="list-group-item" style="margin-top: 15px;">
+                                    <div id="divFechaDesde" class="col-md-2">
+                                        <label id="lblFechaDesde" class="control-label">Desde</label>
+                                        @Html.EditorFor(item => Model.FechaInicial, new { @class = "form-control" })
+                                    </div>
+                                    <div id="divFechaHasta" class="col-md-2">
+                                        <label class="control-label">Hasta</label>
+                                        @Html.EditorFor(item => Model.FechaFinal, new { @class = "form-control" })
+                                    </div>
+                                </li>
+                            }
+                            else
+                            {
+                                <li id="divFechaFiltro" class="list-group-item" style="margin-top: 15px;">
+                                    <div id="divFechaDesde" class="col-md-2">
+                                        <label id="lblFechaDesde" class="control-label" style="display:none">Desde</label>
+                                        @Html.EditorFor(item => Model.FechaInicial, new { @class = "form-control" })
+                                    </div>
+                                    <div id="divFechaHasta" class="col-md-2" style="display:none">
+                                        <label class="control-label">Hasta</label>
+                                        @Html.EditorFor(item => Model.FechaFinal, new { @class = "form-control" })
+                                    </div>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li id="divFechaFiltro" class="list-group-item" style="display:none">
+                                <div id="divFechaDesde" class="col-md-2">
+                                    <label id="lblFechaDesde" class="control-label" style="display:none">Desde</label>
+                                    @Html.EditorFor(item => Model.FechaInicial, new { @htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                                <div id="divFechaHasta" class="col-md-2" style="display:none">
+                                    <label class="control-label">Hasta</label>
+                                    @Html.EditorFor(item => Model.FechaFinal, new
+                                    {
+                                        @htmlAttributes = new { @class = "form-control" }
+                                    })
+                                </div>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+            <!-- Footer de Card principal-->
+            <div id="divFiltrosFooter" class="card-footer">
+                <button role="button" class="btn btn-primary" onclick="AplicarFiltro()">Aplicar Filtro</button>
+                <button role="button" class="btn btn-secondary" onclick="LimpiarFiltro()">Limpiar</button>
+            </div>
+        </div>
+    </div>
+
+    @{
+        if (Model.MessageType.HasValue)
+        {
+            if (Model.MessageType == 0 && !string.IsNullOrEmpty(Model.Message))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Completado!</strong> @Model.Message
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            else if (Model.MessageType == 1 && !string.IsNullOrEmpty(Model.Exception))
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>¡Hubo un Problema!</strong> @Model.Exception
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+        }
+
+    }
+    <table id="tblCatalogo" class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Fondos_Antiguos.Localization.CatalogoRes.Contenido
+                </th>
+                <th class="d-sm-none">
+                    @Fondos_Antiguos.Localization.CatalogoRes.Fecha
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    @Fondos_Antiguos.Localization.CatalogoRes.SeriesNombre
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    @Fondos_Antiguos.Localization.CatalogoRes.Materias
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    @Fondos_Antiguos.Localization.CatalogoRes.NumCaja
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    @Fondos_Antiguos.Localization.CatalogoRes.NumTomo
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    @Fondos_Antiguos.Localization.CatalogoRes.Folio
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    @Fondos_Antiguos.Localization.CatalogoRes.Libro
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    @Fondos_Antiguos.Localization.CatalogoRes.NumExpediente
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    @Fondos_Antiguos.Localization.CatalogoRes.NumCarpeta
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    @Fondos_Antiguos.Localization.CatalogoRes.Lugar
+                </th>
+                <th class="d-none d-md-table-cell">
+                    @Fondos_Antiguos.Localization.CatalogoRes.Año
+                </th>
+                <th class="d-none d-md-table-cell">
+                    @Fondos_Antiguos.Localization.CatalogoRes.Mes
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td class="" style="max-width: 100px">
+                    @Html.DisplayFor(modelItem => item.Contenido)
+                </td>
+                <td class="d-sm-none">
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td class="d-none d-lg-table-cell">
+                    @Html.DisplayFor(modelItem => item.SeriesNombre)
+                </td>
+                <td class="d-none d-lg-table-cell">
+                    @Html.DisplayFor(modelItem => item.Materias)
+                </td>
+                <td class="d-none d-lg-table-cell">
+                    @Html.DisplayFor(modelItem => item.NumCaja)
+                </td>
+                <td class="d-none d-lg-table-cell">
+                    @Html.DisplayFor(modelItem => item.NumTomo)
+                </td>
+                <td class="d-none d-lg-table-cell">
+                    @Html.DisplayFor(modelItem => item.Folio)
+                </td>
+                <td class="d-none d-lg-table-cell">
+                    @Html.DisplayFor(modelItem => item.Libro)
+                </td>
+                <td class="d-none d-lg-table-cell">
+                    @Html.DisplayFor(modelItem => item.NumExpediente)
+                </td>
+                <td class="d-none d-lg-table-cell">
+                    @Html.DisplayFor(modelItem => item.NumCarpeta)
+                </td>
+                <td class="d-none d-lg-table-cell">
+                    @Html.DisplayFor(modelItem => item.Lugar)
+                </td>
+                <td class="d-none d-md-table-cell">
+                    @Html.DisplayFor(modelItem => item.Año)
+                </td>
+                <td class="d-none d-md-table-cell">
+                    @Html.DisplayFor(modelItem => item.Mes)
+                </td>
+                <td>
+                    @Html.HiddenFor(modelItem => item.ID)
+                    @Html.HiddenFor(modelItem => item.Origen)
+                    <div class="row">
+                        @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnVer, "Ver", new { id = item.ID, origen = item.Origen }, new { @class = "btn btn-outline-secondary col", style = "margin-right: 5px" })
+                        @*@Html.ActionLink("Borrar", "Eliminar", new { id = item.ID }, new { @class = "btn btn-outline-secondary col", style = "margin-right: 5px" })*@
+                        <button id="modalActivate" type="button" class="btn btn-outline-secondary col" data-toggle="modal" data-target="#borrarModal" style="vertical-align: middle; margin-right: 5px" onclick="OnBtnBorrarClick(@item.ID, @item.Origen)">
+                            @Fondos_Antiguos.Localization.ComunResource.btnBorrar
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    @Html.ValidationMessageFor(modelItem => Model.Exception)
+                </td>
+                <td colspan="13" aria-label="Paginación del Catálogo">
+                    @Html.HiddenFor(modelItem => modelItem.SelectedPage)
+                    <ul class="pagination">
+                        @{
+                            if (Model.SelectedPage != 1)
+                            {
+                                <li>
+                                    <a id="btnPage" style="width:auto" class="page-link" href="#" onclick="PaginaSeleccionada(1)">
+                                        1
+                                    </a>
+                                </li>
+                                if ((Model.SelectedPage - FaViewOptions.CantidadPaginasMostradas) > 1)
+                                {
+                                    <li><label class="page-link">...</label></li>
+                                }
+                            }
+                            if (Model.PageTotal > 1)
+                            {
+                                long tr = (Model.SelectedPage > FaViewOptions.CantidadPaginasMostradas ? (FaViewOptions.CantidadPaginasMostradas - 1) + 2 : Model.SelectedPage);
+                                for (long i = 2 + (Model.SelectedPage - tr); i < Model.SelectedPage; i++)
+                                {
+                                    <li>
+                                        <a id="btnPage" style="width:auto" class="page-link" href="#" onclick="PaginaSeleccionada(@i)">
+                                            @i
+                                        </a>
+                                    </li>
+                                }
+                                <li><a id="btnCurrent" class="page-link text-light bg-primary">@Model.SelectedPage</a></li>
+                                for (long i = Model.SelectedPage + 1; i < Model.SelectedPage + FaViewOptions.CantidadPaginasMostradas && i < Model.PageTotal; i++)
+                                {
+                                    <li>
+                                        <a id="btnPage" style="width:auto" class="page-link" href="#" onclick="PaginaSeleccionada(@i)">
+                                            @i
+                                        </a>
+                                    </li>
+                                }
+
+                                if (Model.SelectedPage != Model.PageTotal)
+                                {
+                                    if ((Model.SelectedPage) < @Model.PageTotal - FaViewOptions.CantidadPaginasMostradas)
+                                    {
+                                        <li><label class="page-link">...</label></li>
+                                    }
+                                    <li>
+                                        <a id="btnPage" style="width:auto" class="page-link" href="#" onclick="PaginaSeleccionada(@Model.PageTotal)">
+                                            @Model.PageTotal
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        }
+                    </ul>
+                    @{
+                        long reg_fin = 0;
+                        long reg_ini = 0;
+                        if (Model.PageTotal > FaViewOptions.RegistrosPorPagina)
+                        {
+                            reg_ini = 1 + (FaViewOptions.RegistrosPorPagina * Model.SelectedPage) - Model.PagedResult.Count();
+                            reg_fin = FaViewOptions.RegistrosPorPagina * (Model.SelectedPage);
+                        }
+                        else
+                        {
+                            reg_ini = 1;
+                            reg_fin = Model.Count();
+                        }
+                        <laberl>@String.Format("Mostrando {0} a {1} de {2} registros.", reg_ini, reg_fin, Model.RecordTotal)</laberl>
+                    }
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <!-- Modal -->
+    <div class="modal fade left" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="modalTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-side modal-bottom-left" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitulo">¿Esta seguro que desea borrar el registro?</h5>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <form method="GET"  action="@Url.Action("Eliminar")">
+                        <input type="hidden" id="BorrarRegistroID" name="id" />
+                        <input type="hidden" id="BorrarRegistroOrigen" name="origen" />
+                        <input type="submit" class="btn btn-secondary" value="Sí" />
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

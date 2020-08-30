@@ -1,0 +1,35 @@
+﻿@model Fondos_Antiguos.Models.CuentaModel
+
+@{
+    ViewData["Title"] = "Generar Nueva Contraseña";
+}
+<script src="~/Scripts/ScriptCuenta.js"></script>
+<div>
+    @Html.HiddenFor(item => item.IdUsuario)
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Usuario)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Usuario)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaIngreso)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FechaIngreso)
+        </dd>
+    </dl>
+    <hr />
+
+    <div class="col-sm-6 mx-auto" style="display:block">
+        <div class="col-sm-12 text-center">
+            <button type="button" id="btnNuevaClave" class="btn btn-outline-primary" style="display:inline" onclick="generarClave()">Generar Nueva Clave</button>
+        </div>
+        <div class="col-xl-12 text-center">
+            @*<label id="nuevaCtrña"></label>*@
+            <input Id="nuevaCtrña" type="text" class="form-control input-lg" style="display:inline" readonly />
+        </div>
+    </div>
+</div>

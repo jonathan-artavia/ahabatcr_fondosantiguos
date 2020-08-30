@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Fondos_Antiguos.Models.CuentaModel>
+@{
+    ViewData["Title"] = "Lista de cuentas";
+}
+
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    @Html.ActionLink("Agregar Nuevo", "Registrar", null, new { @class = "btn btn-outline-dark" })
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Fondos_Antiguos.Localization.CuentaResource.Usuario
+            </th>
+            <th>
+                @Fondos_Antiguos.Localization.CuentaResource.RolNombre
+            </th>
+            <th>
+                @Fondos_Antiguos.Localization.CuentaResource.FechaIngreso
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Usuario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Roles)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaIngreso)
+                </td>
+                <td>
+                    @Html.HiddenFor(modelItem => item.IdUsuario)
+                    @Html.ActionLink("Generar Nueva Clave", "NuevaClave", new { idUsuario = item.IdUsuario }, new { @class = "btn btn-link" })
+                    @{
+                        if (!item.Usuario.Equals(this.User.Identity.Name, StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            using (Html.BeginForm("Eliminar", "Cuenta", FormMethod.Post, new { id = "frmDelete" + item.IdUsuario }))
+                            {
+                                var r = "frmDelete" + item.IdUsuario;
+                                @*@Html.HiddenFor(modelItem => item.IdUsuario, new { id = "borrarIdUsuario" })*@
+                                <input type="hidden" form="@r" name="borrarIdusuario" value="@item.IdUsuario" />
+                                <button type="submit" class="btn btn-link">Borrar</button>
+                            }
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
