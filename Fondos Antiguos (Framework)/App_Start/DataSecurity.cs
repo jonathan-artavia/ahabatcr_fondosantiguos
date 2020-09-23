@@ -6,14 +6,16 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Helpers;
 
 namespace Fondos_Antiguos
 {
-    public class DataSecurity
+    public class DataSecurity : PasswordHasher
     {
         public static string Hash(string text) => Encoding.UTF8.GetString(System.Security.Cryptography.SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(text)));
 
@@ -23,10 +25,10 @@ namespace Fondos_Antiguos
             return hashedProv.SequenceEqual(Encoding.UTF8.GetBytes(baseValue));
         }
 
-        public async Task<IdentityResult> ValidateAsync(UserManager<ApplicationUser> manager, ApplicationUser user, string password)
-        {
-            return FaUserManager.IsValid(user.UserName, Encoding.UTF8.GetBytes(password), user) ? IdentityResult.Success : IdentityResult.Failed("Inicio fallido");
-        }
+        //public async Task<IdentityResult> ValidateAsync(UserManager<ApplicationUser> manager, ApplicationUser user, string password)
+        //{
+        //    return FaUserManager.IsValid(user.UserName, Encoding.UTF8.GetBytes(password), user) ? IdentityResult.Success : IdentityResult.Failed("Inicio fallido");
+        //}
 
         /// <summary>
         /// Generates a Random Password
@@ -115,7 +117,70 @@ namespace Fondos_Antiguos
             return n2;
         }
 
+        public virtual PasswordVerificationResult VerifyUnHashedPassword(string hashedPassword, string providedPassword)
+        {
+            if (FaCrypto.VerifyHashedPassword(hashedPassword, providedPassword))
+            {
+                return PasswordVerificationResult.Success;
+            }
+            return PasswordVerificationResult.Failed;
+        }
+    }
 
+    public static class FaCrypto
+    {
+        /// <summary>
+        /// Compares 2 hashed passwords
+        /// </summary>
+        /// <param name="hashedPassword"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public static bool VerifyHashedPassword(string hashedPassword, string password)
+        {
+            if (hashedPassword == null)
+            {
+                return false;
+            }
+            if (password == null)
+            {
+                throw new ArgumentNullException("password");
+            }
+            byte[] array = Convert.FromBase64String(hashedPassword);
+            if (array.Length != 49 || array[0] != 0)
+            {
+                return false;
+            }
+            byte[] bytes = Convert.FromBase64String(password);
+            byte[] array2 = new byte[16];
+            Buffer.BlockCopy(array, 1, array2, 0, 16);
+            byte[] array3 = new byte[32];
+            Buffer.BlockCopy(array, 17, array3, 0, 32);
+            byte[] array4 = new byte[16];
+            Buffer.BlockCopy(bytes, 1, array4, 0, 16);
+            byte[] array5 = new byte[32];
+            Buffer.BlockCopy(bytes, 17, array5, 0, 32);
+            return ByteArraysEqual(array3, array5);
+        }
+
+
+        [MethodImpl(MethodImplOptions.NoOptimization)]
+        private static bool ByteArraysEqual(byte[] a, byte[] b)
+        {
+            if (a == b)
+            {
+                return true;
+            }
+            if (a == null || b == null || a.Length != b.Length)
+            {
+                return false;
+            }
+            bool flag = true;
+            for (int i = 0; i < a.Length; i++)
+            {
+                flag &= (a[i] == b[i]);
+            }
+            return flag;
+        }
     }
 
     public class PasswordOptions

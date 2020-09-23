@@ -101,7 +101,7 @@ namespace Fondos_Antiguos.Controllers
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
+                    ModelState.AddModelError("", "Inicio de sesión incorrecto.");
                     return View(model);
             }
         }
@@ -504,6 +504,50 @@ namespace Fondos_Antiguos.Controllers
             }
         }
 
+        /// <summary>
+        /// Cambio de contraseña temporal
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [RequireHttps]
+        [Authorize]
+        public async Task<ActionResult> CambiarContraseña()
+        {
+            return View(new ChangePasswordViewModel() { IdUsuario = this.GetIdentityUser(this.User.Identity.Name).Result.Id });
+        }
+
+        [HttpPost]
+        [RequireHttps]
+        [Authorize]
+        public async Task<ActionResult> CambiarContraseña(ChangePasswordViewModel model)
+        {
+            if (this.DataService == null)
+                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager);
+
+            try
+            {
+                if (string.IsNullOrEmpty(model.Error))
+                {
+                    model.OldPassword = "temp123456789";
+                    if (this.TryValidateModel(model))
+                    {
+                        await this.DataService.CambiarCtrña(model.IdUsuario, model.NewPassword);
+                        return this.RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        this.FillModel(model);
+                        return View(model);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+                return View(model);
+            }
+            return View();
+        }
         #endregion
 
         protected override void Dispose(bool disposing)
@@ -543,6 +587,15 @@ namespace Fondos_Antiguos.Controllers
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error);
+            }
+        }
+
+        protected virtual void FillModel(ChangePasswordViewModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                string errorDesc = string.Join(Environment.NewLine, this.ModelState.Values.Select(m => m.Errors.Count > 0 ? m.Errors.First().ErrorMessage : string.Empty));
+                model.Error = errorDesc;
             }
         }
 

@@ -66,8 +66,8 @@ namespace Fondos_Antiguos.DataService
             {
                 CuentaModel nLoginModel = await this.ToLoginModel(user);
                 nLoginModel.NuevaContraseña = DataSecurity.GenerateRandomPassword();
-
-                await this.UserManager.ChangePasswordAsync(idUsuario, user.PasswordHash, nLoginModel.NuevaContraseña);
+                
+                IdentityResult res = await this.UserManager.ChangePasswordHashedCurrentAsync(idUsuario, user.PasswordHash, nLoginModel.NuevaContraseña);
                 //this.UserTable.SetPasswordHash(user.Id, Encoding.UTF8.GetBytes(user.PasswordHash), true);
                 return nLoginModel;
             }
@@ -79,10 +79,20 @@ namespace Fondos_Antiguos.DataService
             ApplicationUser user = await this.GetIdentityUser(idUsuario);
             if (user != null)
             {
-                IdentityResult res = await this.UserManager.ChangePasswordAsync(idUsuario, user.PasswordHash, newContra);
+                IdentityResult res = await this.UserManager.ChangePasswordHashedCurrentAsync(idUsuario, user.PasswordHash, newContra);
                 if (!res.Succeeded)
                 {
                     throw this.CraftException(res.Errors);
+                }
+                else
+                {
+                    user = await this.GetIdentityUser(idUsuario);
+                    user.ReqCambioContraseña = false;
+                    IdentityResult res1 = await this.UserManager.UpdateAsync(user);
+                    if(!res1.Succeeded)
+                    {
+                        throw this.CraftException(res1.Errors);
+                    }
                 }
             }
         }

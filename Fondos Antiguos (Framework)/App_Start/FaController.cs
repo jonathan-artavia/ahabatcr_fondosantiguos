@@ -47,9 +47,10 @@ namespace Fondos_Antiguos
                 }
             }
 
-            if (this.Store is FaApplicationDbContext store && !string.IsNullOrEmpty(this.User.Identity.Name) && context.Controller is CuentaController && context.ActionDescriptor.ActionName != "CambiarContraseña" && (context.ActionDescriptor).ActionName != "Salir")
+            if (this.Store is FaApplicationDbContext store && !string.IsNullOrEmpty(this.User.Identity.Name) && (!(context.Controller is CuentaController) || context.ActionDescriptor.ActionName != "CambiarContraseña" && (context.ActionDescriptor).ActionName != "Salir"))
             {
-                ApplicationUser user = store.Users.FirstOrDefault(x => x.Id.Equals(this.User.Identity.GetUserId(), StringComparison.InvariantCultureIgnoreCase));
+                string userId = this.User.Identity.GetUserId<string>();
+                ApplicationUser user = store.Users.FirstOrDefault(x => x.Id.Equals(userId, StringComparison.InvariantCultureIgnoreCase));
                 if (user != null && user.ReqCambioContraseña)
                 {
                     context.Result = this.RedirectToAction("CambiarContraseña", "Cuenta");

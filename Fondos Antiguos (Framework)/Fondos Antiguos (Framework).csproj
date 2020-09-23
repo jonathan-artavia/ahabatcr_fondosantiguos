@@ -285,6 +285,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CuentaResource.resx</DependentUpon>
     </Compile>
+    <Compile Include="Localization\LocalizedIdentityErrorDescriberResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocalizedIdentityErrorDescriberResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Localization\SqlResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -400,6 +405,10 @@
     <EmbeddedResource Include="Localization\CuentaResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CuentaResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\LocalizedIdentityErrorDescriberResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LocalizedIdentityErrorDescriberResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\SqlResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -13,6 +13,8 @@ using Microsoft.Owin.Security;
 using Fondos_Antiguos.Models;
 using Fondos_Antiguos.Localization;
 using MySql.Data.MySqlClient;
+using System.Data.Entity.Utilities;
+using System.Globalization;
 
 namespace Fondos_Antiguos
 {
@@ -44,6 +46,7 @@ namespace Fondos_Antiguos
         public FaUserManager(IUserStore<ApplicationUser> store)
             : base(store)
         {
+            PasswordHasher = new DataSecurity();
         }
         #endregion
         #region Overrides
@@ -51,6 +54,44 @@ namespace Fondos_Antiguos
         {
             return base.IsInRoleAsync(userId, role);
         }
+
+        public virtual async Task<IdentityResult> ChangePasswordHashedCurrentAsync(string userId, string currentPassword, string newPassword)
+        {
+            IUserPasswordStore<ApplicationUser, string> passwordStore = (IUserPasswordStore<ApplicationUser, string>)Store;
+            ApplicationUser user = await FindByIdAsync(userId).WithCurrentCulture();
+            if (user == null)
+            {
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "User ID no encontrado", new object[1]
+                {
+                userId
+                }));
+            }
+            if (await VerifyHashedPasswordAsync(passwordStore, user, currentPassword).WithCurrentCulture())
+            {
+                IdentityResult identityResult = await UpdatePassword(passwordStore, user, newPassword).WithCurrentCulture();
+                if (!identityResult.Succeeded)
+                {
+                    return identityResult;
+                }
+                return await UpdateAsync(user).WithCurrentCulture();
+            }
+            return IdentityResult.Failed("Contraseña invalida");
+        }
+
+        /// <summary>
+        /// Same as <see cref="VerifyPasswordAsync(IUserPasswordStore{ApplicationUser, string}, ApplicationUser, string)"/> but the <paramref name="password"/> is the hashed password.
+        /// </summary>
+        /// <param name="store"></param>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        protected virtual async Task<bool> VerifyHashedPasswordAsync(IUserPasswordStore<ApplicationUser, string> store, ApplicationUser user, string password)
+        {
+            string hashedPassword = await store.GetPasswordHashAsync(user).WithCurrentCulture();
+            return ((DataSecurity)PasswordHasher).VerifyUnHashedPassword(hashedPassword, password) != PasswordVerificationResult.Failed;
+        }
+
+
         #endregion
 
         #region Static
@@ -107,7 +148,7 @@ namespace Fondos_Antiguos
                 AllowOnlyAlphanumericUserNames = false,
                 RequireUniqueEmail = false
             };
-
+            
             // Configure validation logic for passwords
             manager.PasswordValidator = new PasswordValidator
             {

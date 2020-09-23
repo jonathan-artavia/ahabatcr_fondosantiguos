@@ -44,13 +44,13 @@ namespace Fondos_Antiguos.Models
     public class ChangePasswordViewModel
     {
         public string IdUsuario { get; set; }
-        [Required]
+        
         [DataType(DataType.Password)]
         [Display(Name = "Current password")]
         public string OldPassword { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "La {0} debe ser al menos {2} de largo.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(ResourceType = typeof(CuentaResource), Name = "ContraseñaNueva")]
         public string NewPassword { get; set; }
@@ -59,6 +59,8 @@ namespace Fondos_Antiguos.Models
         [Display(ResourceType = typeof(CuentaResource), Name = "ContraseñaConfirmacion")]
         [Compare("NewPassword", ErrorMessageResourceName = "ContraNuevaNoCoinciden", ErrorMessageResourceType = typeof(CuentaResource))]
         public string ConfirmPassword { get; set; }
+
+        public string Error { get; set; }
     }
 
     public class AddPhoneNumberViewModel
