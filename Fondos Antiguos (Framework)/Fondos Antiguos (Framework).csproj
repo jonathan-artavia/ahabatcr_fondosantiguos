@@ -285,7 +285,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CuentaResource.resx</DependentUpon>
     </Compile>
-    <Compile Include="Localization\LocalizedIdentityErrorDescriberResources.Designer.cs">
+    <Compile Include="App_GlobalResources\LocalizedIdentityErrorDescriberResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalizedIdentityErrorDescriberResources.resx</DependentUpon>
@@ -406,7 +406,8 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CuentaResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\LocalizedIdentityErrorDescriberResources.resx">
+    <EmbeddedResource Include="App_GlobalResources\LocalizedIdentityErrorDescriberResources.es.resx" />
+    <EmbeddedResource Include="App_GlobalResources\LocalizedIdentityErrorDescriberResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedIdentityErrorDescriberResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>

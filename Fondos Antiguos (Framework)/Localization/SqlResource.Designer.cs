@@ -73,10 +73,10 @@ namespace Fondos_Antiguos.Localization {
         ///   Looks up a localized string similar to SELECT COUNT(*)
         ///FROM (
         ///SELECT Contenido, Signatura, Fecha, Fichero, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, Lugar, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, 0 as `Hist`
-        ///FROM `aha`.`tblCatalogo`
+        ///FROM `tblCatalogo`
         ///UNION 
         ///SELECT Descripcion as Contenido, Signatura, Fecha, Fichero, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones`, `FechaCod`, 1 as `Hist`
-        ///FROM `aha`.`tblHistCatalogo`) ds WHERE {0}.
+        ///FROM `tblHistCatalogo`) ds WHERE {0}.
         /// </summary>
         public static string SqlCatalogoAmbosCountResource {
             get {
@@ -87,9 +87,10 @@ namespace Fondos_Antiguos.Localization {
         /// <summary>
         ///   Looks up a localized string similar to SELECT * FROM
         ///(SELECT ID, Contenido, Signatura, Fecha, Materias, IdSerie, Fichero, Libro, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, Lugar, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, 0 as `Hist`
-        ///FROM `aha`.`tblCatalogo`
+        ///FROM `tblCatalogo`
         ///UNION
-        ///SELECT ID, Descripcion as Contenido, Signatura, Fecha, Materias, NULL as IdSerie, Fichero, NULL as Libro, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones`, `FechaCod`, 1 as `Hi [rest of string was truncated]&quot;;.
+        ///SELECT ID, Descripcion as Contenido, Signatura, Fecha, Materias, NULL as IdSerie, Fichero, NULL as Libro, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones`, `FechaCod`, 1 as `Hist`
+        ///F [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SqlCatalogoAmbosResource {
             get {

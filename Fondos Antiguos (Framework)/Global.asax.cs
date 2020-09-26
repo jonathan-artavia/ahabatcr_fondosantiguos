@@ -16,6 +16,8 @@ namespace Fondos_Antiguos
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            ClientDataTypeModelValidatorProvider.ResourceClassKey = "LocalizedIdentityErrorDescriberResources";
+            DefaultModelBinder.ResourceClassKey = "LocalizedIdentityErrorDescriberResources";
         }
     }
 }
