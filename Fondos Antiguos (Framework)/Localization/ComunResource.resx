@@ -159,4 +159,25 @@
   <data name="OperacionEnum.8" xml:space="preserve">
     <value>Igual o Mayor que</value>
   </data>
+  <data name="OperacionEnum.String.0" xml:space="preserve">
+    <value>Diferente A</value>
+  </data>
+  <data name="OperacionEnum.String.1" xml:space="preserve">
+    <value>Igual A</value>
+  </data>
+  <data name="OperacionEnum.String.64" xml:space="preserve">
+    <value>Contiene</value>
+  </data>
+  <data name="OperacionFecha" xml:space="preserve">
+    <value>Fecha</value>
+  </data>
+  <data name="OperacionLugar" xml:space="preserve">
+    <value>Lugar</value>
+  </data>
+  <data name="OperacionMateria" xml:space="preserve">
+    <value>Materia</value>
+  </data>
+  <data name="OperacionSerie" xml:space="preserve">
+    <value>Serie</value>
+  </data>
 </root>

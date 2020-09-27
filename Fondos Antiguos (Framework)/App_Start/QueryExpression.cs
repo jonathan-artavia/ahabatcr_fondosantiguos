@@ -103,22 +103,31 @@ namespace Fondos_Antiguos
     {
         public static QueryExpresion Append(this QueryExpresion expr, string junction, string nextExpression)
         {
-            expr.Junction = junction;
-            expr.Last().NextExpression = new QueryExpresion(nextExpression);
-            return expr.NextExpression;
+            if (!string.IsNullOrEmpty(nextExpression) && !string.IsNullOrEmpty(junction))
+            {
+                expr.Junction = junction;
+                expr.Last().NextExpression = new QueryExpresion(nextExpression);
+            }
+            return expr;
         }
 
         public static QueryExpresion Or(this QueryExpresion expr, string nextExpression)
         {
-            expr.Junction = SqlUtil.OR;
-            expr.Last().NextExpression = new QueryExpresion(nextExpression);
+            if (!string.IsNullOrEmpty(nextExpression))
+            {
+                expr.Junction = SqlUtil.OR;
+                expr.Last().NextExpression = new QueryExpresion(SqlUtil.OR, nextExpression);
+            }
             return expr;
         }
 
         public static QueryExpresion And(this QueryExpresion expr, string nextExpression)
         {
-            expr.Junction = SqlUtil.AND;
-            expr.Last().NextExpression = new QueryExpresion(nextExpression);
+            if (!string.IsNullOrEmpty(nextExpression))
+            {
+                expr.Junction = SqlUtil.AND;
+                expr.Last().NextExpression = new QueryExpresion(SqlUtil.AND, nextExpression);
+            }
             return expr;
         }
 
@@ -133,6 +142,7 @@ namespace Fondos_Antiguos
             while (expr.NextExpression != null)
             {
                 result = expr.NextExpression;
+                expr = result;
             }
             return result;
         }

@@ -6,7 +6,7 @@
 }
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
-<script src="~/Scripts/CatalogoVerScript.js" asp-append-version="true"></script>
+<script src="~/Scripts/CatalogoVerScript.js"></script>
 
 @*@{ Html.BeginForm(FormMethod.Get, new { id = "frmIncludeHist" });*@
 <div class="table-responsive-sm">
@@ -17,6 +17,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     @Html.ActionLink("Agregar Nuevo", "Crear", null, new { @class = "btn btn-outline-dark" })
                 </li>
                 <li class="nav-item dropdown">
@@ -57,30 +58,31 @@
             </div>
             <!-- Empieza Bodies de la Card principal (uno por cada tipo de filtro-->
             <div class="card">
+                @* Fechas *@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <h6 class="card-title text-muted">Fecha</h6>
-                        @Html.DropDownListFor(modelItem => modelItem.Operacion, Enum.GetValues(typeof(OperacionEnum)).OfType<OperacionEnum>().Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op), Value = ((byte)op).ToString() }), "", new { @class = "form-control", onchange = "OperacionFechaSeleccionado()" })
+                        @Html.DropDownListFor(modelItem => modelItem.OperacionFecha, Enum.GetValues(typeof(OperacionEnum)).OfType<OperacionEnum>().Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op), Value = ((byte)op).ToString() }), "", new { @class = "form-control", onchange = "OperacionFechaSeleccionado()" })
                     </li>
                     @{
-                        if (Model != null && Model.Operacion.HasValue)
+                        if (Model != null && Model.OperacionFecha.HasValue)
                         {
-                            if (Model.Operacion == 32 || Model.Operacion == 64)
+                            if (Model.OperacionFecha == 32 || Model.OperacionFecha == 64)
                             {
-                                <li id="divFechaFiltro" class="list-group-item" style="margin-top: 15px;">
+                                <li id="divFechaFiltro" class="list-group-item">
                                     <div id="divFechaDesde" class="col-md-2">
                                         <label id="lblFechaDesde" class="control-label">Desde</label>
-                                        @Html.EditorFor(item => Model.FechaInicial, new { @class = "form-control" })
+                                        @Html.EditorFor(item => item.FechaInicial, new { @htmlAttributes = new { @class = "form-control" } })
                                     </div>
                                     <div id="divFechaHasta" class="col-md-2">
                                         <label class="control-label">Hasta</label>
-                                        @Html.EditorFor(item => Model.FechaFinal, new { @class = "form-control" })
+                                        @Html.EditorFor(item => item.FechaFinal, new { @htmlAttributes = new { @class = "form-control" } })
                                     </div>
                                 </li>
                             }
                             else
                             {
-                                <li id="divFechaFiltro" class="list-group-item" style="margin-top: 15px;">
+                                <li id="divFechaFiltro" class="list-group-item">
                                     <div id="divFechaDesde" class="col-md-2">
                                         <label id="lblFechaDesde" class="control-label" style="display:none">Desde</label>
                                         @Html.EditorFor(item => Model.FechaInicial, new { @class = "form-control" })
@@ -106,6 +108,131 @@
                                         @htmlAttributes = new { @class = "form-control" }
                                     })
                                 </div>
+                            </li>
+                        }
+                    }
+                </ul>
+                @* Materia *@
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <h6 class="card-title text-muted">Materia</h6>
+                        @Html.DropDownListFor(modelItem => modelItem.OperacionMateria, (new OperacionEnum[] { OperacionEnum.DiferenteA, OperacionEnum.IgualA, OperacionEnum.EntreInc }).Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op, 1), Value = ((byte)op).ToString() }), "", new { @class = "form-control", onchange = "OperacionMateriaSeleccionado()" })
+                    </li>
+                    @{
+                        if (Model != null && Model.OperacionMateria.HasValue)
+                        {
+                            <li id="divMateriaFiltro" class="list-group-item">
+
+                                @Html.EditorFor(item => Model.FiltroMateria, new { @htmlAttributes = new { @class = "form-control" } })
+                            </li>
+                        }
+                        else
+                        {
+                            <li id="divMateriaFiltro" class="list-group-item" style="display:none">
+
+                                @Html.EditorFor(item => Model.FiltroMateria, new { @htmlAttributes = new { @class = "form-control" } })
+
+                            </li>
+                        }
+                    }
+                </ul>
+                @* Series *@
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <h6 class="card-title text-muted">Serie</h6>
+                        @Html.DropDownListFor(modelItem => modelItem.OperacionSerie, (new OperacionEnum[] { OperacionEnum.DiferenteA, OperacionEnum.IgualA }).Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op, 1), Value = ((byte)op).ToString() }), "", new { @class = "form-control", onchange = "OperacionSerieSeleccionado()" })
+                    </li>
+                    @{
+                        if (Model != null && Model.OperacionSerie.HasValue)
+                        {
+                            <li id="divSerieFiltro" class="list-group-item">
+                                <div id="divSerieDesde" class="col-md-2">
+                                    @*@Html.EditorFor(item => Model.FiltroSerie, new { @class = "form-control" })*@
+                                    @{
+                                        IEnumerable<Fondos_Antiguos.Models.SerieModel> list = ViewBag.SerieList;
+                                        var r = list.Select(x =>
+                                        {
+                                            return new SelectListItem()
+                                            {
+                                                Text = x.Nombre,
+                                                Value = x.ID.ToString(),
+                                                Selected = Model.FiltroSerie.Equals(x.ID)
+                                            };
+                                        });
+                                        @Html.DropDownList("IdSerieDropDown", r, "", new { @class = "form-control" });
+                                    }
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li id="divSerieFiltro" class="list-group-item" style="display:none">
+                                <div id="divSerieDesde" class="col-md-2">
+                                    @*@Html.EditorFor(item => Model.FiltroSerie, new { @htmlAttributes = new { @class = "form-control" } })*@
+                                    @{
+                                        IEnumerable<Fondos_Antiguos.Models.SerieModel> list = ViewBag.SerieList;
+                                        var r = list.Select(x =>
+                                        {
+                                            return new SelectListItem()
+                                            {
+                                                Text = x.Nombre,
+                                                Value = x.ID.ToString()
+                                            };
+                                        });
+                                        @Html.DropDownList("IdSerieDropDown", r, "", new { @class = "form-control" });
+                                    }
+                                </div>
+                            </li>
+                        }
+                    }
+                </ul>
+
+                @* Lugar *@
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <h6 class="card-title text-muted">Lugar</h6>
+                        @Html.DropDownListFor(modelItem => modelItem.OperacionLugar, (new OperacionEnum[] { OperacionEnum.DiferenteA, OperacionEnum.IgualA, OperacionEnum.EntreInc }).Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op, 1), Value = ((byte)op).ToString() }), "", new { @class = "form-control", onchange = "OperacionLugarSeleccionado()" })
+                    </li>
+                    @{
+                        if (Model != null && Model.OperacionLugar.HasValue)
+                        {
+                            <li id="divLugarFiltro" class="list-group-item">
+
+                                @Html.EditorFor(item => Model.FiltroLugar, new { @htmlAttributes = new { @class = "form-control" } })
+                            </li>
+                        }
+                        else
+                        {
+                            <li id="divLugarFiltro" class="list-group-item" style="display:none">
+
+                                @Html.EditorFor(item => Model.FiltroLugar, new { @htmlAttributes = new { @class = "form-control" } })
+
+                            </li>
+                        }
+                    }
+                </ul>
+
+                @* Cajas *@
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <h6 class="card-title text-muted">Caja</h6>
+                        @Html.DropDownListFor(modelItem => modelItem.OperacionCaja, (new OperacionEnum[] { OperacionEnum.DiferenteA, OperacionEnum.IgualA, OperacionEnum.EntreInc }).Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op, 1), Value = ((byte)op).ToString() }), "", new { @class = "form-control", onchange = "OperacionCajaSeleccionado()" })
+                    </li>
+                    @{
+                        if (Model != null && Model.OperacionCaja.HasValue)
+                        {
+                            <li id="divCajaFiltro" class="list-group-item">
+
+                                @Html.EditorFor(item => Model.FiltroCaja, new { @htmlAttributes = new { @class = "form-control" } })
+                                <sub class="label label-info"><label>* Este campo de busqueda acepta "|" como separador de varias cajas.</label></sub>
+                            </li>
+                        }
+                        else
+                        {
+                            <li id="divCajaFiltro" class="list-group-item" style="display:none">
+
+                                @Html.EditorFor(item => Model.FiltroCaja, new { @htmlAttributes = new { @class = "form-control" } })
+                                <sub class="label label-info"><label>* Este campo de busqueda acepta "|" como separador de varias cajas.</label></sub>
                             </li>
                         }
                     }
@@ -191,58 +318,58 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
-                <td class="" style="max-width: 100px">
-                    @Html.DisplayFor(modelItem => item.Contenido)
-                </td>
-                <td class="d-sm-none">
-                    @Html.DisplayFor(modelItem => item.Fecha)
-                </td>
-                <td class="d-none d-lg-table-cell">
-                    @Html.DisplayFor(modelItem => item.SeriesNombre)
-                </td>
-                <td class="d-none d-lg-table-cell">
-                    @Html.DisplayFor(modelItem => item.Materias)
-                </td>
-                <td class="d-none d-lg-table-cell">
-                    @Html.DisplayFor(modelItem => item.NumCaja)
-                </td>
-                <td class="d-none d-lg-table-cell">
-                    @Html.DisplayFor(modelItem => item.NumTomo)
-                </td>
-                <td class="d-none d-lg-table-cell">
-                    @Html.DisplayFor(modelItem => item.Folio)
-                </td>
-                <td class="d-none d-lg-table-cell">
-                    @Html.DisplayFor(modelItem => item.Libro)
-                </td>
-                <td class="d-none d-lg-table-cell">
-                    @Html.DisplayFor(modelItem => item.NumExpediente)
-                </td>
-                <td class="d-none d-lg-table-cell">
-                    @Html.DisplayFor(modelItem => item.NumCarpeta)
-                </td>
-                <td class="d-none d-lg-table-cell">
-                    @Html.DisplayFor(modelItem => item.Lugar)
-                </td>
-                <td class="d-none d-md-table-cell">
-                    @Html.DisplayFor(modelItem => item.Año)
-                </td>
-                <td class="d-none d-md-table-cell">
-                    @Html.DisplayFor(modelItem => item.Mes)
-                </td>
-                <td>
-                    @Html.HiddenFor(modelItem => item.ID)
-                    @Html.HiddenFor(modelItem => item.Origen)
-                    <div class="row">
-                        @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnVer, "Ver", new { id = item.ID, origen = item.Origen }, new { @class = "btn btn-outline-secondary col", style = "margin-right: 5px" })
-                        @*@Html.ActionLink("Borrar", "Eliminar", new { id = item.ID }, new { @class = "btn btn-outline-secondary col", style = "margin-right: 5px" })*@
-                        <button id="modalActivate" type="button" class="btn btn-outline-secondary col" data-toggle="modal" data-target="#borrarModal" style="vertical-align: middle; margin-right: 5px" onclick="OnBtnBorrarClick(@item.ID, @item.Origen)">
-                            @Fondos_Antiguos.Localization.ComunResource.btnBorrar
-                        </button>
-                    </div>
-                </td>
-            </tr>
+                <tr>
+                    <td class="" style="max-width: 100px">
+                        @Html.DisplayFor(modelItem => item.Contenido)
+                    </td>
+                    <td class="d-sm-none">
+                        @Html.DisplayFor(modelItem => item.Fecha)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.SeriesNombre)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.Materias)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.NumCaja)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.NumTomo)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.Folio)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.Libro)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.NumExpediente)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.NumCarpeta)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.Lugar)
+                    </td>
+                    <td class="d-none d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.Año)
+                    </td>
+                    <td class="d-none d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.Mes)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(modelItem => item.ID)
+                        @Html.HiddenFor(modelItem => item.Origen)
+                        <div class="row">
+                            @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnVer, "Ver", new { id = item.ID, origen = item.Origen }, new { @class = "btn btn-outline-secondary col", style = "margin-right: 5px" })
+                            @*@Html.ActionLink("Borrar", "Eliminar", new { id = item.ID }, new { @class = "btn btn-outline-secondary col", style = "margin-right: 5px" })*@
+                            <button id="modalActivate" type="button" class="btn btn-outline-secondary col" data-toggle="modal" data-target="#borrarModal" style="vertical-align: middle; margin-right: 5px" onclick="OnBtnBorrarClick(@item.ID, @item.Origen)">
+                                @Fondos_Antiguos.Localization.ComunResource.btnBorrar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
             }
         </tbody>
         <tfoot>
@@ -333,7 +460,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <form method="GET"  action="@Url.Action("Eliminar")">
+                    <form method="GET" action="@Url.Action("Eliminar")">
                         <input type="hidden" id="BorrarRegistroID" name="id" />
                         <input type="hidden" id="BorrarRegistroOrigen" name="origen" />
                         <input type="submit" class="btn btn-secondary" value="Sí" />

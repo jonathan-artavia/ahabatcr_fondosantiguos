@@ -185,5 +185,68 @@ namespace Fondos_Antiguos.Localization {
                 return ResourceManager.GetString("OperacionEnum.8", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diferente A.
+        /// </summary>
+        public static string OperacionEnum_String_0 {
+            get {
+                return ResourceManager.GetString("OperacionEnum.String.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Igual A.
+        /// </summary>
+        public static string OperacionEnum_String_1 {
+            get {
+                return ResourceManager.GetString("OperacionEnum.String.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contiene.
+        /// </summary>
+        public static string OperacionEnum_String_64 {
+            get {
+                return ResourceManager.GetString("OperacionEnum.String.64", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fecha.
+        /// </summary>
+        public static string OperacionFecha {
+            get {
+                return ResourceManager.GetString("OperacionFecha", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lugar.
+        /// </summary>
+        public static string OperacionLugar {
+            get {
+                return ResourceManager.GetString("OperacionLugar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Materia.
+        /// </summary>
+        public static string OperacionMateria {
+            get {
+                return ResourceManager.GetString("OperacionMateria", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Serie.
+        /// </summary>
+        public static string OperacionSerie {
+            get {
+                return ResourceManager.GetString("OperacionSerie", resourceCulture);
+            }
+        }
     }
 }

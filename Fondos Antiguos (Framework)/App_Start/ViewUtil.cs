@@ -22,9 +22,21 @@ namespace Fondos_Antiguos
             return string.Empty;
         }
 
-        public static string ObtenerDescrOperacion(byte val)
+        /// <summary>
+        /// Obtiene la descripcion de la operacion
+        /// </summary>
+        /// <param name="val">ID de Operacion</param>
+        /// <param name="filtro">Cual filtro. 0 = Fecha, 1 = Strings, 2 = Numeros</param>
+        /// <returns></returns>
+        public static string ObtenerDescrOperacion(byte val, byte? filtro = null)
         {
-            return ComunResource.ResourceManager.GetString($"OperacionEnum.{val}");
+            switch (filtro)
+            {
+                case 1:
+                    return ComunResource.ResourceManager.GetString($"OperacionEnum.String.{val}");
+                default:
+                    return ComunResource.ResourceManager.GetString($"OperacionEnum.{val}");
+            }
         }
     }
 }
