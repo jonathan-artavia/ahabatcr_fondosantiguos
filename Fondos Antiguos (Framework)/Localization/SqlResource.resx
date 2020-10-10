@@ -121,20 +121,20 @@
     <value>UPDATE `tblCatalogo` SET `Contenido` = @contenido, `Fecha` = @Fecha, `Signatura` = @Signatura, `Observaciones` = @Observaciones, `IdSerie` = @IdSerie, `Fichero` = @Fichero, `NumCaja` = @NumCaja, `NumTomo` = @NumTomo, `Folio` = @Folio, `Libro` = @Libro, `NumExpediente` = @NumExpediente, `NumCarpeta` = @NumCarpeta,`Lugar` = @Lugar, `Año` = @Año,`Mes` = @Mes, `FechaIngreso` = @FechaIngreso WHERE `ID` = @id</value>
   </data>
   <data name="SqlCatalogoAmbosCountResource" xml:space="preserve">
-    <value>SELECT COUNT(*)
-FROM (
-SELECT Contenido, Signatura, Fecha, Fichero, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, Lugar, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, 0 as `Hist`
+    <value>SELECT COUNT(ID) 
+FROM (SELECT ID, Contenido, Signatura, Fecha, Materias, IdSerie, Fichero, Libro, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, Lugar, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, NULL as FechaOrig, 0 as `Hist`
 FROM `tblCatalogo`
-UNION 
-SELECT Descripcion as Contenido, Signatura, Fecha, Fichero, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones`, `FechaCod`, 1 as `Hist`
-FROM `tblHistCatalogo`) ds WHERE {0}</value>
+UNION
+SELECT ID, Descripcion as Contenido, Signatura, Fecha, Materias, NULL as IdSerie, Fichero, NULL as Libro, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones`, `FechaCod`, `FechaOrig`, 1 as `Hist`
+FROM `tblHistCatalogo`) ds
+WHERE {0}</value>
   </data>
   <data name="SqlCatalogoAmbosResource" xml:space="preserve">
     <value>SELECT * FROM
-(SELECT ID, Contenido, Signatura, Fecha, Materias, IdSerie, Fichero, Libro, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, Lugar, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, 0 as `Hist`
+(SELECT ID, Contenido, Signatura, Fecha, Materias, IdSerie, Fichero, Libro, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, Lugar, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, NULL as FechaOrig, 0 as `Hist`
 FROM `tblCatalogo`
 UNION
-SELECT ID, Descripcion as Contenido, Signatura, Fecha, Materias, NULL as IdSerie, Fichero, NULL as Libro, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones`, `FechaCod`, 1 as `Hist`
+SELECT ID, Descripcion as Contenido, Signatura, Fecha, Materias, NULL as IdSerie, Fichero, NULL as Libro, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones`, `FechaCod`, `FechaOrig`, 1 as `Hist`
 FROM `tblHistCatalogo`) ds
 WHERE {0}</value>
   </data>

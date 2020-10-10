@@ -139,6 +139,11 @@ function ArmarFiltro() {
         }
     }
 
+    var filtroTexto = $('#TextoPlano').val();
+    if (filtroTexto !== null & filtroTexto !== '') {
+        urlNueva += '&filtroTexto=' + filtroTexto;
+    }
+
     return urlNueva;
 }
 
@@ -170,5 +175,5 @@ function LimpiarFiltro() {
     $('#OperacionLugar').change();
     $('#OperacionCaja').val('');
     $('#OperacionCaja').change();
-
+    $('#TextoPlano').val('');
 }

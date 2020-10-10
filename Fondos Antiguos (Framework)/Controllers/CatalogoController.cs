@@ -33,7 +33,7 @@ namespace Fondos_Antiguos.Controllers
         [AllowAnonymous()]
         public ActionResult Index(byte? incluirHist, long? pagina, byte? operacionFecha, DateTime? fechaDesde, DateTime? fechaHasta,
             byte? operacionMateria, string filtroMateria, byte? operacionSerie, long? filtroSerie, byte? operacionLugar, string filtroLugar,
-            byte? operacionCaja, string filtroCaja)
+            byte? operacionCaja, string filtroCaja, string filtroTexto)
         {
             string error = null;
             string msg = null;
@@ -44,6 +44,8 @@ namespace Fondos_Antiguos.Controllers
                 filtroLugar = null;
             if (!string.IsNullOrEmpty(filtroCaja) && filtroCaja.Equals("undefined", StringComparison.InvariantCultureIgnoreCase))
                 filtroCaja = null;
+            if (!string.IsNullOrEmpty(filtroTexto) && filtroTexto.Equals("undefined", StringComparison.InvariantCultureIgnoreCase))
+                filtroTexto = null;
 
             if (incluirHist.HasValue)
             {
@@ -79,14 +81,17 @@ namespace Fondos_Antiguos.Controllers
             if (operacionFecha.HasValue)
             {
                 filter = this.ObtenerExpressionDeFecha(incluirHist.GetValueOrDefault(0), operacionFecha.Value, fechaDesde, fechaHasta, ref parameters);
-
             }
             if (operacionMateria.HasValue)
             {
                 if (filter == null)
                     filter = this.ObtenerExpressionDeMaterias(incluirHist.GetValueOrDefault(0), operacionMateria.Value, filtroMateria, ref parameters);
                 else
-                    filter.And(this.ObtenerExpressionDeMaterias(incluirHist.GetValueOrDefault(0), operacionMateria.Value, filtroMateria, ref parameters).ToString());
+                {
+                    QueryExpresion extracto = this.ObtenerExpressionDeMaterias(incluirHist.GetValueOrDefault(0), operacionMateria.Value, filtroMateria, ref parameters);
+                    if (extracto != null)
+                        filter.And("(" + extracto.ToString() + ")");
+                }
             }
 
             if (operacionSerie.HasValue)
@@ -94,7 +99,11 @@ namespace Fondos_Antiguos.Controllers
                 if (filter == null)
                     filter = this.ObtenerExpressionDeSeries(incluirHist.GetValueOrDefault(0), operacionSerie.Value, filtroSerie, filtroSerie.HasValue ? seriesList.FirstOrDefault(x => x.ID == filtroSerie.Value).Nombre : string.Empty, ref parameters);
                 else
-                    filter.And(this.ObtenerExpressionDeSeries(incluirHist.GetValueOrDefault(0), operacionMateria.Value, filtroSerie, filtroSerie.HasValue ? seriesList.FirstOrDefault(x => x.ID == filtroSerie.Value)?.Nombre : string.Empty, ref parameters)?.ToString());
+                {
+                    QueryExpresion extracto = this.ObtenerExpressionDeSeries(incluirHist.GetValueOrDefault(0), operacionMateria.Value, filtroSerie, filtroSerie.HasValue ? seriesList.FirstOrDefault(x => x.ID == filtroSerie.Value)?.Nombre : string.Empty, ref parameters);
+                    if (extracto != null)
+                        filter.And("(" + extracto.ToString() + ")");
+                }
             }
 
             if (operacionLugar.HasValue)
@@ -102,7 +111,11 @@ namespace Fondos_Antiguos.Controllers
                 if (filter == null)
                     filter = this.ObtenerExpressionDeLugar(incluirHist.GetValueOrDefault(0), operacionSerie.Value, filtroLugar, ref parameters);
                 else
-                    filter.And(this.ObtenerExpressionDeLugar(incluirHist.GetValueOrDefault(0), operacionMateria.Value, filtroLugar, ref parameters)?.ToString());
+                {
+                    QueryExpresion extracto = this.ObtenerExpressionDeLugar(incluirHist.GetValueOrDefault(0), operacionMateria.Value, filtroLugar, ref parameters);
+                    if (extracto != null)
+                        filter.And("(" + extracto.ToString() + ")");
+                }
             }
 
             if (operacionCaja.HasValue)
@@ -110,8 +123,25 @@ namespace Fondos_Antiguos.Controllers
                 if (filter == null)
                     filter = this.ObtenerExpressionDeCajas(incluirHist.GetValueOrDefault(0), operacionCaja.Value, filtroCaja, ref parameters);
                 else
-                    filter.And("(" + this.ObtenerExpressionDeCajas(incluirHist.GetValueOrDefault(0), operacionCaja.Value, filtroCaja, ref parameters)?.ToString() + ")");
+                {
+                    QueryExpresion extracto = this.ObtenerExpressionDeCajas(incluirHist.GetValueOrDefault(0), operacionCaja.Value, filtroCaja, ref parameters);
+                    if(extracto != null)
+                        filter.And("(" + extracto.ToString() + ")");
+                }
             }
+
+            if (!string.IsNullOrEmpty(filtroTexto))
+            {
+                if (filter == null)
+                    filter = this.ObtenerExpressionDeTextoPlano(incluirHist.GetValueOrDefault(0), filtroTexto, ref parameters);
+                else
+                {
+                    QueryExpresion extracto = this.ObtenerExpressionDeTextoPlano(incluirHist.GetValueOrDefault(0), filtroTexto, ref parameters);
+                    if (extracto != null)
+                        filter.And("(" + extracto.ToString() + ")");
+                }
+            }
+
             if (filter == null && !this.ModelState.IsValid)
                 return View();
 
@@ -129,6 +159,11 @@ namespace Fondos_Antiguos.Controllers
             result.FiltroMateria = filtroMateria;
             result.OperacionSerie = operacionSerie;
             result.FiltroSerie = filtroSerie;
+            result.TextoPlano = filtroTexto;
+            result.OperacionLugar = operacionLugar;
+            result.FiltroLugar = filtroLugar;
+            result.OperacionCaja = operacionCaja;
+            result.FiltroCaja = filtroCaja;
             if (!string.IsNullOrEmpty(error))
             {
                 result.Exception = error;
@@ -708,6 +743,67 @@ namespace Fondos_Antiguos.Controllers
                         return null;
                 }
             }
+        }
+
+        protected virtual QueryExpresion ObtenerExpressionDeTextoPlano(byte includeHist, string valor, ref Dictionary<string, object> parameters)
+        {
+            QueryExpresion ExprLive(ref Dictionary<string, object> parametersIn)
+            {
+                if (!string.IsNullOrEmpty(valor))
+                {
+                    parametersIn.Add("@filtroTexto", "%" + valor + "%");
+                    return new QueryExpresion(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Lugar")))
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Contenido")))
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Observaciones")))
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Libro")))
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("NumExpediente")))
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("NumCarpeta")))
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Folio")))
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Fichero")));
+                }
+                return null;
+            }
+
+            QueryExpresion ExprHist(ref Dictionary<string, object> parametersIn)
+            {
+                if (!string.IsNullOrEmpty(valor))
+                {
+                    if(!parametersIn.ContainsKey("@filtroTexto"))
+                        parametersIn.Add("@filtroTexto", "%" + valor + "%");
+                    return new QueryExpresion(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Lugar")))
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Contenido"))) //Descripcion
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("FechaOrig")))
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Signatura")))
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Observaciones"))) //datos
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Fichero")))
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Materias")));
+                }
+                return null;
+            }
+
+            if (parameters == null)
+                parameters = new Dictionary<string, object>();
+
+            switch (includeHist)
+            {
+                case 0: //only live
+                    return ExprLive(ref parameters);
+                case 1: //both
+                    QueryExpresion e1 = ExprLive(ref parameters);
+                    QueryExpresion e2 = ExprHist(ref parameters);
+                    if (e1 != null && e2 != null)
+                        return new QueryExpresion("(" + e1 + ")")
+                            .Or("(" + e2 + ")");
+                    else if (e1 != null && e2 == null)
+                        return e1;
+                    else if (e1 == null && e2 != null)
+                        return e2;
+                    return null;
+                case 2: //only hist
+                    return ExprHist(ref parameters);
+            }
+
+            return null;
         }
 
         #endregion

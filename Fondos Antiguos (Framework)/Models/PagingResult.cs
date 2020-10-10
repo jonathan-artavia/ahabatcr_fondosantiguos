@@ -35,8 +35,10 @@ namespace Fondos_Antiguos.Models
             }
         }
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = @"{0:yyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? FechaInicial { get; set; }
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = @"{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? FechaFinal { get; set; }
 
 
@@ -106,6 +108,9 @@ namespace Fondos_Antiguos.Models
         }
         [DataType(DataType.Text)]
         public string FiltroCaja { get; set; }
+
+
+        public string TextoPlano { get; set; }
         #endregion
 
 
