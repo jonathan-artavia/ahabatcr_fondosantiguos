@@ -33,8 +33,8 @@ namespace Fondos_Antiguos.Models
                     this.Contenido = Convert.IsDBNull(dr["Descripcion"]) ? null : dr["Descripcion"].ToString();
                 this.Año = !fecha.HasValue ? (short?)null : (short)fecha.Value.Year;
                 this.Fecha = fecha;
-                this.Fichero = string.IsNullOrEmpty(rg.Groups[2].Value) ? null : rg.Groups[2].Value;
-                this.Folio = null;
+                //this.Fichero = string.IsNullOrEmpty(rg.Groups[2].Value) ? null : rg.Groups[2].Value;
+                this.Folio = Convert.IsDBNull(dr["Fichero"]) ? null : dr["Fichero"].ToString();
                 this.ID = Convert.IsDBNull(dr["ID"]) ? 0 : Convert.ToInt64(dr["ID"]);
                 this.IdSerie = null;
                 this.Materias = Convert.IsDBNull(dr["materias"]) ? null : dr["Materias"].ToString();

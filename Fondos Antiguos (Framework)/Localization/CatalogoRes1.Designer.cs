@@ -223,7 +223,7 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Solo actuales.
+        ///   Looks up a localized string similar to Catálogo UNA.
         /// </summary>
         public static string IncluirHistVal0 {
             get {
@@ -232,7 +232,7 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ambos.
+        ///   Looks up a localized string similar to Ambos catálogos.
         /// </summary>
         public static string IncluirHistVal1 {
             get {
@@ -241,7 +241,7 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Solo históricos.
+        ///   Looks up a localized string similar to Catálogo AHABAT.
         /// </summary>
         public static string IncluirHistVal2 {
             get {
@@ -358,7 +358,7 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Series.
+        ///   Looks up a localized string similar to Serie.
         /// </summary>
         public static string SeriesNombre {
             get {

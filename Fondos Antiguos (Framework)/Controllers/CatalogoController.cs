@@ -602,7 +602,8 @@ namespace Fondos_Antiguos.Controllers
                 string varName = "@filtroCaja" + count.ToString();
                 if (operacion == 64 && !string.IsNullOrEmpty(val))
                 {
-                    parametersIn.Add(varName, "%" + val + "%");
+                    if(!parametersIn.ContainsKey(varName))
+                        parametersIn.Add(varName, "%" + val + "%");
                     return new QueryExpresion(String.Format("{0} LIKE {1}", SqlUtil.SurroundColumn("NumCaja"), varName));
                 }
                 else if (operacion < 32)
@@ -644,7 +645,8 @@ namespace Fondos_Antiguos.Controllers
                 string varName = "@filtroHistCaja" + count.ToString();
                 if (!String.IsNullOrEmpty(val))
                 {
-                    parametersIn.Add(varName, "%" + val + "%");
+                    if(!parametersIn.ContainsKey(varName))
+                        parametersIn.Add(varName, "%" + val + "%");
                     return new QueryExpresion(SqlUtil.AND, String.Format("{0} LIKE {1}", SqlUtil.SurroundColumn("Fichero"), varName));
                 }
                 else
@@ -751,7 +753,8 @@ namespace Fondos_Antiguos.Controllers
             {
                 if (!string.IsNullOrEmpty(valor))
                 {
-                    parametersIn.Add("@filtroTexto", "%" + valor + "%");
+                    if (!parametersIn.ContainsKey("@filtroTexto"))
+                        parametersIn.Add("@filtroTexto", "%" + valor + "%");
                     return new QueryExpresion(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Lugar")))
                         .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Contenido")))
                         .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Observaciones")))

@@ -172,13 +172,13 @@
     <value>ID Serie</value>
   </data>
   <data name="IncluirHistVal0" xml:space="preserve">
-    <value>Solo actuales</value>
+    <value>Catálogo UNA</value>
   </data>
   <data name="IncluirHistVal1" xml:space="preserve">
-    <value>Ambos</value>
+    <value>Ambos catálogos</value>
   </data>
   <data name="IncluirHistVal2" xml:space="preserve">
-    <value>Solo históricos</value>
+    <value>Catálogo AHABAT</value>
   </data>
   <data name="Libro" xml:space="preserve">
     <value>Libro</value>
@@ -217,7 +217,7 @@
     <value>¡Registro no existe!</value>
   </data>
   <data name="SeriesNombre" xml:space="preserve">
-    <value>Series</value>
+    <value>Serie</value>
   </data>
   <data name="Signatura" xml:space="preserve">
     <value>Signatura</value>
