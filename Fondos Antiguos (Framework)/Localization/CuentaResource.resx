@@ -138,6 +138,10 @@
   <data name="MsgCntrñGenerada" xml:space="preserve">
     <value>Contraseña nueva generada!</value>
   </data>
+  <data name="NombreRol" xml:space="preserve">
+    <value>Nombre</value>
+    <comment>para view "VerRol"</comment>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>Contraseña</value>
   </data>
@@ -155,5 +159,23 @@
   </data>
   <data name="UsuarioEsReq" xml:space="preserve">
     <value>Usuario es requerido</value>
+  </data>
+  <data name="ViewPath" xml:space="preserve">
+    <value>Direcciones individuales</value>
+  </data>
+  <data name="ViewPermitir0" xml:space="preserve">
+    <value>Individualmente</value>
+  </data>
+  <data name="ViewPermitir1" xml:space="preserve">
+    <value>Permitir todas</value>
+  </data>
+  <data name="ViewPermitir2" xml:space="preserve">
+    <value>Restringidas todas</value>
+  </data>
+  <data name="ViewPermitirTodasLabel" xml:space="preserve">
+    <value>Cuáles Permite</value>
+  </data>
+  <data name="Views" xml:space="preserve">
+    <value>Crear Registro (Catálogo):Catalogo/Insertar|Editar Registro (Catálogo):Catalogo/Editar|Eliminar Registro (Catálogo):Catalogo/Eliminar|Lista (Cuentas):Cuenta/ListaCuentas|Crear a otro (Cuenta):Cuenta/Registrar|Eliminar (Cuenta):Cuenta/Eliminar|Crear (Rol):Cuenta/RegistrarRol|Ver/Editar (Rol):Cuenta/VerRol</value>
   </data>
 </root>

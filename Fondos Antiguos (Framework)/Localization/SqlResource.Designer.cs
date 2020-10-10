@@ -231,6 +231,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT * FROM `tblRolView` WHERE {0}.
+        /// </summary>
+        public static string SqlRolesVistasPermitidasByRol {
+            get {
+                return ResourceManager.GetString("SqlRolesVistasPermitidasByRol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT * FROM tblSerie WHERE {0}.
         /// </summary>
         public static string SqlSeriesResource {

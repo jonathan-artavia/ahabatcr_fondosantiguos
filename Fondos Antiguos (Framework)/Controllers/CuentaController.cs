@@ -12,6 +12,7 @@ using Fondos_Antiguos.Models;
 using Fondos_Antiguos.DataService;
 using Fondos_Antiguos.Localization;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
 
 namespace Fondos_Antiguos.Controllers
 {
@@ -20,7 +21,8 @@ namespace Fondos_Antiguos.Controllers
     {
         #region Fields
         private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager; 
+        private ApplicationUserManager _userManager;
+        private RoleManager<IdentityRole> _roleManager;
         #endregion
 
         #region Properties
@@ -48,6 +50,20 @@ namespace Fondos_Antiguos.Controllers
             }
         }
 
+        public RoleManager<IdentityRole> RoleManager
+        {
+            get
+            {
+                if (this._roleManager == null)
+                    this._roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this.DbContext));
+                return this._roleManager;
+            }
+            set
+            {
+                this._roleManager = value;
+            }
+        }
+
         public FaApplicationDbContext DbContext { get; set; }
 
         #endregion
@@ -58,12 +74,13 @@ namespace Fondos_Antiguos.Controllers
             this.DbContext = FaApplicationDbContext.Create();
         }
 
-        public CuentaController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public CuentaController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, RoleManager<IdentityRole> roleManager)
         {
             this.UserManager = userManager;
             this.SignInManager = signInManager;
+            this.RoleManager = roleManager;
             this.DbContext = FaApplicationDbContext.Create();
-        } 
+        }
         #endregion
 
         #region Action Results
@@ -155,7 +172,7 @@ namespace Fondos_Antiguos.Controllers
         public ActionResult Registrar()
         {
             if (this.DataService == null)
-                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager);
+                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager, this.RoleManager);
 
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this.DbContext));
             try
@@ -448,7 +465,7 @@ namespace Fondos_Antiguos.Controllers
         public async Task<ActionResult> ListaCuentas()
         {
             if (this.DataService == null)
-                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager);
+                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager, this.RoleManager);
             return this.View(await this.DataService.GetCuentas());
         }
 
@@ -457,7 +474,7 @@ namespace Fondos_Antiguos.Controllers
         public async Task<ActionResult> NuevaClave(string idUsuario)
         {
             if (this.DataService == null)
-                this.DataService = new CuentaDataService(await this.GetIdentityUser(this.User.Identity.Name), this.UserManager);
+                this.DataService = new CuentaDataService(await this.GetIdentityUser(this.User.Identity.Name), this.UserManager, this.RoleManager);
 
             try
             {
@@ -474,7 +491,7 @@ namespace Fondos_Antiguos.Controllers
         public async Task<ActionResult> GenerarNuevaClave(string idUsuario)
         {
             if (this.DataService == null)
-                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager);
+                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager, this.RoleManager);
             try
             {
                 CuentaModel model = await this.DataService.CrearNewCtrña(idUsuario);
@@ -491,7 +508,7 @@ namespace Fondos_Antiguos.Controllers
         public virtual ActionResult Eliminar(string borrarIdUsuario)
         {
             if (this.DataService == null)
-                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager);
+                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager, this.RoleManager);
 
             try
             {
@@ -522,7 +539,7 @@ namespace Fondos_Antiguos.Controllers
         public async Task<ActionResult> CambiarContraseña(ChangePasswordViewModel model)
         {
             if (this.DataService == null)
-                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager);
+                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager, this.RoleManager);
 
             try
             {
@@ -547,6 +564,152 @@ namespace Fondos_Antiguos.Controllers
                 return View(model);
             }
             return View();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        [FaAuthorize(Roles = "Admin")]
+        public async Task<ActionResult> VerRol(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                throw new ArgumentNullException("Rol ID");
+            if (this.DataService == null)
+                this.DataService = new CuentaDataService(await this.GetIdentityUser(this.User.Identity.Name), this.UserManager, this.RoleManager);
+
+            try
+            {
+                var results = await this.DataService.GetRol(id, this.HttpContext);
+
+                this.ViewBag.ViewsPermitidos = await this.DataService.GetViewsPermitidas(id, this.HttpContext);
+                this.ViewBag.ViewList = CuentaResource.Views.Split('|').Select(x => new PermitirViewModel() { Nombre = x.Split(':')[0] }).ToList();
+                return this.View(results);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> ListaRoles()
+        {
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this.DbContext));
+
+            return this.View(roleManager.Roles.ToList());
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult RegistrarRol()
+        {
+            if (this.DataService == null)
+                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager, this.RoleManager);
+
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this.DbContext));
+            try
+            {
+                //model.Roles = ViewBag.RolesList = roleManager.Roles.ToList();
+                return View();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return View();
+        }
+
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegistrarRol(IdentityRole model)
+        {
+            if (ModelState.IsValid)
+            {
+                var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this.DbContext));
+
+                var result = await roleManager.CreateAsync(model);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(ListaRoles));
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        [HttpPost]
+        [FaAuthorize]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegistrarRolViewPermit(string idRol, string viewName, byte? todas)
+        {
+            if (this.DataService == null)
+                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager, this.RoleManager);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await this.DataService.CrearRolViewPermit(idRol, ViewUtil.ObtenerDireccionDeView(viewName), todas.GetValueOrDefault(0), this.HttpContext);
+                    return RedirectToAction(nameof(VerRol), new { id = idRol });
+                }
+                catch (Exception ex)
+                {
+                    this.ModelState.AddModelError("", ex);
+                    return RedirectToAction(nameof(ListaRoles));
+                }
+            }
+            // If we got this far, something failed, redisplay form
+            return RedirectToAction(nameof(RegistrarRolViewPermit));
+        }
+
+        [HttpPost]
+        [FaAuthorize]
+        public virtual async Task<ActionResult> EliminarRol(string borrarRolId)
+        {
+            if (this.DataService == null)
+                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager, this.RoleManager);
+
+            try
+            {
+                await this.DataService.Eliminar(borrarRolId);
+                return RedirectToAction(nameof(ListaRoles));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        [HttpPost]
+        [FaAuthorize]
+        public virtual async Task<ActionResult> EliminarRolView(string idRol, long idView)
+        {
+            if (this.DataService == null)
+                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager, this.RoleManager);
+
+            try
+            {
+                await this.DataService.EliminarRolView(idRol, idView, this.HttpContext);
+                
+                return RedirectToAction(nameof(VerRol), new { id = idRol });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         #endregion
 

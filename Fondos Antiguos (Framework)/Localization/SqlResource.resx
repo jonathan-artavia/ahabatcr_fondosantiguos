@@ -183,6 +183,9 @@ WHERE {0}</value>
   <data name="SqlRolesUpdate" xml:space="preserve">
     <value>UPDATE `tblRoles` SET `Name` = @name WHERE `Id` = @id</value>
   </data>
+  <data name="SqlRolesVistasPermitidasByRol" xml:space="preserve">
+    <value>SELECT * FROM `tblRolView` WHERE {0}</value>
+  </data>
   <data name="SqlSeriesResource" xml:space="preserve">
     <value>SELECT * FROM tblSerie WHERE {0}</value>
   </data>

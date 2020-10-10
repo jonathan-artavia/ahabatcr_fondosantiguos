@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
@@ -72,6 +73,33 @@ namespace Fondos_Antiguos.Models
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             // Add custom user claims here
             return userIdentity;
+        }
+    }
+
+    public class IdentityRolPermit
+    {
+        public long ID { get; set; }
+        /// <summary>
+        /// Direccion de View
+        /// </summary>
+        public string ViewPath { get; set; }
+
+        /// <summary>
+        /// ID tipo string para identificar roles en ASP.Identity
+        /// </summary>
+        public string IdRol { get; set; }
+
+        /// <summary>
+        /// 0 = NA, 1 = Todas permitidas, 2 = Ninguna Permitida
+        /// </summary>
+        public byte TodasLasVistas { get; set; }
+
+        public void Fill(IDataReader row)
+        {
+            this.ID = Convert.IsDBNull(row["ID"]) ? 0 : Convert.ToInt64(row["ID"]);
+            this.ViewPath = Convert.IsDBNull(row["View"]) ? null : ViewUtil.ObtenerNombreDeView(row["View"].ToString());
+            this.IdRol = Convert.IsDBNull(row["IdRol"]) ? null : row["IdRol"].ToString();
+            this.TodasLasVistas = Convert.IsDBNull(row["All"]) ? (byte)0 : Convert.ToByte(row["All"]);
         }
     }
 

@@ -8,12 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using System.CodeDom;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Web;
+using Fondos_Antiguos.Base;
+using System.Data;
+using Fondos_Antiguos.Localization;
 
 namespace Fondos_Antiguos.DataService
 {
-    public class CuentaDataService
+    public class CuentaDataService : BaseDataService
     {
         public ApplicationUserManager UserManager { get; }
+        public RoleManager<IdentityRole> RoleManager { get; set; }
         #region Fields
         private IUser _user;
         #endregion
@@ -25,9 +31,10 @@ namespace Fondos_Antiguos.DataService
             this._user = user;
         }
 
-        public CuentaDataService(IUser user, ApplicationUserManager man)
+        public CuentaDataService(IUser user, ApplicationUserManager man, RoleManager<IdentityRole> rolMan)
         {
             this.UserManager = man;
+            this.RoleManager = rolMan;
             this._user = user;
         }
         #endregion
@@ -113,12 +120,101 @@ namespace Fondos_Antiguos.DataService
             }
             throw new Exception("Usuario no existe");
         }
+
+
+        public virtual async Task EliminarRol(string idRol)
+        {
+            IdentityRole rol = await this.GetIdentityRole(idRol);
+
+            if (rol != null)
+            {
+                IdentityResult result = await this.RoleManager.DeleteAsync(rol);
+                if (!result.Succeeded)
+                {
+                    throw this.CraftException(result.Errors);
+                }
+            }
+            else
+            {
+                throw new Exception("Rol no existe");
+            }
+        }
+
+        public virtual async Task<IdentityRole> GetRol(string idRol, HttpContextBase httpContext)
+        {
+            return await this.GetIdentityRole(idRol);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="idRol"></param>
+        /// <param name="dirView"></param>
+        /// <param name="todas">0 = NA, 1 = Permitir Todas, 2 = Denegar Todas</param>
+        /// <param name="httpContext"></param>
+        /// <returns></returns>
+        public virtual async Task CrearRolViewPermit(string idRol, string dirView, byte todas, HttpContextBase httpContext)
+        {
+            IdentityRole rol = await this.GetIdentityRole(idRol);
+
+            if (rol != null)
+            {
+                if (string.IsNullOrEmpty(dirView))
+                {
+                    QueryExpresion expr = new QueryExpresion(SqlUtil.Equals("IdRol", "@idRol")).And($"{SqlUtil.Equals("All", "@all1")} {SqlUtil.OR} {SqlUtil.Equals("All", "@all2")}");
+                    DataConnection.Instance.ExecuteNonQuery(string.Format("DELETE FROM `tblRolView` WHERE {0}", expr.ToString()), new Dictionary<string, object>() { { "@idRol", idRol }, { "@all1", 1 }, { "@all2", 2 } }, httpContext);
+                }
+                if(todas != 0 || !string.IsNullOrEmpty(dirView))
+                    DataConnection.Instance.ExecuteNonQuery("INSERT INTO `tblRolView` (`View`, `IdRol`, `All`) VALUES (@view, @idRol, @all)", new Dictionary<string, object>() { { "@view", todas != 0 ? "*" : dirView }, { "@idRol", idRol }, { "@all",todas } }, httpContext);
+            }
+            else
+            {
+                throw new Exception("Rol no existe");
+            }
+        }
+
+        public virtual async Task EliminarRolView(string idRol, long idView, HttpContextBase httpContext)
+        {
+            IdentityRole rol = await this.GetIdentityRole(idRol);
+
+            if (rol != null)
+            {
+                QueryExpresion expr = new QueryExpresion(SqlUtil.Equals("IdRol", "@idRol")).And(SqlUtil.Equals("ID", "@idView"));
+
+                DataConnection.Instance.ExecuteNonQuery(string.Format("DELETE FROM `tblRolView` WHERE {0}", expr.ToString()), new Dictionary<string, object>() { { "@idRol", idRol }, { "@idView", idView } }, httpContext);
+            }
+            else
+            {
+                throw new Exception("Rol no existe");
+            }
+        }
+
+        public virtual async Task<List<IdentityRolPermit>> GetViewsPermitidas(string idRol, HttpContextBase httpContext)
+        {
+            List<IdentityRolPermit> read = new List<IdentityRolPermit>();
+            QueryExpresion expr = new QueryExpresion(SqlUtil.Equals("IdRol", idRol, true));
+            read = this.GetOrCreateValue<List<IdentityRolPermit>>(
+                        this.GetOrCreateKey(httpContext),
+                        () => this.FillVistasDeRol(DataConnection.Instance.ExecuteQuery(
+                            string.Format(SqlResource.SqlRolesVistasPermitidasByRol, expr.ToString()),
+                            new Dictionary<string, object>() { { "@id", idRol } },
+                            httpContext,
+                            1))
+                        , "GetViewsPermitidas", expr?.ToString()
+                        );
+            return read;
+        }
         #endregion
 
         #region protected
         protected async virtual Task<ApplicationUser> GetIdentityUser(string idUsuario)
         {
             return await this.UserManager.FindByIdAsync(idUsuario);
+        }
+
+        protected async virtual Task<IdentityRole> GetIdentityRole(string idRol)
+        {
+            return await this.RoleManager.FindByIdAsync(idRol);
         }
 
         protected virtual async Task<CuentaModel> ToLoginModel(ApplicationUser user)
@@ -140,6 +236,18 @@ namespace Fondos_Antiguos.DataService
                 cursor = new Exception(errors.ElementAt(i), cursor);
             }
             return cursor;
+        }
+
+        protected virtual List<IdentityRolPermit> FillVistasDeRol(IDataReader reader)
+        {
+            List<IdentityRolPermit> result = new List<IdentityRolPermit>();
+            while (reader.Read())
+            {
+                IdentityRolPermit nc = new IdentityRolPermit();
+                nc.Fill(reader);
+                result.Add(nc);
+            }
+            return result;
         }
         #endregion
 

@@ -246,6 +246,7 @@
     <Compile Include="App_Start\FaViewOptions.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\Identity\FaAuthorize.cs" />
     <Compile Include="App_Start\Identity\FaIdentityOptions.cs" />
     <Compile Include="App_Start\Identity\FaSignInManager.cs" />
     <Compile Include="App_Start\Identity\FaIdentityRole.cs" />
@@ -304,6 +305,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PagingResult.cs" />
+    <Compile Include="Models\PermitirViewModel.cs" />
     <Compile Include="Models\SerieModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -376,6 +378,9 @@
     <Content Include="Views\Cuenta\CambiarContraseña.cshtml" />
     <Content Include="Views\Cuenta\ListaCuentas.cshtml" />
     <Content Include="Views\Cuenta\NuevaClave.cshtml" />
+    <Content Include="Views\Cuenta\ListaRoles.cshtml" />
+    <Content Include="Views\Cuenta\RegistrarRol.cshtml" />
+    <Content Include="Views\Cuenta\VerRol.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

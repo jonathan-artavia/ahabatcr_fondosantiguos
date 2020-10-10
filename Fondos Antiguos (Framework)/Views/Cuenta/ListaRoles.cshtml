@@ -1,16 +1,16 @@
-﻿@model IEnumerable<Fondos_Antiguos.Models.CuentaModel>
+﻿@model IEnumerable<Microsoft.AspNet.Identity.EntityFramework.IdentityRole>
 @{
-    ViewData["Title"] = "Lista de cuentas";
+    ViewData["Title"] = "Lista de roles";
 }
-
+@Html.ValidationSummary()
 <div class="row">
     <div class="col-2">
         <ul class="nav nav-pills nav-stacked">
             <li>
-                <label>Lista de Cuentas</label>
+                @Html.ActionLink("Lista de Cuentas", "ListaCuentas")
             </li>
             <li>
-                @Html.ActionLink("Lista de Roles", "ListaRoles")
+                <label>Lista de Roles</label>
             </li>
         </ul>
     </div>
@@ -22,7 +22,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        @Html.ActionLink("Agregar Nuevo", "Registrar", null, new { @class = "btn btn-outline-dark" })
+                        @Html.ActionLink("Agregar Nuevo", "RegistrarRol", null, new { @class = "btn btn-outline-dark" })
                     </li>
                 </ul>
             </div>
@@ -31,13 +31,7 @@
             <thead>
                 <tr>
                     <th>
-                        @Fondos_Antiguos.Localization.CuentaResource.Usuario
-                    </th>
-                    <th>
                         @Fondos_Antiguos.Localization.CuentaResource.RolNombre
-                    </th>
-                    <th>
-                        @Fondos_Antiguos.Localization.CuentaResource.FechaIngreso
                     </th>
                     <th></th>
                 </tr>
@@ -47,25 +41,19 @@
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Usuario)
+                            @Html.DisplayFor(modelItem => item.Name)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Roles)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FechaIngreso)
-                        </td>
-                        <td>
-                            @Html.HiddenFor(modelItem => item.IdUsuario)
-                            @Html.ActionLink("Generar Nueva Clave", "NuevaClave", new { idUsuario = item.IdUsuario }, new { @class = "btn btn-link" })
+                            @Html.HiddenFor(modelItem => item.Id)
+                            @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnVer, "VerRol", new { id = item.Id }, new { @class = "btn btn-link", style = "margin-right: 5px" })
                             @{
-                                if (!item.Usuario.Equals(this.User.Identity.Name, StringComparison.CurrentCultureIgnoreCase))
+                                if (!item.Name.Equals("Admin"))
                                 {
-                                    using (Html.BeginForm("Eliminar", "Cuenta", FormMethod.Post, new { id = "frmDelete" + item.IdUsuario }))
+                                    using (Html.BeginForm("EliminarRol", "Cuenta", FormMethod.Post, new { id = "frmDelete" + item.Name }))
                                     {
-                                        var r = "frmDelete" + item.IdUsuario;
+                                        var r = "frmDelete" + item.Name;
                                         @*@Html.HiddenFor(modelItem => item.IdUsuario, new { id = "borrarIdUsuario" })*@
-                                        <input type="hidden" form="@r" name="borrarIdusuario" value="@item.IdUsuario" />
+                                        <input type="hidden" form="@r" name="borrarIdusuario" value="@item.Id" />
                                         <button type="submit" class="btn btn-link">Borrar</button>
                                     }
                                 }

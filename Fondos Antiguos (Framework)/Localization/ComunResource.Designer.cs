@@ -88,6 +88,24 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nueva.
+        /// </summary>
+        public static string btnNueva {
+            get {
+                return ResourceManager.GetString("btnNueva", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nuevo.
+        /// </summary>
+        public static string btnNuevo {
+            get {
+                return ResourceManager.GetString("btnNuevo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ver.
         /// </summary>
         public static string btnVer {

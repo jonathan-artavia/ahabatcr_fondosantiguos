@@ -126,6 +126,12 @@
   <data name="btnEditar" xml:space="preserve">
     <value>Editar</value>
   </data>
+  <data name="btnNueva" xml:space="preserve">
+    <value>Nueva</value>
+  </data>
+  <data name="btnNuevo" xml:space="preserve">
+    <value>Nuevo</value>
+  </data>
   <data name="btnVer" xml:space="preserve">
     <value>Ver</value>
   </data>

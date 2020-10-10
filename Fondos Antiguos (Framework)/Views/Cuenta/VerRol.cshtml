@@ -1,0 +1,149 @@
+﻿@using Fondos_Antiguos.Models;
+@model Microsoft.AspNet.Identity.EntityFramework.IdentityRole
+@{
+    ViewData["Title"] = "Rol: " + @Model.Name;
+}
+<div>
+    @Html.ValidationSummary()
+    <h4>Rol</h4>
+    <hr />
+    @Html.HiddenFor(model => model.Id)
+    <dl class="row">
+        <dt class="col-sm-2">@Fondos_Antiguos.Localization.CuentaResource.NombreRol</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Name)</dd>
+        <dt class="col-sm-2">@Fondos_Antiguos.Localization.CuentaResource.ViewPermitirTodasLabel</dt>
+        <dd class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-4">
+                    @ViewUtil.ObtenerCuentaCualesVistasPermite(ViewBag.ViewsPermitidos)
+                </div>
+                <div class="col-sm-8">
+                    @using (Html.BeginForm("RegistrarRolViewPermit", "Cuenta", FormMethod.Post, new { id = "frmPermitirTodas" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" form="frmPermitirTodas" name="idRol" value="@Model.Id" />
+                        if (((List<IdentityRolPermit>)ViewBag.ViewsPermitidos).Where(x => x.TodasLasVistas == 1).Count() > 0)
+                        {
+                            <input type="hidden" form="frmPermitirTodas" name="todas" value="0" />
+                            <input type="submit" form="frmPermitirTodas" value="Individualmente" class="btn btn-outline-dark navbar-right" />
+                        }
+                        else
+                        {
+                            <input type="hidden" form="frmPermitirTodas" name="todas" value="1" />
+                            <input type="submit" form="frmPermitirTodas" value="Permitir Todos" class="btn btn-outline-success navbar-right" />
+                        }
+                    }
+                    @using (Html.BeginForm("RegistrarRolViewPermit", "Cuenta", FormMethod.Post, new { id = "frmDenegarTodas" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" form="frmDenegarTodas" name="idRol" value="@Model.Id" />
+                        if (((List<IdentityRolPermit>)ViewBag.ViewsPermitidos).Where(x => x.TodasLasVistas == 2).Count() > 0)
+                        {
+                            <input type="hidden" form="frmDenegarTodas" name="todas" value="0" />
+                            <input type="submit" form="frmDenegarTodas" value="Individualmente" class="btn btn-outline-dark navbar-right" />
+                        }
+                        else
+                        {
+                            <input type="hidden" form="frmDenegarTodas" name="todas" value="2" />
+                            <input type="submit" form="frmDenegarTodas" value="Restringir Todos" class="btn btn-outline-danger navbar-right" />
+                        }
+                    }
+                </div>
+
+            </div>
+
+        </dd>
+
+    </dl>
+
+
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <div class="navbar-header">
+            <span class="navbar-brand">@Fondos_Antiguos.Localization.CuentaResource.ViewPath</span>
+        </div>
+        <hr />
+        <button id="modalActivate" type="button" class="btn btn-outline-dark navbar-right" data-toggle="modal" data-target="#viewModal" style="vertical-align: middle">
+            @Fondos_Antiguos.Localization.ComunResource.btnNueva
+        </button>
+    </nav>
+    <table class="table border-bottom">
+        <tbody>
+            @foreach (IdentityRolPermit item in ((List<IdentityRolPermit>)ViewBag.ViewsPermitidos).Where(x => x.TodasLasVistas == 0))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ViewPath)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(modelItem => item.ID)
+                        @{
+                            using (Html.BeginForm("EliminarRolView", "Cuenta", FormMethod.Post, new { id = "frmBorrarView" + item.ID.ToString() }))
+                            {
+                                var r = "frmBorrarView" + item.ID.ToString();
+                                <input type="hidden" form="@r" name="idRol" value="@Model.Id" />
+                                <input type="hidden" form="@r" name="idView" value="@item.ID" />
+                                <button type="submit" class="btn btn-link">Borrar</button>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+            @{
+                if (ViewBag.ViewsPermitidos != null && ((List<IdentityRolPermit>)ViewBag.ViewsPermitidos).Where(x => x.TodasLasVistas == 0).Count() == 0)
+                {
+                    <tr>
+                        <td colspan="2">
+                            <span class="text-muted">Sin direcciones permitidas. Agregue una nueva en el botón Nuevo.</span>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot>
+
+        </tfoot>
+    </table>
+</div>
+<div>
+    <a href="@{
+        if(Context.Request.Headers["Referer"]!= null)
+        {
+            @Context.Request.Headers["Referer"].ToString();
+        }
+        else
+        {
+            @Url.Action("ListRoles");
+        }
+        }">@Fondos_Antiguos.Localization.ComunResource.lnkVolverALista</a>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade left" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="modalTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-side modal-bottom-left" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitulo">Eliga cual dirección desea agregar...</h5>
+                </div>
+                @using (Html.BeginForm("RegistrarRolViewPermit", "Cuenta", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="modal-body">
+                        <input type="hidden" name="idRol" value="@Model.Id" />
+                        @{
+                            if (ViewBag.ViewList != null)
+                            {
+                                IEnumerable<PermitirViewModel> list = ViewBag.ViewList;
+                                var r = list.Select(x =>
+                                {
+                                    return new SelectListItem() { Text = x.Nombre, Value = x.Nombre };
+                                });
+                                @Html.DropDownList("viewName", r, "", new { @class = "form-control" });
+                            }
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Agregar" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>

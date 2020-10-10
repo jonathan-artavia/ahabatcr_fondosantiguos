@@ -1,6 +1,8 @@
 ﻿using Fondos_Antiguos.Localization;
+using Fondos_Antiguos.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 
@@ -37,6 +39,32 @@ namespace Fondos_Antiguos
                 default:
                     return ComunResource.ResourceManager.GetString($"OperacionEnum.{val}");
             }
+        }
+
+        public static string ObtenerCuentaCualesVistasPermite(List<IdentityRolPermit> permits)
+        {
+            if (permits != null)
+            {
+                if (permits.Any(x => x.TodasLasVistas == 1))
+                {
+                    return CuentaResource.ViewPermitir1;
+                }
+                else if (permits.Any(x => x.TodasLasVistas == 2))
+                {
+                    return CuentaResource.ViewPermitir2;
+                }
+            }
+            return CuentaResource.ViewPermitir0;
+        }
+
+        public static string ObtenerDireccionDeView(string nombre)
+        {
+            return CuentaResource.Views.Split('|').FirstOrDefault(x => x.Split(':')[0].Equals(nombre))?.Split(':')[1];
+        }
+
+        public static string ObtenerNombreDeView(string direccion)
+        {
+            return CuentaResource.Views.Split('|').FirstOrDefault(x => x.Split(':')[1].Equals(direccion))?.Split(':')[0];
         }
     }
 }

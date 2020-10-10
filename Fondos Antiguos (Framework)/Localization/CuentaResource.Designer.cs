@@ -124,6 +124,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nombre.
+        /// </summary>
+        public static string NombreRol {
+            get {
+                return ResourceManager.GetString("NombreRol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contraseña.
         /// </summary>
         public static string Password {
@@ -174,6 +183,60 @@ namespace Fondos_Antiguos.Localization {
         public static string UsuarioEsReq {
             get {
                 return ResourceManager.GetString("UsuarioEsReq", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Direcciones individuales.
+        /// </summary>
+        public static string ViewPath {
+            get {
+                return ResourceManager.GetString("ViewPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Individualmente.
+        /// </summary>
+        public static string ViewPermitir0 {
+            get {
+                return ResourceManager.GetString("ViewPermitir0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permitir todas.
+        /// </summary>
+        public static string ViewPermitir1 {
+            get {
+                return ResourceManager.GetString("ViewPermitir1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restringidas todas.
+        /// </summary>
+        public static string ViewPermitir2 {
+            get {
+                return ResourceManager.GetString("ViewPermitir2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cuáles Permite.
+        /// </summary>
+        public static string ViewPermitirTodasLabel {
+            get {
+                return ResourceManager.GetString("ViewPermitirTodasLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Crear Registro (Catálogo):Catalogo/Insertar|Editar Registro (Catálogo):Catalogo/Editar|Eliminar Registro (Catálogo):Catalogo/Eliminar|Lista (Cuentas):Cuenta/ListaCuentas|Crear a otro (Cuenta):Cuenta/Registrar|Eliminar (Cuenta):Cuenta/Eliminar|Crear (Rol):Cuenta/RegistrarRol|Ver/Editar (Rol):Cuenta/VerRol.
+        /// </summary>
+        public static string Views {
+            get {
+                return ResourceManager.GetString("Views", resourceCulture);
             }
         }
     }
