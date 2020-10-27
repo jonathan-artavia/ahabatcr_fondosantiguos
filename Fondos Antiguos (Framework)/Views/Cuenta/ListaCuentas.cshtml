@@ -2,16 +2,19 @@
 @{
     ViewData["Title"] = "Lista de cuentas";
 }
-
+@Html.ValidationSummary()
 <div class="row">
     <div class="col-2">
         <ul class="nav nav-pills nav-stacked">
             <li>
                 <label>Lista de Cuentas</label>
             </li>
-            <li>
-                @Html.ActionLink("Lista de Roles", "ListaRoles")
-            </li>
+            @if (FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "ListaRoles", Context))
+            {
+                <li>
+                    @Html.ActionLink("Lista de Roles", "ListaRoles")
+                </li>
+            }
         </ul>
     </div>
     <div class="col-10">
@@ -21,9 +24,12 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        @Html.ActionLink("Agregar Nuevo", "Registrar", null, new { @class = "btn btn-outline-dark" })
-                    </li>
+                    @if (FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "Registrar", Context))
+                    {
+                        <li class="nav-item">
+                            @Html.ActionLink("Agregar Nuevo", "Registrar", null, new { @class = "btn btn-outline-dark" })
+                        </li>
+                    }
                 </ul>
             </div>
         </nav>
@@ -57,7 +63,7 @@
                         </td>
                         <td>
                             @Html.HiddenFor(modelItem => item.IdUsuario)
-                            @Html.ActionLink("Generar Nueva Clave", "NuevaClave", new { idUsuario = item.IdUsuario }, new { @class = "btn btn-link" })
+                            @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnVer, "Editar", new { idUsuario = item.IdUsuario }, new { @class = "btn btn-link" })
                             @{
                                 if (!item.Usuario.Equals(this.User.Identity.Name, StringComparison.CurrentCultureIgnoreCase))
                                 {

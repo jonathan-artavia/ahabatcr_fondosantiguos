@@ -106,14 +106,7 @@
 </div>
 <div>
     <a href="@{
-        if(Context.Request.Headers["Referer"]!= null)
-        {
-            @Context.Request.Headers["Referer"].ToString();
-        }
-        else
-        {
-            @Url.Action("ListRoles");
-        }
+        @Url.Action("ListRoles");
         }">@Fondos_Antiguos.Localization.ComunResource.lnkVolverALista</a>
     </div>
     <!-- Modal -->

@@ -70,6 +70,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Agregar Nuevo.
+        /// </summary>
+        public static string btnAgregarNuevo {
+            get {
+                return ResourceManager.GetString("btnAgregarNuevo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Borrar.
         /// </summary>
         public static string btnBorrar {
@@ -84,6 +93,24 @@ namespace Fondos_Antiguos.Localization {
         public static string btnEditar {
             get {
                 return ResourceManager.GetString("btnEditar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guardar.
+        /// </summary>
+        public static string btnGuardar {
+            get {
+                return ResourceManager.GetString("btnGuardar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string btnNo {
+            get {
+                return ResourceManager.GetString("btnNo", resourceCulture);
             }
         }
         
@@ -106,6 +133,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sí.
+        /// </summary>
+        public static string btnSi {
+            get {
+                return ResourceManager.GetString("btnSi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ver.
         /// </summary>
         public static string btnVer {
@@ -115,7 +151,7 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Volver a lista.
+        ///   Looks up a localized string similar to &lt; Volver a lista.
         /// </summary>
         public static string lnkVolverALista {
             get {

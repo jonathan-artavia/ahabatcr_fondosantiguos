@@ -89,6 +89,7 @@ namespace Fondos_Antiguos.Models
         public long ID { get; set; }
         [Display(ResourceType = typeof(CatalogoRes), Name = nameof(Fecha))]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = @"{0:yyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? Fecha { get; set; }
         [Display(ResourceType = typeof(CatalogoRes), Name = nameof(Signatura))]
         public string Signatura { get; set; }

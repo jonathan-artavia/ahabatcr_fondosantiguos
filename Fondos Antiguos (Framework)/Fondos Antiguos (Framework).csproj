@@ -326,6 +326,7 @@
     <Content Include="Scripts\CatalogoCrearScript.js" />
     <Content Include="Scripts\CatalogoVerScript.js" />
     <Content Include="Scripts\CuentaCrearScript.js" />
+    <Content Include="Scripts\CuentaEditarScript.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
@@ -377,7 +378,7 @@
     <Content Include="Views\Catalogo\VerView.cshtml" />
     <Content Include="Views\Cuenta\CambiarContraseña.cshtml" />
     <Content Include="Views\Cuenta\ListaCuentas.cshtml" />
-    <Content Include="Views\Cuenta\NuevaClave.cshtml" />
+    <Content Include="Views\Cuenta\Editar.cshtml" />
     <Content Include="Views\Cuenta\ListaRoles.cshtml" />
     <Content Include="Views\Cuenta\RegistrarRol.cshtml" />
     <Content Include="Views\Cuenta\VerRol.cshtml" />
@@ -415,6 +416,7 @@
     <EmbeddedResource Include="App_GlobalResources\LocalizedIdentityErrorDescriberResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedIdentityErrorDescriberResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\SqlResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -32,7 +32,10 @@ namespace Fondos_Antiguos.Models
         [Display(ResourceType = typeof(CuentaResource), Name = nameof(FechaIngreso))]
         public DateTime? FechaIngreso { get; set; }
 
-        public List<string> Roles { get; set; } 
+        public List<string> Roles { get; set; }
+
+        public string RolSeleccionado { get; set; }
+        public string RolIdSeleccionado { get; set; }
         #endregion
     }
 }

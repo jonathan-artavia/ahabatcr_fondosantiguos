@@ -6,14 +6,25 @@
 }
 <h4>Editar Registro - @Model.ID</h4>
 <hr />
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
+        <ul class="navbar-nav mr-auto">
+            <li>
+                <input type="submit" value="@Fondos_Antiguos.Localization.CatalogoRes.btnGuardar" class="btn btn-primary" />
+            </li>
+        </ul>
+    </div>
+</nav>
 <div>
     <form asp-action="Editar" class="row">
         <div class="col-lg-6">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @Html.ValidationSummary()
             <div class="form-group">
                 @Html.LabelFor(m => m.Fecha, new { @class = "col-md-4 control-label" })
-                @Html.EditorFor(m => m.Fecha, new { htmlAttributes  = new { @class = "form-control" } })
+                @Html.EditorFor(m => Model.Fecha, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(m => m.Fecha, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
@@ -28,7 +39,7 @@
             </div>
             <div class="form-group">
                 @Html.LabelFor(m => m.Lugar, new { @class = "col-md-4 control-label" })
-                @Html.EditorFor(m => m.Lugar, new { htmlAttributes = new { @class = "form-control" } } )
+                @Html.EditorFor(m => m.Lugar, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(m => m.Lugar, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -87,7 +98,7 @@
         </div>
         <div class="col form-group">
             @Html.HiddenFor(modelItem => modelItem.ID)
-            <input type="submit" value="@Fondos_Antiguos.Localization.CatalogoRes.btnGuardar" class="btn btn-primary" />
+            @Html.AntiForgeryToken()
         </div>
         <!-- Modal -->
         <div class="modal fade left" id="seriesModal" tabindex="-1" role="dialog" aria-labelledby="modalTitulo" aria-hidden="true">
@@ -119,8 +130,5 @@
 </div>
 
 <div>
-    @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.lnkVolverALista, "Index")
+    @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.lnkVolverALista, "Index", null, new { @class = "btn btn-outline-secondary" })
 </div>
-
-@*@section Scripts {
-    @{Html.RenderPartial("_ValidationScriptsPartial");}*@

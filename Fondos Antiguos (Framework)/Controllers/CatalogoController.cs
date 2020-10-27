@@ -90,7 +90,7 @@ namespace Fondos_Antiguos.Controllers
                 {
                     QueryExpresion extracto = this.ObtenerExpressionDeMaterias(incluirHist.GetValueOrDefault(0), operacionMateria.Value, filtroMateria, ref parameters);
                     if (extracto != null)
-                        filter.And("(" + extracto.ToString() + ")");
+                        filter.And(extracto.ToString());
                 }
             }
 
@@ -100,21 +100,21 @@ namespace Fondos_Antiguos.Controllers
                     filter = this.ObtenerExpressionDeSeries(incluirHist.GetValueOrDefault(0), operacionSerie.Value, filtroSerie, filtroSerie.HasValue ? seriesList.FirstOrDefault(x => x.ID == filtroSerie.Value).Nombre : string.Empty, ref parameters);
                 else
                 {
-                    QueryExpresion extracto = this.ObtenerExpressionDeSeries(incluirHist.GetValueOrDefault(0), operacionMateria.Value, filtroSerie, filtroSerie.HasValue ? seriesList.FirstOrDefault(x => x.ID == filtroSerie.Value)?.Nombre : string.Empty, ref parameters);
+                    QueryExpresion extracto = this.ObtenerExpressionDeSeries(incluirHist.GetValueOrDefault(0), operacionSerie.Value, filtroSerie, filtroSerie.HasValue ? seriesList.FirstOrDefault(x => x.ID == filtroSerie.Value)?.Nombre : string.Empty, ref parameters);
                     if (extracto != null)
-                        filter.And("(" + extracto.ToString() + ")");
+                        filter.And(extracto.ToString());
                 }
             }
 
             if (operacionLugar.HasValue)
             {
                 if (filter == null)
-                    filter = this.ObtenerExpressionDeLugar(incluirHist.GetValueOrDefault(0), operacionSerie.Value, filtroLugar, ref parameters);
+                    filter = this.ObtenerExpressionDeLugar(incluirHist.GetValueOrDefault(0), operacionLugar.Value, filtroLugar, ref parameters);
                 else
                 {
-                    QueryExpresion extracto = this.ObtenerExpressionDeLugar(incluirHist.GetValueOrDefault(0), operacionMateria.Value, filtroLugar, ref parameters);
+                    QueryExpresion extracto = this.ObtenerExpressionDeLugar(incluirHist.GetValueOrDefault(0), operacionLugar.Value, filtroLugar, ref parameters);
                     if (extracto != null)
-                        filter.And("(" + extracto.ToString() + ")");
+                        filter.And(extracto.ToString());
                 }
             }
 
@@ -126,7 +126,7 @@ namespace Fondos_Antiguos.Controllers
                 {
                     QueryExpresion extracto = this.ObtenerExpressionDeCajas(incluirHist.GetValueOrDefault(0), operacionCaja.Value, filtroCaja, ref parameters);
                     if(extracto != null)
-                        filter.And("(" + extracto.ToString() + ")");
+                        filter.And(extracto.ToString());
                 }
             }
 
@@ -138,7 +138,7 @@ namespace Fondos_Antiguos.Controllers
                 {
                     QueryExpresion extracto = this.ObtenerExpressionDeTextoPlano(incluirHist.GetValueOrDefault(0), filtroTexto, ref parameters);
                     if (extracto != null)
-                        filter.And("(" + extracto.ToString() + ")");
+                        filter.And(extracto.ToString());
                 }
             }
 
@@ -178,13 +178,14 @@ namespace Fondos_Antiguos.Controllers
             return this.View("Index", result);
         }
 
+        [AllowAnonymous()]
         public ActionResult Ver(long id, byte origen)
         {
             var results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
             return this.View("VerView", results);
         }
 
-        [Authorize(Roles = "Admin")]
+        [FaAuthorize]
         public ActionResult Editar(long id, byte origen)
         {
             var dataServiceSeries = new SeriesDataService();
@@ -194,8 +195,9 @@ namespace Fondos_Antiguos.Controllers
             return this.View("Editar", results);
         }
 
-        [Authorize(Roles = "Admin")]
+        [FaAuthorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Editar(CatalogoModel model)
         {
             if (this.ModelState.IsValid)
@@ -219,7 +221,7 @@ namespace Fondos_Antiguos.Controllers
             return this.RedirectToAction(nameof(Index));
         }
 
-        [Authorize]
+        [FaAuthorize]
         [HttpGet]
         public ActionResult Crear()
         {
@@ -227,7 +229,7 @@ namespace Fondos_Antiguos.Controllers
             return View("Crear");
         }
 
-        [Authorize]
+        [FaAuthorize]
         [HttpPost]
         public ActionResult Crear(CatalogoModel model)
         {
@@ -268,7 +270,8 @@ namespace Fondos_Antiguos.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [FaAuthorize]
+        [ValidateAntiForgeryToken]
         public ActionResult Eliminar(long id, byte origen)
         {
             if (!this.TempData.ContainsKey("guardoInsertoReg"))
@@ -448,12 +451,13 @@ namespace Fondos_Antiguos.Controllers
 
         protected virtual QueryExpresion ObtenerExpressionDeMaterias(byte includeHist, byte operacion, string valor, ref Dictionary<string, object> parameters)
         {
-            QueryExpresion ExprLive(ref Dictionary<string, object> parametersIn)
+            QueryExpresion ExprLive(string filtro, int filtroCount, ref Dictionary<string, object> parametersIn)
             {
-                if (operacion == 64 && !string.IsNullOrEmpty(valor))
+                string nombreParam = $"@filtroMateria{filtroCount}";
+                if (operacion == 64 && !string.IsNullOrEmpty(filtro))
                 {
-                    parametersIn.Add("@filtroMateria", "%" + valor + "%");
-                    return new QueryExpresion(String.Format("{0} like @filtroMateria", SqlUtil.SurroundColumn("Materias")));
+                    parametersIn.Add(nombreParam, "%" + filtro + "%");
+                    return new QueryExpresion(String.Format("{0} like {1}", SqlUtil.SurroundColumn("Materias"), nombreParam));
                 }
                 else if (operacion < 32)
                 {
@@ -467,10 +471,10 @@ namespace Fondos_Antiguos.Controllers
                             op = "=";
                             break;
                     }
-                    if (!String.IsNullOrEmpty(valor))
+                    if (!String.IsNullOrEmpty(filtro))
                     {
-                        parametersIn.Add("@filtroMateria", valor);
-                        return new QueryExpresion(SqlUtil.AND, String.Format("{0} {1} @filtroMateria", SqlUtil.SurroundColumn("Materias"), op));
+                        parametersIn.Add(nombreParam, filtro);
+                        return new QueryExpresion(SqlUtil.AND, String.Format("{0} {1} {2}", SqlUtil.SurroundColumn("Materias"), op, nombreParam));
                     }
                     else
                     {
@@ -489,10 +493,35 @@ namespace Fondos_Antiguos.Controllers
                 }
             }
 
+            string[] sepMaterias = valor != null ? valor.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries) : new string[0];
             if (parameters == null)
                 parameters = new Dictionary<string, object>();
-
-            return ExprLive(ref parameters);
+            if (sepMaterias.Length > 1)
+            {
+                QueryExpresion res = null;
+                int filterCount = 0;
+                foreach (string i in sepMaterias)
+                {
+                    if (res == null)
+                        res = ExprLive(i, filterCount, ref parameters);
+                    else
+                    {
+                        if(((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
+                            res.And(ExprLive(i, filterCount, ref parameters)?.ToString());
+                        else
+                            res.Or(ExprLive(i, filterCount, ref parameters)?.ToString());
+                    }
+                    filterCount++;
+                }
+                return new QueryExpresion( $"({res})");
+            }
+            else
+            {
+                QueryExpresion exp = ExprLive(valor, 0, ref parameters);
+                if (exp != null)
+                    return new QueryExpresion($"({exp})");
+                return null;
+            }
         }
 
         protected virtual QueryExpresion ObtenerExpressionDeSeries(byte includeHist, byte operacion, long? serieId, string serieNombre, ref Dictionary<string, object> parameters)
@@ -548,12 +577,13 @@ namespace Fondos_Antiguos.Controllers
 
         protected virtual QueryExpresion ObtenerExpressionDeLugar(byte includeHist, byte operacion, string valor, ref Dictionary<string, object> parameters)
         {
-            QueryExpresion ExprLive(ref Dictionary<string, object> parametersIn)
+            QueryExpresion ExprLive(string filtro, int numFiltro, ref Dictionary<string, object> parametersIn)
             {
-                if (operacion == 64 && !string.IsNullOrEmpty(valor))
+                string nombreParam = $"@filtroLugar{numFiltro}";
+                if (operacion == 64 && !string.IsNullOrEmpty(filtro))
                 {
-                    parametersIn.Add("@filtroLugar", "%" + valor + "%");
-                    return new QueryExpresion(String.Format("{0} like @filtroLugar", SqlUtil.SurroundColumn("Lugar")));
+                    parametersIn.Add(nombreParam, "%" + filtro + "%");
+                    return new QueryExpresion(String.Format("{0} like {1}", SqlUtil.SurroundColumn("Lugar"), nombreParam));
                 }
                 else if (operacion < 32)
                 {
@@ -567,10 +597,10 @@ namespace Fondos_Antiguos.Controllers
                             op = "=";
                             break;
                     }
-                    if (!String.IsNullOrEmpty(valor))
+                    if (!String.IsNullOrEmpty(filtro))
                     {
-                        parametersIn.Add("@filtroLugar", valor);
-                        return new QueryExpresion(SqlUtil.AND, String.Format("{0} {1} @filtroLugar", SqlUtil.SurroundColumn("Lugar"), op));
+                        parametersIn.Add(nombreParam, filtro);
+                        return new QueryExpresion(SqlUtil.AND, String.Format("{0} {1} {2}", SqlUtil.SurroundColumn("Lugar"), op, nombreParam));
                     }
                     else
                     {
@@ -588,11 +618,36 @@ namespace Fondos_Antiguos.Controllers
                     return null;
                 }
             }
-
+            string[] sepLugares = valor != null ? valor.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries) : new string[0];
             if (parameters == null)
                 parameters = new Dictionary<string, object>();
+            if (sepLugares.Length > 1)
+            {
+                QueryExpresion res = null;
+                int filterCount = 0;
+                foreach (string i in sepLugares)
+                {
+                    if (res == null)
+                        res = ExprLive(i, filterCount, ref parameters);
+                    else
+                    {
+                        if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
+                            res.And(ExprLive(i, filterCount, ref parameters)?.ToString());
+                        else
+                            res.Or(ExprLive(i, filterCount, ref parameters)?.ToString());
+                    }
+                    filterCount++;
+                }
+                return new QueryExpresion($"({res})");
+            }
+            else
+            {
+                QueryExpresion exp = ExprLive(valor, 0, ref parameters);
+                if (exp != null)
+                    return new QueryExpresion($"({exp})");
+                return null;
+            }
 
-            return ExprLive(ref parameters);
         }
 
         protected virtual QueryExpresion ObtenerExpressionDeCajas(byte includeHist, byte operacion, string valor, ref Dictionary<string, object> parameters)
@@ -698,7 +753,10 @@ namespace Fondos_Antiguos.Controllers
                         switch (includeHist)
                         {
                             case 0: //only live
-                                res.Or(ExprLive(i, filterCount, ref parameters)?.ToString());
+                                if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
+                                    res.And(ExprLive(i, filterCount, ref parameters)?.ToString());
+                                else
+                                    res.Or(ExprLive(i, filterCount, ref parameters)?.ToString());
                                 break;
                             case 1: //both
                                 QueryExpresion e1 = ExprLive(i, filterCount, ref parameters);
@@ -707,40 +765,59 @@ namespace Fondos_Antiguos.Controllers
                                     return new QueryExpresion("(" + e1 + ")")
                                         .Or("(" + e2 + ")");
                                 else if (e1 != null && e2 == null)
-                                    res.Or(e1.ToString());
+                                {
+                                    if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
+                                        res.And(e1.ToString());
+                                    else
+                                        res.Or(e1.ToString());
+                                }
                                 else if (e1 == null && e2 != null)
-                                    res.Or(e2.ToString());
+                                {
+                                    if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
+                                        res.And(e2.ToString());
+                                    else
+                                        res.Or(e2.ToString());
+                                }
                                 break;
                             case 2: //only hist
-                                res.Or(ExprHist(i, filterCount, ref parameters)?.ToString());
+                                if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
+                                    res.And(ExprHist(i, filterCount, ref parameters)?.ToString());
+                                else
+                                    res.Or(ExprHist(i, filterCount, ref parameters)?.ToString());
                                 break;
                         }
                     }
                     filterCount++;
                 }
-                if(res != null && !string.IsNullOrEmpty(res.Expresion))
-                    res.Expresion = string.Format("({0})", res.Expresion);
-                return res;
+                if (res != null && !string.IsNullOrEmpty(res.Expresion))
+                    return new QueryExpresion($"({res})");
+                return null;
             }
             else
             {
                 switch (includeHist)
                 {
                     case 0: //only live
-                        return ExprLive(valor, 0, ref parameters);
+                        QueryExpresion expL = ExprLive(valor, 0, ref parameters);
+                        if (expL != null)
+                            return new QueryExpresion($"({expL})");
+                        return null;
                     case 1: //both
                         QueryExpresion e1 = ExprLive(valor, 0, ref parameters);
                         QueryExpresion e2 = ExprHist(valor, 0, ref parameters);
                         if (e1 != null && e2 != null)
-                            return new QueryExpresion("(" + e1 + ")")
-                                .Or("(" + e2 + ")");
+                            return new QueryExpresion("(" + (new QueryExpresion("(" + e1 + ")")
+                                .Or("(" + e2 + ")").ToString() + ")" ));
                         else if (e1 != null && e2 == null)
-                            return e1;
+                            return new QueryExpresion($"({e1})");
                         else if (e1 == null && e2 != null)
-                            return e2;
+                            return new QueryExpresion($"({e2})");
                         return null;
                     case 2: //only hist
-                        return ExprHist(valor, 0, ref parameters);
+                        QueryExpresion expH = ExprHist(valor, 0, ref parameters);
+                        if (expH != null)
+                            return new QueryExpresion($"({expH})");
+                        return null;
                     default:
                         return null;
                 }

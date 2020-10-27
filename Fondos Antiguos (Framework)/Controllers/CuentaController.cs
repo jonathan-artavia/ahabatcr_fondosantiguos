@@ -168,7 +168,7 @@ namespace Fondos_Antiguos.Controllers
 
         //
         // GET: /Account/Register
-        [Authorize(Roles = "Admin")]
+        [FaAuthorize]
         public ActionResult Registrar()
         {
             if (this.DataService == null)
@@ -195,7 +195,7 @@ namespace Fondos_Antiguos.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [FaAuthorize]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Registrar(RegisterViewModel model)
         {
@@ -329,32 +329,6 @@ namespace Fondos_Antiguos.Controllers
         }
 
         //
-        // POST: /Account/ExternalLogin
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public ActionResult ExternalLogin(string provider, string returnUrl)
-        {
-            // Request a redirect to the external login provider
-            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Cuenta", new { ReturnUrl = returnUrl }));
-        }
-
-        //
-        // GET: /Account/SendCode
-        [AllowAnonymous]
-        public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
-        {
-            var userId = await SignInManager.GetVerifiedUserIdAsync();
-            if (userId == null)
-            {
-                return View("Error");
-            }
-            var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
-            var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
-            return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
-        }
-
-        //
         // POST: /Account/SendCode
         [HttpPost]
         [AllowAnonymous]
@@ -461,24 +435,35 @@ namespace Fondos_Antiguos.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<ActionResult> ListaCuentas()
         {
             if (this.DataService == null)
                 this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager, this.RoleManager);
-            return this.View(await this.DataService.GetCuentas());
+            bool cuentasAuth = FaAuthorizeAttribute.IsAuthorized(this.User, nameof(CuentaController), nameof(ListaCuentas), this.HttpContext);
+            if (!cuentasAuth && FaAuthorizeAttribute.IsAuthorized(this.User, nameof(CuentaController), nameof(ListaRoles), this.HttpContext))
+                return RedirectToAction(nameof(ListaRoles));
+
+            if (cuentasAuth)
+                return this.View(await this.DataService.GetCuentas());
+            else
+                return new HttpStatusCodeResult(401);
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> NuevaClave(string idUsuario)
+        [FaAuthorize]
+        public async Task<ActionResult> Editar(string idUsuario)
         {
             if (this.DataService == null)
                 this.DataService = new CuentaDataService(await this.GetIdentityUser(this.User.Identity.Name), this.UserManager, this.RoleManager);
-
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this.DbContext));
             try
             {
-                return View(await this.DataService.GetCuenta(idUsuario));
+                List<IdentityRole> roles = ViewBag.RolesList = roleManager.Roles.ToList();
+                CuentaModel model = await this.DataService.GetCuenta(idUsuario);
+                model.RolIdSeleccionado = roles.Find(x => x.Name == model.Roles[0]).Id;
+                model.RolSeleccionado = roles.Find(x => x.Name == model.Roles[0]).Name;
+                return View(model);
             }
             catch (Exception ex)
             {
@@ -487,7 +472,38 @@ namespace Fondos_Antiguos.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [FaAuthorize]
+        public async Task<ActionResult> Editar(CuentaModel model)
+        {
+            if (this.DataService == null)
+                this.DataService = new CuentaDataService(await this.GetIdentityUser(this.User.Identity.Name), this.UserManager, this.RoleManager);
+            
+            try
+            {
+                var roles = await this.UserManager.GetRolesAsync(model.IdUsuario);
+                var r = await this.UserManager.RemoveFromRolesAsync(model.IdUsuario, roles.ToArray());
+                if (r.Succeeded)
+                {
+                    r = await this.UserManager.AddToRoleAsync(model.IdUsuario, model.RolSeleccionado);
+                    if (r.Succeeded)
+                    {
+                        return RedirectToAction(nameof(ListaCuentas));
+                    }
+                    else
+                    {
+                        this.ModelState.AddModelError("", r.Errors.FirstOrDefault());
+                    }
+                }
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        [FaAuthorize]
         public async Task<ActionResult> GenerarNuevaClave(string idUsuario)
         {
             if (this.DataService == null)
@@ -504,7 +520,7 @@ namespace Fondos_Antiguos.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [FaAuthorize]
         public virtual ActionResult Eliminar(string borrarIdUsuario)
         {
             if (this.DataService == null)
@@ -577,7 +593,7 @@ namespace Fondos_Antiguos.Controllers
 
 
 
-        [FaAuthorize(Roles = "Admin")]
+        [FaAuthorize]
         public async Task<ActionResult> VerRol(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -601,15 +617,22 @@ namespace Fondos_Antiguos.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [FaAuthorize]
         public async Task<ActionResult> ListaRoles()
         {
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this.DbContext));
 
-            return this.View(roleManager.Roles.ToList());
+            bool cuentasAuth = FaAuthorizeAttribute.IsAuthorized(this.User, nameof(CuentaController), nameof(ListaRoles), this.HttpContext);
+            if (!cuentasAuth && FaAuthorizeAttribute.IsAuthorized(this.User, nameof(CuentaController), nameof(ListaCuentas), this.HttpContext))
+                return RedirectToAction(nameof(ListaCuentas));
+
+            if (cuentasAuth)
+                return this.View(roleManager.Roles.ToList());
+            else
+                return new HttpStatusCodeResult(401);
         }
 
-        [Authorize(Roles = "Admin")]
+        [FaAuthorize]
         public ActionResult RegistrarRol()
         {
             if (this.DataService == null)
@@ -630,9 +653,8 @@ namespace Fondos_Antiguos.Controllers
         }
 
         //
-        // POST: /Account/Register
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [FaAuthorize]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RegistrarRol(IdentityRole model)
         {
@@ -677,7 +699,7 @@ namespace Fondos_Antiguos.Controllers
         }
 
         [HttpPost]
-        [FaAuthorize]
+        [FaAuthorizeAttribute]
         public virtual async Task<ActionResult> EliminarRol(string borrarRolId)
         {
             if (this.DataService == null)
@@ -694,7 +716,7 @@ namespace Fondos_Antiguos.Controllers
             }
         }
         [HttpPost]
-        [FaAuthorize]
+        [FaAuthorizeAttribute]
         public virtual async Task<ActionResult> EliminarRolView(string idRol, long idView)
         {
             if (this.DataService == null)

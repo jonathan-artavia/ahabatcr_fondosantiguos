@@ -6,9 +6,12 @@
 <div class="row">
     <div class="col-2">
         <ul class="nav nav-pills nav-stacked">
-            <li>
-                @Html.ActionLink("Lista de Cuentas", "ListaCuentas")
-            </li>
+            @if (FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "ListaCuentas", Context))
+            {
+                <li>
+                    @Html.ActionLink("Lista de Cuentas", "ListaCuentas")
+                </li>
+            }
             <li>
                 <label>Lista de Roles</label>
             </li>
@@ -21,9 +24,12 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        @Html.ActionLink("Agregar Nuevo", "RegistrarRol", null, new { @class = "btn btn-outline-dark" })
-                    </li>
+                    @if (FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "RegistrarRol", Context))
+                    {
+                        <li class="nav-item">
+                            @Html.ActionLink("Agregar Nuevo", "RegistrarRol", null, new { @class = "btn btn-outline-dark" })
+                        </li>
+                    }
                 </ul>
             </div>
         </nav>
@@ -45,14 +51,16 @@
                         </td>
                         <td>
                             @Html.HiddenFor(modelItem => item.Id)
-                            @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnVer, "VerRol", new { id = item.Id }, new { @class = "btn btn-link", style = "margin-right: 5px" })
+                            @if (FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "VerRol", Context))
+                            {
+                                @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnVer, "VerRol", new { id = item.Id }, new { @class = "btn btn-link", style = "margin-right: 5px" })
+                            }
                             @{
-                                if (!item.Name.Equals("Admin"))
+                                if (!item.Name.Equals("Admin") && FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "EliminarRol", Context))
                                 {
                                     using (Html.BeginForm("EliminarRol", "Cuenta", FormMethod.Post, new { id = "frmDelete" + item.Name }))
                                     {
                                         var r = "frmDelete" + item.Name;
-                                        @*@Html.HiddenFor(modelItem => item.IdUsuario, new { id = "borrarIdUsuario" })*@
                                         <input type="hidden" form="@r" name="borrarIdusuario" value="@item.Id" />
                                         <button type="submit" class="btn btn-link">Borrar</button>
                                     }

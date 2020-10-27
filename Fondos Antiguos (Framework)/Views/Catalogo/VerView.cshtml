@@ -3,10 +3,23 @@
 @{
     ViewData["Title"] = "Registro: " + @Model.ID;
 }
-    <div>
-        <h4>@Html.DisplayFor(model => model.Signatura)</h4>
-        <hr />
-        @Html.HiddenFor(model => model.ID)
+<div>
+    <h4>@Html.DisplayFor(model => model.Signatura)</h4>
+    <hr />
+    @Html.HiddenFor(model => model.ID)
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
+            <ul class="navbar-nav mr-auto">
+                @if (FaAuthorizeAttribute.IsAuthorized(User, "Catalogo", "Editar", Context))
+                {
+                    @Html.ActionLink("Editar", "Editar", new { id = Model.ID, origen = Model.Origen }, new { @class = "btn btn-outline-secondary" });
+                }
+            </ul>
+        </div>
+    </nav>
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Fecha)
@@ -81,9 +94,8 @@
             @Html.DisplayFor(model => model.Observaciones)
         </dd>
     </dl>
-    </div>
+</div>
 <div>
-    @Html.ActionLink("Editar", "Editar", new { /* id = Model.PrimaryKey */ }) |
     <a href="@{
         if(Context.Request.Headers["Referer"]!= null)
         {
@@ -93,5 +105,5 @@
         {
             @Url.Action("Index");
         }
-        }">Devolverse a lista</a>
+    }" class="btn btn-outline-secondary">@Fondos_Antiguos.Localization.ComunResource.lnkVolverALista</a>
 </div>

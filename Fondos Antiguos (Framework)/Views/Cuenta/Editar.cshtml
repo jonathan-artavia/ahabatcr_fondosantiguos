@@ -1,0 +1,82 @@
+﻿@model Fondos_Antiguos.Models.CuentaModel
+
+@{
+    ViewData["Title"] = "Generar Nueva Contraseña";
+}
+<script src="~/Scripts/ScriptCuenta.js"></script>
+<script src="~/Scripts/CuentaEditarScript.js"></script>
+
+<div>
+    @using (Html.BeginForm("Editar", "Cuenta", FormMethod.Post))
+    {
+        @Html.HiddenFor(item => item.IdUsuario)
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Usuario)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Usuario)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.FechaIngreso)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.FechaIngreso)
+            </dd>
+            <dt class="col-sm-2">
+                @Fondos_Antiguos.Localization.CuentaResource.RolNombre
+            </dt>
+            <dd class="col-sm-10">
+                @Html.HiddenFor(modelItem => modelItem.RolIdSeleccionado)
+
+                @Html.TextBoxFor(modelItem => modelItem.RolSeleccionado, null, new { @class = "form-control", @readonly = "" })
+                @Html.ValidationMessageFor(modelItem => modelItem.RolIdSeleccionado)
+                <button id="modalActivate" type="button" class="btn btn-danger" data-toggle="modal" data-target="#rolModal" style="vertical-align: middle">
+                    @Fondos_Antiguos.Localization.CuentaResource.btnSeleccionarRol
+                </button>
+            </dd>
+        </dl>
+        <hr />
+
+        <div class="col-sm-6 mx-auto" style="display:block">
+            <div class="col-sm-12 text-center">
+                <button type="button" id="btnNuevaClave" class="btn btn-outline-primary" style="display:inline" onclick="generarClave()">Generar Nueva Clave</button>
+            </div>
+            <div class="col-xl-12 text-center">
+                <input Id="nuevaCtrña" type="text" class="form-control input-lg" style="display:inline" readonly />
+            </div>
+        </div>
+        <hr />
+        <div class="col-sm-12 form-group text-center">
+            <input type="submit" value="@Fondos_Antiguos.Localization.ComunResource.btnGuardar" class="btn btn-primary" />
+        </div>
+    }
+</div>
+<!-- Modal -->
+<div class="modal fade left" id="rolModal" tabindex="-1" role="dialog" aria-labelledby="modalTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-side modal-bottom-left" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitulo">Seleccione un rol existente...</h5>
+            </div>
+            <div class="modal-body">
+                @{
+                    IEnumerable<Microsoft.AspNet.Identity.EntityFramework.IdentityRole> list = ViewBag.RolesList;
+                    var r = list.Select(x =>
+                    {
+                        return new SelectListItem()
+                        {
+                            Text = x.Name,
+                            Value = x.Id
+                        };
+                    });
+                    @Html.DropDownList("IdRolDropDown", r, "", new { @class = "form-control" });
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Elejir</button>
+            </div>
+        </div>
+    </div>
+</div>

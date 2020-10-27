@@ -120,11 +120,20 @@
   <data name="btnAgregar" xml:space="preserve">
     <value>Agregar</value>
   </data>
+  <data name="btnAgregarNuevo" xml:space="preserve">
+    <value>Agregar Nuevo</value>
+  </data>
   <data name="btnBorrar" xml:space="preserve">
     <value>Borrar</value>
   </data>
   <data name="btnEditar" xml:space="preserve">
     <value>Editar</value>
+  </data>
+  <data name="btnGuardar" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="btnNo" xml:space="preserve">
+    <value>No</value>
   </data>
   <data name="btnNueva" xml:space="preserve">
     <value>Nueva</value>
@@ -132,11 +141,14 @@
   <data name="btnNuevo" xml:space="preserve">
     <value>Nuevo</value>
   </data>
+  <data name="btnSi" xml:space="preserve">
+    <value>Sí</value>
+  </data>
   <data name="btnVer" xml:space="preserve">
     <value>Ver</value>
   </data>
   <data name="lnkVolverALista" xml:space="preserve">
-    <value>Volver a lista</value>
+    <value>&lt; Volver a lista</value>
   </data>
   <data name="Operacion" xml:space="preserve">
     <value>Operación</value>

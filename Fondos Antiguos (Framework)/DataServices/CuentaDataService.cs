@@ -75,7 +75,18 @@ namespace Fondos_Antiguos.DataService
                 nLoginModel.NuevaContraseña = DataSecurity.GenerateRandomPassword();
                 
                 IdentityResult res = await this.UserManager.ChangePasswordHashedCurrentAsync(idUsuario, user.PasswordHash, nLoginModel.NuevaContraseña);
-                //this.UserTable.SetPasswordHash(user.Id, Encoding.UTF8.GetBytes(user.PasswordHash), true);
+                if (res.Succeeded)
+                {
+                    user = await this.GetIdentityUser(idUsuario);
+                    user.ReqCambioContraseña = true;
+                    res = await this.UserManager.UpdateAsync(user);
+                    if (!res.Succeeded)
+                        throw this.CraftException(res.Errors);
+                }
+                else
+                {
+                    throw this.CraftException(res.Errors);
+                }
                 return nLoginModel;
             }
             return null;

@@ -18,9 +18,9 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    @if (Context.User.IsInRole("Admin"))
+                    @if (FaAuthorizeAttribute.IsAuthorized(User, "Catalogo", "Crear", Context))
                     {
-                        @Html.ActionLink("Agregar Nuevo", "Crear", null, new { @class = "btn btn-outline-dark" })
+                        @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnAgregarNuevo, "Crear", null, new { @class = "btn btn-outline-dark" })
                     }
                 </li>
                 <li class="nav-item dropdown">
@@ -109,9 +109,9 @@
                                                 <div id="divFechaHasta" style="display:none">
                                                     <label class="control-label">Hasta</label>
                                                     @Html.EditorFor(item => Model.FechaFinal, new
-                                                    {
-                                                        @htmlAttributes = new { @class = "form-control col-12" }
-                                                    })
+                                               {
+                                                   @htmlAttributes = new { @class = "form-control col-12" }
+                                               })
                                                 </div>
                                             </div>
                                         }
@@ -131,7 +131,6 @@
                                         {
                                             <div id="divSerieFiltro" style="margin-top: 15px">
                                                 <div id="divSerieDesde">
-                                                    @*@Html.EditorFor(item => Model.FiltroSerie, new { @class = "form-control" })*@
                                                     @{
                                                         IEnumerable<Fondos_Antiguos.Models.SerieModel> list = ViewBag.SerieList;
                                                         var r = list.Select(x =>
@@ -152,7 +151,6 @@
                                         {
                                             <div id="divSerieFiltro" style="display:none; margin-top: 15px">
                                                 <div id="divSerieDesde">
-                                                    @*@Html.EditorFor(item => Model.FiltroSerie, new { @htmlAttributes = new { @class = "form-control" } })*@
                                                     @{
                                                         IEnumerable<Fondos_Antiguos.Models.SerieModel> list = ViewBag.SerieList;
                                                         var r = list.Select(x =>
@@ -214,12 +212,14 @@
                                         {
                                             <div id="divMateriaFiltro" style="margin-top: 15px">
                                                 @Html.EditorFor(item => Model.FiltroMateria, new { @htmlAttributes = new { @class = "form-control col-12" } })
+                                                <small class="label label-info"><label>* Este campo de busqueda acepta "|" como separador de varias cajas.</label></small>
                                             </div>
                                         }
                                         else
                                         {
                                             <div id="divMateriaFiltro" style="display: none; margin-top: 15px">
                                                 @Html.EditorFor(item => Model.FiltroMateria, new { @htmlAttributes = new { @class = "form-control col-12" } })
+                                                <small class="label label-info"><label>* Este campo de busqueda acepta "|" como separador de varias cajas.</label></small>
                                             </div>
                                         }
                                     }
@@ -239,14 +239,14 @@
                                             <div id="divLugarFiltro" style="margin-top: 15px">
 
                                                 @Html.EditorFor(item => Model.FiltroLugar, new { @htmlAttributes = new { @class = "form-control col-12" } })
+                                                <small class="label label-info"><label>* Este campo de busqueda acepta "|" como separador de varias cajas.</label></small>
                                             </div>
                                         }
                                         else
                                         {
                                             <div id="divLugarFiltro" style="display:none; margin-top: 15px">
-
                                                 @Html.EditorFor(item => Model.FiltroLugar, new { @htmlAttributes = new { @class = "form-control col-12" } })
-
+                                                <small class="label label-info"><label>* Este campo de busqueda acepta "|" como separador de varias cajas.</label></small>
                                             </div>
                                         }
                                     }
@@ -323,37 +323,45 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td class="" style="max-width: 100px">
-                        @Html.DisplayFor(modelItem => item.Contenido)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.Lugar)
-                    </td>
-                    <td class="d-none d-md-table-cell">
-                        @Html.DisplayFor(modelItem => item.Año)
-                    </td>
-                    <td class="d-none d-md-table-cell">
-                        @Html.DisplayFor(modelItem => item.Mes)
-                    </td>
-                    <td>
-                        @Html.HiddenFor(modelItem => item.ID)
-                        @Html.HiddenFor(modelItem => item.Origen)
-                        <div class="row">
-                            @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnVer, "Ver", new { id = item.ID, origen = item.Origen }, new { @class = "btn btn-outline-secondary col", style = "margin-right: 5px" })
+            @{
+                bool authEliminar = FaAuthorizeAttribute.IsAuthorized(User, "Catalogo", "Eliminar", Context);
+                bool authEditar = FaAuthorizeAttribute.IsAuthorized(User, "Catalogo", "Editar", Context);
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="d-none d-sm-table-cell">
+                            @Html.DisplayFor(modelItem => item.Contenido)
+                        </td>
+                        <td class="d-none d-lg-table-cell">
+                            @Html.DisplayFor(modelItem => item.Lugar)
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            @Html.DisplayFor(modelItem => item.Año)
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            @Html.DisplayFor(modelItem => item.Mes)
+                        </td>
+                        <td>
+                            @Html.HiddenFor(modelItem => item.ID)
+                            @Html.HiddenFor(modelItem => item.Origen)
+                            <div class="row">
+                                @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnVer, "Ver", new { id = item.ID, origen = item.Origen }, new { @class = "btn btn-outline-secondary col", style = "margin-right: 5px" })
 
+                                @if (authEditar)
+                                {
+                                    @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnEditar, "Editar", new { id = item.ID, origen = item.Origen }, new { @class = "btn btn-outline-secondary col", style = "margin-right: 5px" })
+                                }
 
-                            @if (Context.User.IsInRole("Admin"))
-                            {
-                                <button id="modalActivate" type="button" class="btn btn-outline-secondary col" data-toggle="modal" data-target="#borrarModal" style="vertical-align: middle; margin-right: 5px" onclick="OnBtnBorrarClick(@item.ID, @item.Origen)">
-                                    @Fondos_Antiguos.Localization.ComunResource.btnBorrar
-                                </button>
-                            }
-                        </div>
-                    </td>
-                </tr>
+                                @if (authEliminar)
+                                {
+                                    <button id="modalActivate" type="button" class="btn btn-outline-secondary col" data-toggle="modal" data-target="#borrarModal" style="vertical-align: middle; margin-right: 5px" onclick="OnBtnBorrarClick(@item.ID, @item.Origen)">
+                                        @Fondos_Antiguos.Localization.ComunResource.btnBorrar
+                                    </button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
         <tfoot>
@@ -432,26 +440,29 @@
             </tr>
         </tfoot>
     </table>
+    @if (FaAuthorizeAttribute.IsAuthorized(User, "Catalogo", "Eliminar", Context))
+    {
+        <!-- Modal -->
+        <div class="modal fade left" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="modalTitulo" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-side modal-bottom-left" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitulo">¿Esta seguro que desea borrar el registro?</h5>
+                    </div>
+                    <div class="modal-body">
 
-    <!-- Modal -->
-    <div class="modal fade left" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="modalTitulo" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-side modal-bottom-left" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitulo">¿Esta seguro que desea borrar el registro?</h5>
-                </div>
-                <div class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <form method="GET" action="@Url.Action("Eliminar")">
-                        <input type="hidden" id="BorrarRegistroID" name="id" />
-                        <input type="hidden" id="BorrarRegistroOrigen" name="origen" />
-                        <input type="submit" class="btn btn-secondary" value="Sí" />
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
-                    </form>
+                    </div>
+                    <div class="modal-footer">
+                        <form method="GET" action="@Url.Action("Eliminar")">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" id="BorrarRegistroID" name="id" />
+                            <input type="hidden" id="BorrarRegistroOrigen" name="origen" />
+                            <input type="submit" class="btn btn-secondary" value="@Fondos_Antiguos.Localization.ComunResource.btnSi" />
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">@Fondos_Antiguos.Localization.ComunResource.btnNo</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 </div>

@@ -15,8 +15,28 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" href="@Url.Action("Index", "Home")">
-                    <img src="~/Content/logo-arquisanjose-122x162.png" style="height: 3.8rem;" />
-                    <label>Fondos Antiguos</label>
+                    <table style="max-width:210px;">
+                        <tr>
+                            <td rowspan="5" class="float-none my-0">
+                                <img src="~/Content/logo-arquisanjose-122x162.png" style="height: 3.8rem; margin: 0px 10px 0px 0px; line-height:0px" />
+                            </td>
+                        </tr>
+                        <tr style="padding-top:0px">
+                            <td class="text-center" style="padding: 4px 0px 0px 0px;font-size: 10px;line-height: 2px;">
+                                    Archivo Histórico
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center" style="padding: 0px;font-size: 10px;line-height: 2px;">
+                                <p>Arquidiocesano Monseñor</p><p>Bernardo Augusto Thiel</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p style="line-height: 5px; margin:0px;height:auto;">Fondos Antiguos</p>
+                            </td>
+                        </tr>
+                    </table>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +53,7 @@
                             @Html.ActionLink("Catálogo", "Index", "Catalogo", null, new { @class = "nav-link text-dark" })
                         </li>
                         @{
-                            if (!string.IsNullOrEmpty(User.Identity.Name) && this.User.IsInRole("Admin"))
+                            if (!string.IsNullOrEmpty(User.Identity.Name) && FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "ListaCuentas", Context) || FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "ListaRoles", Context))
                             {
                                 <li class="nav-item">
                                     @Html.ActionLink("Manejar Cuentas", "ListaCuentas", "Cuenta", null, new { @class = "nav-link text-dark" })
@@ -49,9 +69,19 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+    <footer class="page-footer font-small blue">
+        <div class="media-container-row">
+            <div class="col-sm-12">
+                <hr>
+            </div>
+        </div>
+        <div class="media-container-row mbr-white">
+            <div class="col-sm-6 copyright py-3">
+                <p class="mbr-text mbr-fonts-style display-7"><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Licencia de Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png"></a><br>Este obra está bajo una <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">licencia de Creative Commons Reconocimiento-NoComercial-SinObraDerivada 4.0 Internacional</a>.</p>
+            </div>
+        </div>
+    </footer>
     </div>
-
-    <footer class="border-top page-footer font-small blue"><div class="footer-copyright text-center py-3">&copy; @DateTime.Now.Year - Archivo Histórico Arquidiocesano Monseñor Bernardo Augusto Thiel</div></footer>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
