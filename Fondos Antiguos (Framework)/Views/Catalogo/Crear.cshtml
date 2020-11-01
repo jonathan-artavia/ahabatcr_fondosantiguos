@@ -6,38 +6,50 @@
 <script src="~/Scripts/CatalogoCrearScript.js"></script>
 <h4>Crear registro</h4>
 <hr />
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
+            <ul class="navbar-nav mr-auto">
+                <li>
+                    <input type="submit" value="@Fondos_Antiguos.Localization.CatalogoRes.btnGuardar" class="btn btn-primary" />
+                </li>
+            </ul>
+        </div>
+    </nav>
 <div>
     @{
         using (Html.BeginForm("Crear", "Catalogo", FormMethod.Post, new { @class = "row" }))
         {
-        <div class="col-lg-6">
-            @Html.ValidationSummary()
-            <div class="form-group">
-                @Html.LabelFor(m => m.Fecha, new { @class = "control-label" })
-                @Html.EditorFor(m => m.Fecha, null, new { @htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(m => m.Fecha, null, new { @class = "text-danger" })
+            <div class="col-lg-6">
+                @Html.ValidationSummary()
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Fecha, new { @class = "control-label" })
+                    @Html.EditorFor(m => m.Fecha, null, new { @htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Fecha, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Contenido, new { @class = "control-label" })
+                    @Html.TextAreaFor(m => m.Contenido, 2, 1, new Dictionary<string, object>() { { "class", "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Contenido, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Observaciones, new { @class = "control-label" })
+                    @Html.TextAreaFor(m => m.Observaciones, 2, 1, new Dictionary<string, object>() { { "class", "form-control" } })
+                    @Html.ValidationMessageFor(m => m.Observaciones, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Lugar, new { @class = "control-label" })
+                    @Html.TextBoxFor(m => m.Lugar, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Lugar, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Materias, new { @class = "control-label" })
+                    @Html.TextBoxFor(m => m.Materias, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Materias, null, new { @class = "text-danger" })
+                </div>
             </div>
-            <div class="form-group">
-                @Html.LabelFor(m => m.Contenido, new { @class = "control-label" })
-                @Html.TextAreaFor(m => m.Contenido, 2, 1, new Dictionary<string, object>() { { "class", "form-control" } })
-                @Html.ValidationMessageFor(m => m.Contenido, null, new { @class = "text-danger" })
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(m => m.Observaciones, new { @class = "control-label" })
-                @Html.TextAreaFor(m => m.Observaciones, 2, 1, new Dictionary<string, object>() { { "class", "form-control" } })
-                @Html.ValidationMessageFor(m => m.Observaciones, null, new { @class = "text-danger" })
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(m => m.Lugar, new { @class = "control-label" })
-                @Html.TextBoxFor(m => m.Lugar, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Lugar, null, new { @class = "text-danger" })
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(m => m.Materias, new { @class = "control-label" })
-                @Html.TextBoxFor(m => m.Materias, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Materias, null, new { @class = "text-danger" })
-            </div>
-        </div>
             <div class="col-lg-6">
                 <div class="form-group">
                     <div class="form-row">
@@ -61,7 +73,7 @@
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(m => m.NumCaja, new { @class = "control-label" })
-                    @Html.EditorFor(m => m.NumCaja , null, new { @htmlAttributes = new { @class = "form-control", @step = "1", @pattern = "\\d*" } })
+                    @Html.EditorFor(m => m.NumCaja, null, new { @htmlAttributes = new { @class = "form-control", @step = "1", @pattern = "\\d*" } })
                     @Html.ValidationMessageFor(m => m.NumCaja, null, new { @class = "text-danger" })
                 </div>
                 <div class="form-group">
@@ -90,9 +102,6 @@
                     @Html.ValidationMessageFor(m => m.NumCarpeta, null, new { @class = "text-danger" })
                 </div>
 
-            </div>
-            <div class="col form-group">
-                <input type="submit" value="@Fondos_Antiguos.Localization.CatalogoRes.btnCrear" class="btn btn-primary" />
             </div>
             <!-- Modal -->
             <div class="modal fade left" id="seriesModal" tabindex="-1" role="dialog" aria-labelledby="modalTitulo" aria-hidden="true">
@@ -126,7 +135,7 @@
 </div>
 <!-- Modal -->
 <div>
-    <a asp-action="Index">@Fondos_Antiguos.Localization.ComunResource.lnkVolverALista</a>
+    @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.lnkVolverALista, "Index", null, new { @class = "btn btn-outline-secondary" })
 </div>
 @*@section Scripts {
         @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

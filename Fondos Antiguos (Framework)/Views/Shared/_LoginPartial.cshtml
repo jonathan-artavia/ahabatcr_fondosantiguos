@@ -1,12 +1,11 @@
 ﻿@using Microsoft.AspNet.Identity
 @if (Request.IsAuthenticated)
 {
-    using (Html.BeginForm("LogOff", "Cuenta", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    using (Html.BeginForm("LogOff", "Cuenta", FormMethod.Post, new { id = "logoutForm", @class = "navbar-form navbar-right" }))
     {
         <ul class="navbar-nav">
-            @Html.AntiForgeryToken()
-
             <li class="nav-item">
+            @Html.AntiForgeryToken()
                 <label class="nav-link text-dark">¡Hola, @User.Identity.Name!</label>
             </li>
             <li class="nav-item">
@@ -17,7 +16,7 @@
 }
 else
 {
-    <ul class="navbar-nav">
+    <ul class="navbar-nav navbar-right">
         <li class="nav-item">
             @Html.ActionLink("Iniciar Sesión", "Login", "Cuenta", null, new { @class = "nav-link text-dark" })
         </li>

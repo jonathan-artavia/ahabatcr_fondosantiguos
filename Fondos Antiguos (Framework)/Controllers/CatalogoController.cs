@@ -436,8 +436,7 @@ namespace Fondos_Antiguos.Controllers
                     QueryExpresion e1 = ExprLive(ref parameters);
                     QueryExpresion e2 = ExprHist(ref parameters);
                     if (e1 != null && e2 != null)
-                        return new QueryExpresion("(" + e1 + ")")
-                            .Or("(" + e2 + ")");
+                        return new QueryExpresion($"({e1} {SqlUtil.OR} {e2})");
                     else if (e1 != null && e2 == null)
                         return e1;
                     else if (e1 == null && e2 != null)
@@ -458,6 +457,10 @@ namespace Fondos_Antiguos.Controllers
                 {
                     parametersIn.Add(nombreParam, "%" + filtro + "%");
                     return new QueryExpresion(String.Format("{0} like {1}", SqlUtil.SurroundColumn("Materias"), nombreParam));
+                }else if (operacion == 32 && !string.IsNullOrEmpty(filtro))
+                {
+                    parametersIn.Add(nombreParam, "%" + filtro + "%");
+                    return new QueryExpresion(String.Format("{0} not like {1}", SqlUtil.SurroundColumn("Materias"), nombreParam));
                 }
                 else if (operacion < 32)
                 {
@@ -506,7 +509,7 @@ namespace Fondos_Antiguos.Controllers
                         res = ExprLive(i, filterCount, ref parameters);
                     else
                     {
-                        if(((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
+                        if(((OperacionEnum)operacion) == OperacionEnum.DiferenteA || ((OperacionEnum)operacion) == OperacionEnum.EntreExc)
                             res.And(ExprLive(i, filterCount, ref parameters)?.ToString());
                         else
                             res.Or(ExprLive(i, filterCount, ref parameters)?.ToString());
@@ -584,6 +587,10 @@ namespace Fondos_Antiguos.Controllers
                 {
                     parametersIn.Add(nombreParam, "%" + filtro + "%");
                     return new QueryExpresion(String.Format("{0} like {1}", SqlUtil.SurroundColumn("Lugar"), nombreParam));
+                }else if (operacion == 32 && !string.IsNullOrEmpty(filtro))
+                {
+                    parametersIn.Add(nombreParam, "%" + filtro + "%");
+                    return new QueryExpresion(String.Format("{0} not like {1}", SqlUtil.SurroundColumn("Lugar"), nombreParam));
                 }
                 else if (operacion < 32)
                 {
@@ -631,7 +638,7 @@ namespace Fondos_Antiguos.Controllers
                         res = ExprLive(i, filterCount, ref parameters);
                     else
                     {
-                        if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
+                        if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA || ((OperacionEnum)operacion) == OperacionEnum.EntreExc)
                             res.And(ExprLive(i, filterCount, ref parameters)?.ToString());
                         else
                             res.Or(ExprLive(i, filterCount, ref parameters)?.ToString());
@@ -660,6 +667,12 @@ namespace Fondos_Antiguos.Controllers
                     if(!parametersIn.ContainsKey(varName))
                         parametersIn.Add(varName, "%" + val + "%");
                     return new QueryExpresion(String.Format("{0} LIKE {1}", SqlUtil.SurroundColumn("NumCaja"), varName));
+                }
+                else if (operacion == 32 && !string.IsNullOrEmpty(val))
+                {
+                    if (!parametersIn.ContainsKey(varName))
+                        parametersIn.Add(varName, "%" + val + "%");
+                    return new QueryExpresion(String.Format("{0} NOT LIKE {1}", SqlUtil.SurroundColumn("NumCaja"), varName));
                 }
                 else if (operacion < 32)
                 {
@@ -766,14 +779,14 @@ namespace Fondos_Antiguos.Controllers
                                         .Or("(" + e2 + ")");
                                 else if (e1 != null && e2 == null)
                                 {
-                                    if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
+                                    if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA || ((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
                                         res.And(e1.ToString());
                                     else
                                         res.Or(e1.ToString());
                                 }
                                 else if (e1 == null && e2 != null)
                                 {
-                                    if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
+                                    if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA || ((OperacionEnum)operacion) == OperacionEnum.DiferenteA)
                                         res.And(e2.ToString());
                                     else
                                         res.Or(e2.ToString());

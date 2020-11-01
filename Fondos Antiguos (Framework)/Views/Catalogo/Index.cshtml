@@ -178,7 +178,7 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
                                     <h6 class="card-title text-muted">Caja</h6>
-                                    @Html.DropDownListFor(modelItem => modelItem.OperacionCaja, (new OperacionEnum[] { OperacionEnum.DiferenteA, OperacionEnum.IgualA, OperacionEnum.EntreInc }).Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op, 1), Value = ((byte)op).ToString() }), "", new { @class = "form-control col-12", onchange = "OperacionCajaSeleccionado()" })
+                                    @Html.DropDownListFor(modelItem => modelItem.OperacionCaja, (new OperacionEnum[] { OperacionEnum.DiferenteA, OperacionEnum.IgualA, OperacionEnum.EntreExc, OperacionEnum.EntreInc }).Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op, 1), Value = ((byte)op).ToString() }), "", new { @class = "form-control col-12", onchange = "OperacionCajaSeleccionado()" })
                                     @{
                                         if (Model != null && Model.OperacionCaja.HasValue)
                                         {
@@ -206,7 +206,7 @@
                             <ul class="list-group list-group-flush" style="padding-bottom: 2px">
                                 <li class="list-group-item">
                                     <h6 class="card-title text-muted">Materia</h6>
-                                    @Html.DropDownListFor(modelItem => modelItem.OperacionMateria, (new OperacionEnum[] { OperacionEnum.DiferenteA, OperacionEnum.IgualA, OperacionEnum.EntreInc }).Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op, 1), Value = ((byte)op).ToString() }), "", new { @class = "form-control col-12", onchange = "OperacionMateriaSeleccionado()" })
+                                    @Html.DropDownListFor(modelItem => modelItem.OperacionMateria, (new OperacionEnum[] { OperacionEnum.DiferenteA, OperacionEnum.IgualA, OperacionEnum.EntreExc, OperacionEnum.EntreInc }).Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op, 1), Value = ((byte)op).ToString() }), "", new { @class = "form-control col-12", onchange = "OperacionMateriaSeleccionado()" })
                                     @{
                                         if (Model != null && Model.OperacionMateria.HasValue)
                                         {
@@ -232,7 +232,7 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
                                     <h6 class="card-title text-muted">Lugar</h6>
-                                    @Html.DropDownListFor(modelItem => modelItem.OperacionLugar, (new OperacionEnum[] { OperacionEnum.DiferenteA, OperacionEnum.IgualA, OperacionEnum.EntreInc }).Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op, 1), Value = ((byte)op).ToString() }), "", new { @class = "form-control col-12", onchange = "OperacionLugarSeleccionado()" })
+                                    @Html.DropDownListFor(modelItem => modelItem.OperacionLugar, (new OperacionEnum[] { OperacionEnum.DiferenteA, OperacionEnum.IgualA, OperacionEnum.EntreExc, OperacionEnum.EntreInc }).Select(op => new SelectListItem() { Text = ViewUtil.ObtenerDescrOperacion((byte)op, 1), Value = ((byte)op).ToString() }), "", new { @class = "form-control col-12", onchange = "OperacionLugarSeleccionado()" })
                                     @{
                                         if (Model != null && Model.OperacionLugar.HasValue)
                                         {

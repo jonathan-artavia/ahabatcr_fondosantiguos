@@ -183,6 +183,9 @@
   <data name="OperacionEnum.String.1" xml:space="preserve">
     <value>Igual A</value>
   </data>
+  <data name="OperacionEnum.String.32" xml:space="preserve">
+    <value>No Contiene</value>
+  </data>
   <data name="OperacionEnum.String.64" xml:space="preserve">
     <value>Contiene</value>
   </data>

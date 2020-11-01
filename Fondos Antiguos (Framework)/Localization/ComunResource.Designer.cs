@@ -259,6 +259,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Contiene.
+        /// </summary>
+        public static string OperacionEnum_String_32 {
+            get {
+                return ResourceManager.GetString("OperacionEnum.String.32", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contiene.
         /// </summary>
         public static string OperacionEnum_String_64 {
