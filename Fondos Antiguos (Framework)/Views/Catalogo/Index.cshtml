@@ -1,5 +1,5 @@
 ﻿@using Fondos_Antiguos.Models
-@model PagingResult<CatalogoModel>
+@model CatalogoPaginadoModel<CatalogoModel>
 
 @{
     ViewData["Title"] = "Catalogo";
@@ -8,7 +8,6 @@
 <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
 <script src="~/Scripts/CatalogoVerScript.js"></script>
 
-@*@{ Html.BeginForm(FormMethod.Get, new { id = "frmIncludeHist" });*@
 <div class="table-responsive-sm">
     <nav class="navbar navbar-expand-md navbar-light bg-light">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,6 +20,12 @@
                     @if (FaAuthorizeAttribute.IsAuthorized(User, "Catalogo", "Crear", Context))
                     {
                         @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnAgregarNuevo, "Crear", null, new { @class = "btn btn-outline-dark" })
+                    }
+                </li>
+                <li class="nav-item">
+                    @if (FaAuthorizeAttribute.IsAuthorized(User, "Catalogo", "SubirLoteRegistros", Context))
+                    {
+                        @Html.ActionLink(Fondos_Antiguos.Localization.CatalogoRes.btnImportar, "SubirLoteRegistros", null, new { @class = "btn btn-outline-dark" })
                     }
                 </li>
                 <li class="nav-item dropdown">
@@ -427,7 +432,7 @@
                         if (Model.PageTotal > FaViewOptions.RegistrosPorPagina)
                         {
                             reg_ini = 1 + (FaViewOptions.RegistrosPorPagina * Model.SelectedPage) - Model.PagedResult.Count();
-                            reg_fin = FaViewOptions.RegistrosPorPagina * (Model.SelectedPage);
+                            reg_fin = Model.PagedResult.Count() < FaViewOptions.RegistrosPorPagina ? (reg_ini + Model.PagedResult.Count() > Model.RecordTotal ? Model.RecordTotal : reg_ini + Model.PagedResult.Count()) : FaViewOptions.RegistrosPorPagina * (Model.SelectedPage); ; //FaViewOptions.RegistrosPorPagina * (Model.SelectedPage);
                         }
                         else
                         {

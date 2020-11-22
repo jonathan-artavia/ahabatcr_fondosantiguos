@@ -61,11 +61,6 @@ namespace Fondos_Antiguos.DataService
             return await this.ToLoginModel(user);
         }
 
-        public virtual bool IsValid(string username, string password)
-        {
-            return FaUserManager.IsValid(username, Encoding.UTF8.GetBytes(DataSecurity.Hash(password)), this.User);
-        }
-
         public virtual async Task<CuentaModel> CrearNewCtrña(string idUsuario)
         {
             ApplicationUser user = await this.GetIdentityUser(idUsuario);

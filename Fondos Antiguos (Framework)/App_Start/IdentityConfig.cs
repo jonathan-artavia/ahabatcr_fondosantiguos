@@ -95,35 +95,7 @@ namespace Fondos_Antiguos
         #endregion
 
         #region Static
-        public static bool IsValid(string username, byte[] password, HttpContextBase context)
-        {
-            int result = 0;
-            QueryExpresion expr = new QueryExpresion("AND", SqlUtil.Equals("Usuario", "@username", false));
-            expr = expr.And(SqlUtil.Equals("Cntrña", "@password", false));
 
-            string cmd = string.Format(SqlResource.SqlUsuariosResource, expr.ToString());
-            List<MySqlParameter> mySqlParameters = new List<MySqlParameter>();
-            mySqlParameters.Add(new MySqlParameter("@username", username));
-            mySqlParameters.Add(new MySqlParameter("@password", password));
-
-            result = (int)DataConnection.Instance.ExecuteScalar(cmd, mySqlParameters, context);
-            return result >= 1;
-        }
-
-        public static bool IsValid(string username, byte[] password, IUser user)
-        {
-            long result = 0;
-            QueryExpresion expr = new QueryExpresion("AND", SqlUtil.Equals("Usuario", "@username", false));
-            expr = expr.And(SqlUtil.Equals("Cntrña", "@password", false));
-
-            string cmd = string.Format(SqlResource.SqlUsuariosResourceCount, expr.ToString());
-            List<MySqlParameter> mySqlParameters = new List<MySqlParameter>();
-            mySqlParameters.Add(new MySqlParameter("@username", username));
-            mySqlParameters.Add(new MySqlParameter("@password", password));
-
-            result = (long)DataConnection.Instance.ExecuteScalar(cmd, mySqlParameters, user);
-            return result >= 1;
-        }
         #endregion
 
         #region Properties

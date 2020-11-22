@@ -88,11 +88,29 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insertar por Lote.
+        /// </summary>
+        public static string btnImportar {
+            get {
+                return ResourceManager.GetString("btnImportar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Seleccionar Serie....
         /// </summary>
         public static string btnSeleccionarSerie {
             get {
                 return ResourceManager.GetString("btnSeleccionarSerie", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ¿Borrar?.
+        /// </summary>
+        public static string colBorrarSN {
+            get {
+                return ResourceManager.GetString("colBorrarSN", resourceCulture);
             }
         }
         
@@ -259,6 +277,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt; Descartar Cambios y regresar.
+        /// </summary>
+        public static string lnkDescartar {
+            get {
+                return ResourceManager.GetString("lnkDescartar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Lugar.
         /// </summary>
         public static string Lugar {
@@ -354,6 +381,24 @@ namespace Fondos_Antiguos.Localization {
         public static string RegistroNoExisteError {
             get {
                 return ResourceManager.GetString("RegistroNoExisteError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fecha Vencimiento.
+        /// </summary>
+        public static string Revision_FechaVencimiento {
+            get {
+                return ResourceManager.GetString("Revision_FechaVencimiento", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Revisión invalida o no existe..
+        /// </summary>
+        public static string RevisionNoExisteMsg {
+            get {
+                return ResourceManager.GetString("RevisionNoExisteMsg", resourceCulture);
             }
         }
         

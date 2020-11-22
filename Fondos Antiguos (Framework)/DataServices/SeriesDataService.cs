@@ -27,11 +27,27 @@ namespace Fondos_Antiguos.DataService
                 () => this.FillModels(DataConnection.Instance.ExecuteQuery(
                     string.Format(SqlResource.SqlSeriesResource, expr?.ToString() ?? "1=1"),
                     parameters,
-                    context)),
+                    context,0)),
                 "GetSeries", expr?.ToString()
                 );
 
             return result;
+        }
+
+        public virtual void Insert(SerieModel model, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@series", model.Nombre);
+            try
+            {
+                DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlSeriesInsert, parameters, context);
+                ulong id = (ulong)DataConnection.Instance.ExecuteScalar(SqlResource.SqlLastInsertedId, default(Dictionary<string,object>), context, transaction: null);
+                model.ID = (long)id;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         #endregion
 

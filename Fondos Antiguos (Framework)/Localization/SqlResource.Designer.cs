@@ -159,6 +159,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT LAST_INSERT_ID();.
+        /// </summary>
+        public static string SqlLastInsertedId {
+            get {
+                return ResourceManager.GetString("SqlLastInsertedId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to LIMIT {0}{1}.
         /// </summary>
         public static string SqlPagingFormat {
@@ -236,6 +245,15 @@ namespace Fondos_Antiguos.Localization {
         public static string SqlRolesVistasPermitidasByRol {
             get {
                 return ResourceManager.GetString("SqlRolesVistasPermitidasByRol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO `tblSerie` (Nombre) VALUES (@series).
+        /// </summary>
+        public static string SqlSeriesInsert {
+            get {
+                return ResourceManager.GetString("SqlSeriesInsert", resourceCulture);
             }
         }
         

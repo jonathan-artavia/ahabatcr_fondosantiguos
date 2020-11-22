@@ -1,4 +1,5 @@
-﻿using Fondos_Antiguos.DataService;
+﻿using ExcelDataReader;
+using Fondos_Antiguos.DataService;
 using Fondos_Antiguos.Localization;
 using Fondos_Antiguos.Models;
 using Microsoft.AspNet.Identity;
@@ -6,7 +7,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Owin.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Odbc;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -125,7 +130,7 @@ namespace Fondos_Antiguos.Controllers
                 else
                 {
                     QueryExpresion extracto = this.ObtenerExpressionDeCajas(incluirHist.GetValueOrDefault(0), operacionCaja.Value, filtroCaja, ref parameters);
-                    if(extracto != null)
+                    if (extracto != null)
                         filter.And(extracto.ToString());
                 }
             }
@@ -148,7 +153,7 @@ namespace Fondos_Antiguos.Controllers
             //fin de armado de filtros
 
             IEnumerable<CatalogoModel> r = this.dataService.GetCatalogos(filter, parameters, pagina ?? 1, incluirHist.GetValueOrDefault(0), true, this.HttpContext);
-            PagingResult<CatalogoModel> result = this.dataService.CrearPagingResult(filter, parameters, pagina ?? 1, incluirHist.GetValueOrDefault(0), this.HttpContext);
+            CatalogoPaginadoModel<CatalogoModel> result = this.dataService.CrearModelosPaginados(filter, parameters, pagina ?? 1, incluirHist.GetValueOrDefault(0), this.HttpContext);
             result.SelectedPage = pagina.GetValueOrDefault(1);
             result.PagedResult = r;
             result.OrigenIncluido = incluirHist;
@@ -181,8 +186,18 @@ namespace Fondos_Antiguos.Controllers
         [AllowAnonymous()]
         public ActionResult Ver(long id, byte origen)
         {
-            var results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
-            return this.View("VerView", results);
+            try
+            {
+                var results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
+                if (results == null)
+                    throw new Exception(CatalogoRes.RegistroNoExisteError);
+                return this.View(nameof(Ver), results);
+            }
+            catch (Exception ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+                return this.View();
+            }
         }
 
         [FaAuthorize]
@@ -190,9 +205,19 @@ namespace Fondos_Antiguos.Controllers
         {
             var dataServiceSeries = new SeriesDataService();
             var seriesList = dataServiceSeries.GetSeries(null, null, this.HttpContext);
-            ViewBag.SerieList = seriesList;
-            var results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
-            return this.View("Editar", results);
+            try
+            {
+                var results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
+                if (results == null)
+                    throw new Exception(CatalogoRes.RegistroNoExisteError);
+                ViewBag.SerieList = seriesList;
+                return this.View(nameof(Editar), results);
+            }
+            catch (Exception ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+                return View(nameof(Editar), new CatalogoModel());
+            }
         }
 
         [FaAuthorize]
@@ -271,7 +296,6 @@ namespace Fondos_Antiguos.Controllers
         }
 
         [FaAuthorize]
-        [ValidateAntiForgeryToken]
         public ActionResult Eliminar(long id, byte origen)
         {
             if (!this.TempData.ContainsKey("guardoInsertoReg"))
@@ -298,6 +322,104 @@ namespace Fondos_Antiguos.Controllers
                 return this.RedirectToAction(nameof(Index));
             }
         }
+
+        #region Subir Registros Por Lote
+        [FaAuthorize]
+        [HttpGet]
+        public ActionResult SubirLoteRegistros()
+        {
+            return View();
+        }
+
+        [FaAuthorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SubirLoteRegistros(SubirLoteRegistrosModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                byte[] uploadedFile = new byte[model.Archivo.InputStream.Length];
+                model.Archivo.InputStream.Read(uploadedFile, 0, uploadedFile.Length);
+
+                string nombre = this.GuardarArchivoLoteTemporal(uploadedFile, model.Archivo.ContentType);
+                
+                return RedirectToAction(nameof(RevisionLoteRegistros), new { archivoId = nombre });
+            }
+
+            return View();
+        }
+
+        [FaAuthorize]
+        [HttpGet]
+        public async Task<ActionResult> RevisionLoteRegistros(string archivoId, int? pagina = 1)
+        {
+            IEnumerable<SeleccionableCatalogoModel> catalogos = this.dataService.GetCatalogoSinRevisar(archivoId, pagina, this.dataService.GetCantidadCatalogoSinRevisar(archivoId, this.HttpContext), this.HttpContext);
+            RevisionCatalogoPaginadoModel res = null;
+            if (catalogos == null || catalogos == default(SeleccionableCatalogoModel))
+            {
+                int cantidadTotalRegistros = 0;
+                try
+                {
+                    catalogos = this.ConvertirLoteASeleccionable(archivoId);
+                }
+                catch (FileNotFoundException fnfEx)
+                {
+                    this.ModelState.AddModelError("", CatalogoRes.RevisionNoExisteMsg);
+                    res = this.dataService.CrearModelosRevisionPaginados(archivoId, 1, 0, 0, this.HttpContext);
+                    res.Registros = new List<SeleccionableCatalogoModel>();
+                    return View(res);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                cantidadTotalRegistros = catalogos.Count();
+                this.dataService.InsertarLote(archivoId, catalogos, false, this.HttpContext);
+                catalogos = this.dataService.GetCatalogoSinRevisar(archivoId, pagina, cantidadTotalRegistros, this.HttpContext);
+
+                res = this.dataService.CrearModelosRevisionPaginados(archivoId, pagina, catalogos?.Count() ?? 0, cantidadTotalRegistros, this.HttpContext);
+                res.FechaVencimiento = DateTime.Now.AddDays(1);
+                res.PagedResult = catalogos;
+            }
+            else
+            {
+                res = this.dataService.CrearModelosRevisionPaginados(archivoId, pagina, catalogos?.Count() ?? 0, this.dataService.GetCantidadCatalogoSinRevisar(archivoId, this.HttpContext), this.HttpContext);
+                res.PagedResult = catalogos;
+            }
+            res.PaginaActual =
+            res.SelectedPage = pagina.GetValueOrDefault(1);
+            return View(res);
+        }
+
+        [FaAuthorize]
+        [HttpPost]
+        public async Task<ActionResult> RevisionLoteRegistros(RevisionCatalogoPaginadoModel res)
+        {
+            List<SeleccionableCatalogoModel> catalogosNuevos = (List<SeleccionableCatalogoModel>)this.dataService.GetCatalogoSinRevisar(res.ArchivoId, this.HttpContext);
+            this.AplicarSeleccionAListaCatalogo(res.Registros, catalogosNuevos);
+
+            this.dataService.ActualizarLote(res.ArchivoId, catalogosNuevos, this.HttpContext);
+            return RedirectToAction(nameof(RevisionLoteRegistros), new { archivoId = res.ArchivoId, pagina = res.SelectedPage });
+        }
+
+        [FaAuthorize]
+        [HttpPost]
+        public async Task<ActionResult> PersistirRevisionLoteRegistros(RevisionCatalogoPaginadoModel res)
+        {
+            if (!res.DescartarSN)
+            {
+                List<SeleccionableCatalogoModel> catalogosNuevos = (List<SeleccionableCatalogoModel>)this.dataService.GetCatalogoSinRevisar(res.ArchivoId, this.HttpContext);
+                this.AplicarSeleccionAListaCatalogo(res.Registros, catalogosNuevos);
+
+                this.dataService.InsertarLote(res.ArchivoId, catalogosNuevos, true, this.HttpContext);
+            }
+            else
+            {
+                this.dataService.DescartarRevision(res.ArchivoId, this.HttpContext);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
         #endregion
 
         #region Methods
@@ -457,7 +579,8 @@ namespace Fondos_Antiguos.Controllers
                 {
                     parametersIn.Add(nombreParam, "%" + filtro + "%");
                     return new QueryExpresion(String.Format("{0} like {1}", SqlUtil.SurroundColumn("Materias"), nombreParam));
-                }else if (operacion == 32 && !string.IsNullOrEmpty(filtro))
+                }
+                else if (operacion == 32 && !string.IsNullOrEmpty(filtro))
                 {
                     parametersIn.Add(nombreParam, "%" + filtro + "%");
                     return new QueryExpresion(String.Format("{0} not like {1}", SqlUtil.SurroundColumn("Materias"), nombreParam));
@@ -509,14 +632,14 @@ namespace Fondos_Antiguos.Controllers
                         res = ExprLive(i, filterCount, ref parameters);
                     else
                     {
-                        if(((OperacionEnum)operacion) == OperacionEnum.DiferenteA || ((OperacionEnum)operacion) == OperacionEnum.EntreExc)
+                        if (((OperacionEnum)operacion) == OperacionEnum.DiferenteA || ((OperacionEnum)operacion) == OperacionEnum.EntreExc)
                             res.And(ExprLive(i, filterCount, ref parameters)?.ToString());
                         else
                             res.Or(ExprLive(i, filterCount, ref parameters)?.ToString());
                     }
                     filterCount++;
                 }
-                return new QueryExpresion( $"({res})");
+                return new QueryExpresion($"({res})");
             }
             else
             {
@@ -587,7 +710,8 @@ namespace Fondos_Antiguos.Controllers
                 {
                     parametersIn.Add(nombreParam, "%" + filtro + "%");
                     return new QueryExpresion(String.Format("{0} like {1}", SqlUtil.SurroundColumn("Lugar"), nombreParam));
-                }else if (operacion == 32 && !string.IsNullOrEmpty(filtro))
+                }
+                else if (operacion == 32 && !string.IsNullOrEmpty(filtro))
                 {
                     parametersIn.Add(nombreParam, "%" + filtro + "%");
                     return new QueryExpresion(String.Format("{0} not like {1}", SqlUtil.SurroundColumn("Lugar"), nombreParam));
@@ -664,7 +788,7 @@ namespace Fondos_Antiguos.Controllers
                 string varName = "@filtroCaja" + count.ToString();
                 if (operacion == 64 && !string.IsNullOrEmpty(val))
                 {
-                    if(!parametersIn.ContainsKey(varName))
+                    if (!parametersIn.ContainsKey(varName))
                         parametersIn.Add(varName, "%" + val + "%");
                     return new QueryExpresion(String.Format("{0} LIKE {1}", SqlUtil.SurroundColumn("NumCaja"), varName));
                 }
@@ -713,7 +837,7 @@ namespace Fondos_Antiguos.Controllers
                 string varName = "@filtroHistCaja" + count.ToString();
                 if (!String.IsNullOrEmpty(val))
                 {
-                    if(!parametersIn.ContainsKey(varName))
+                    if (!parametersIn.ContainsKey(varName))
                         parametersIn.Add(varName, "%" + val + "%");
                     return new QueryExpresion(SqlUtil.AND, String.Format("{0} LIKE {1}", SqlUtil.SurroundColumn("Fichero"), varName));
                 }
@@ -757,7 +881,7 @@ namespace Fondos_Antiguos.Controllers
                                     res = e2;
                                 break;
                             case 2: //only hist
-                                res = ExprHist(i, filterCount,ref parameters);
+                                res = ExprHist(i, filterCount, ref parameters);
                                 break;
                         }
                     }
@@ -820,7 +944,7 @@ namespace Fondos_Antiguos.Controllers
                         QueryExpresion e2 = ExprHist(valor, 0, ref parameters);
                         if (e1 != null && e2 != null)
                             return new QueryExpresion("(" + (new QueryExpresion("(" + e1 + ")")
-                                .Or("(" + e2 + ")").ToString() + ")" ));
+                                .Or("(" + e2 + ")").ToString() + ")"));
                         else if (e1 != null && e2 == null)
                             return new QueryExpresion($"({e1})");
                         else if (e1 == null && e2 != null)
@@ -861,7 +985,7 @@ namespace Fondos_Antiguos.Controllers
             {
                 if (!string.IsNullOrEmpty(valor))
                 {
-                    if(!parametersIn.ContainsKey("@filtroTexto"))
+                    if (!parametersIn.ContainsKey("@filtroTexto"))
                         parametersIn.Add("@filtroTexto", "%" + valor + "%");
                     return new QueryExpresion(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Lugar")))
                         .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Contenido"))) //Descripcion
@@ -899,6 +1023,38 @@ namespace Fondos_Antiguos.Controllers
             return null;
         }
 
+        protected virtual string GuardarArchivoLoteTemporal(byte[] contenido, string formato)
+        {
+            string soloDireccion = this.Server.MapPath("~/Content/Subidas/");
+            string soloNombreArchivo = Guid.NewGuid().ToString();
+
+            System.IO.File.WriteAllBytes(Path.Combine(soloDireccion, soloNombreArchivo), contenido);
+
+            return soloNombreArchivo;
+        }
+
+        protected virtual IEnumerable<SeleccionableCatalogoModel> ConvertirLoteASeleccionable(string archivoId)
+        {
+            IEnumerable<SeleccionableCatalogoModel> models = null;
+            string direccionCompletaArchivo = Path.Combine(this.Server.MapPath("~/Content/Subidas/"), archivoId);
+            using (FileStream fileStream = new FileStream(direccionCompletaArchivo, FileMode.Open))
+            using (IExcelDataReader reader = ExcelDataReader.ExcelReaderFactory.CreateReader(fileStream))
+            {
+                models = this.dataService.ConvertirLoteDataReader<SeleccionableCatalogoModel>(reader, HttpContext);
+            }
+            System.IO.File.Delete(direccionCompletaArchivo);
+            return models;
+        }
+
+        protected virtual void AplicarSeleccionAListaCatalogo(List<SeleccionableCatalogoModel> seleccionados, List<SeleccionableCatalogoModel> modelosExsitentes)
+        {
+            foreach (SeleccionableCatalogoModel item in seleccionados)
+            {
+                SeleccionableCatalogoModel m = modelosExsitentes.Find(x => x.ID == item.ID);
+                if (m != null)
+                    m.Seleccionado = item.Seleccionado;
+            }
+        }
         #endregion
     }
 }

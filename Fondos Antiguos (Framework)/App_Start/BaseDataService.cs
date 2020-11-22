@@ -44,6 +44,53 @@ namespace Fondos_Antiguos.Base
             return this.CreateOrUpdateEntry<T>(key, method, value, otherKeys);
         }
 
+        protected virtual T GetOrCreateValue<T>(object key, string method = null, params object[] otherKeys)
+        {
+            Dictionary<string, object> reg = DataCache.Get<Dictionary<string, object>>(key);
+
+            T GetValueFromInnerReg()
+            {
+                if (reg.Where(x => x.Key.EndsWith("_Keys"))?.FirstOrDefault(y => this.AreOtherKeysEqual((object[])y.Value, otherKeys)) == null)
+                    return default(T);
+                if (!reg.ContainsKey($"Method_{method}_Last"))
+                    return default(T);
+                int last = (int)reg[$"Method_{method}_Last"];
+                for (int i = 0; i <= last; i++)
+                {
+                    if (otherKeys != null && this.AreOtherKeysEqual((object[])reg[$"Method_{method}{i}_Keys"], otherKeys))
+                    {
+                        return (T)reg[$"Method_{method}{i}_Values"];
+                    }
+                }
+                return default(T);
+            }
+
+            T GetValueFromInnerRegIndex(int index)
+            {
+                if (otherKeys != null && this.AreOtherKeysEqual((object[])reg[$"Method_{method}{index}_Keys"], otherKeys))
+                {
+                    return (T)reg[$"Method_{method}{index}_Values"];
+                }
+                return default(T);
+            }
+
+            if (reg == null)
+            {
+                return default(T);
+            }
+            else
+            {
+                T probe = GetValueFromInnerReg();
+                T defaultVal = default(T);
+                if (probe == null || probe.Equals(defaultVal))
+                {
+                    return default(T);
+                }
+                return probe;
+            }
+            //return GetValueFromInnerRegIndex(lookupRegisterIndex);
+        }
+
         protected virtual void RemoveValueIfExists(object key, string method, params object[] otherKeys)
         {
             Dictionary<string, object> reg = DataCache.Get<Dictionary<string, object>>(key);
@@ -95,17 +142,21 @@ namespace Fondos_Antiguos.Base
                 {
                     last = (int)reg[$"Method_{method}_Last"];
                     last++;
-                    if (reg.ContainsKey($"Method_{method}{last}_Keys"))
-                        reg[$"Method_{method}{last}_Keys"] = otherkeys;
-                    else
-                        reg.Add($"Method_{method}{last}_Keys", otherkeys);
+                    if (otherkeys != null)
+                    {
+                        if (reg.ContainsKey($"Method_{method}{last}_Keys"))
+                            reg[$"Method_{method}{last}_Keys"] = otherkeys;
+                        else
+                            reg.Add($"Method_{method}{last}_Keys", otherkeys);
+                    }
                     reg.Add($"Method_{method}{last}_Values", value());
                     reg[$"Method_{method}_Last"] = last;
                     return last;
                 }
                 else
                 {
-                    reg.Add($"Method_{method}0_Keys", otherkeys);
+                    if (otherkeys != null)
+                        reg.Add($"Method_{method}0_Keys", otherkeys);
                     reg.Add($"Method_{method}0_Values", value());
                     reg.Add($"Method_{method}_Last", 0);
                     return 0;
@@ -121,7 +172,7 @@ namespace Fondos_Antiguos.Base
                 int last = (int)reg[$"Method_{method}_Last"];
                 for(int i=0; i <= last; i++)
                 {
-                    if(this.AreOtherKeysEqual((object[])reg[$"Method_{method}{i}_Keys"], otherkeys))
+                    if(otherkeys != null && this.AreOtherKeysEqual((object[])reg[$"Method_{method}{i}_Keys"], otherkeys))
                     {
                         return (T)reg[$"Method_{method}{i}_Values"];
                     }
@@ -131,7 +182,7 @@ namespace Fondos_Antiguos.Base
 
             T GetValueFromInnerRegIndex(int index)
             {
-                if(this.AreOtherKeysEqual((object[])reg[$"Method_{method}{index}_Keys"],otherkeys))
+                if(otherkeys != null && this.AreOtherKeysEqual((object[])reg[$"Method_{method}{index}_Keys"],otherkeys))
                 {
                     return (T)reg[$"Method_{method}{index}_Values"];
                 }
@@ -145,7 +196,11 @@ namespace Fondos_Antiguos.Base
             {
                 reg = this.CreateEntry();
                 lookupRegisterIndex = AddToEntryReg();
-                DataCache.GetOrCreate<Dictionary<string, object>>(key, x => reg);
+                DataCache.GetOrCreate<Dictionary<string, object>>(key, x =>
+                {
+                    x.SetAbsoluteExpiration(new TimeSpan(1, 0, 0, 0));
+                    return reg;
+                });
             }
             else
             {
@@ -154,7 +209,7 @@ namespace Fondos_Antiguos.Base
                 if (probe == null || probe.Equals(defaultVal))
                 {
                     lookupRegisterIndex = AddToEntryReg(); //adds the missing entry in reg, for the method, with those otherKeys
-                    DataCache.Set(key, reg); //udpates the cache registry
+                    DataCache.Set(key, reg, DateTime.Now.AddDays(1)); //udpates the cache registry
                     probe = GetValueFromInnerRegIndex(lookupRegisterIndex);
                 }
                 return probe;
@@ -174,7 +229,7 @@ namespace Fondos_Antiguos.Base
 
             for(int i=0; i < first.Length; i++)
             {
-                if (first[i] != second[i])
+                if (!Object.Equals(first[i], second[i]))
                     return false;
             }
             return true;

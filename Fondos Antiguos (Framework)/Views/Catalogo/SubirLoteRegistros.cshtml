@@ -1,0 +1,90 @@
+﻿@model Fondos_Antiguos.Models.SubirLoteRegistrosModel
+@{
+    ViewBag.Title = "Agregar Registros en Lote";
+}
+
+<h2>@ViewBag.Title</h2>
+<hr />
+
+<div class="row">
+    <div class="col-12">
+        <p>
+            Para realizar una inserción de registros se necesita un archivo de Excel (.xlsx), con las siguientes características
+        </p>
+        <ul>
+            <li>
+                La primera hoja del documento se debe llamar "General"
+            </li>
+            <li>
+                En esa hoja, debe tener varias columnas con exactamente los siguientes nombres en la primera linea, sin importal el orden:
+                <ul>
+                    <li>
+                        Contenido - <span class="text-warning small">Texto.</span>
+                    </li>
+                    <li>
+                        Materias - <span class="text-warning small">Texto. Multiples valores deben estar separados por "/".</span>
+                    </li>
+                    <li>
+                        Series - <span class="text-warning small">Si un valor no existe, se va a crear en las Series existentes, si ya existía anteriormente, se van a ligar.</span>
+                    </li>
+                    <li>
+                        Caja - <span class="text-warning small">Texto.</span>
+                    </li>
+                    <li>
+                        Tomo - <span class="text-warning small">Numeral.</span>
+                    </li>
+                    <li>
+                        Folio - <span class="text-warning small">Texto.</span>
+                    </li>
+                    <li>
+                        Libro - <span class="text-warning small">Numeral.</span>
+                    </li>
+                    <li>
+                        Expediente - <span class="text-warning small">Texto.</span>
+                    </li>
+                    <li>
+                        Carpeta - <span class="text-warning small">Numeral.</span>
+                    </li>
+                    <li>
+                        Fecha - <span class="text-warning small">Fecha.</span>
+                    </li>
+                    <li>
+                        Año - <span class="text-warning small">Numeral.</span>
+                    </li>
+                    <li>
+                        Lugar - <span class="text-warning small">Texto.</span>
+                    </li>
+                    <li>
+                        Observaciones - <span class="text-warning small">Texto.</span>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                Las columnas pueden tener filas vacias, pero no completamente vacias.
+            </li>
+            <li>
+                <a href="/temp/Ejemplo Lote Registros.xlsx" class="alert-link">Ejemplo</a>.
+            </li>
+        </ul>
+    </div>
+</div>
+<hr />
+
+@using (Html.BeginForm("SubirLoteRegistros", "Catalogo", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="archivoAddon01" style="min-width: 120px;">Archivo Excel</span>
+            </div>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="Archivo" name="Archivo" aria-describedby="archivoAddon01">
+                <label class="custom-file-label" for="Archivo">Seleccionar archivo...</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-form-label">
+        <input type="submit" value="Cargar" class="btn btn-primary" style="min-width: 120px" />
+    </div>
+}

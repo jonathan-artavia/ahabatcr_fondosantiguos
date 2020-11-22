@@ -126,8 +126,14 @@
   <data name="btnGuardar" xml:space="preserve">
     <value>Guardar</value>
   </data>
+  <data name="btnImportar" xml:space="preserve">
+    <value>Insertar por Lote</value>
+  </data>
   <data name="btnSeleccionarSerie" xml:space="preserve">
     <value>Seleccionar Serie...</value>
+  </data>
+  <data name="colBorrarSN" xml:space="preserve">
+    <value>¿Borrar?</value>
   </data>
   <data name="Contenido" xml:space="preserve">
     <value>Contenido</value>
@@ -183,6 +189,9 @@
   <data name="Libro" xml:space="preserve">
     <value>Libro</value>
   </data>
+  <data name="lnkDescartar" xml:space="preserve">
+    <value>&lt; Descartar Cambios y regresar</value>
+  </data>
   <data name="Lugar" xml:space="preserve">
     <value>Lugar</value>
   </data>
@@ -215,6 +224,12 @@
   </data>
   <data name="RegistroNoExisteError" xml:space="preserve">
     <value>¡Registro no existe!</value>
+  </data>
+  <data name="RevisionNoExisteMsg" xml:space="preserve">
+    <value>Revisión invalida o no existe.</value>
+  </data>
+  <data name="Revision_FechaVencimiento" xml:space="preserve">
+    <value>Fecha Vencimiento</value>
   </data>
   <data name="SeriesNombre" xml:space="preserve">
     <value>Serie</value>

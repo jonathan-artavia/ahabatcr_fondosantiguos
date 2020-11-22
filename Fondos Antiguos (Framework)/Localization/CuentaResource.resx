@@ -176,6 +176,6 @@
     <value>Cuáles Permite</value>
   </data>
   <data name="Views" xml:space="preserve">
-    <value>Crear Registro (Catálogo):Catalogo/Insertar|Editar Registro (Catálogo):Catalogo/Editar|Eliminar Registro (Catálogo):Catalogo/Eliminar|Lista (Cuentas):Cuenta/ListaCuentas|Crear a otro (Cuenta):Cuenta/Registrar|Eliminar (Cuenta):Cuenta/Eliminar|Lista (Rol):Cuenta/ListaRoles|Crear (Rol):Cuenta/RegistrarRol|Ver/Editar (Rol):Cuenta/VerRol</value>
+    <value>Crear Registro (Catálogo):Catalogo/Insertar|Editar Registro (Catálogo):Catalogo/Editar|Eliminar Registro (Catálogo):Catalogo/Eliminar|Insertar por lote (Catálogo):Catalogo/SubirLoteRegistros,Catalogo/RevisionLoteRegistros|Lista (Cuentas):Cuenta/ListaCuentas|Crear a otro (Cuenta):Cuenta/Registrar|Eliminar (Cuenta):Cuenta/Eliminar|Lista (Rol):Cuenta/ListaRoles|Crear (Rol):Cuenta/RegistrarRol|Ver/Editar (Rol):Cuenta/VerRol</value>
   </data>
 </root>

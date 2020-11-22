@@ -17,6 +17,18 @@ namespace Fondos_Antiguos
 {
     public class FaAuthorizeAttribute : AuthorizeAttribute
     {
+        /// <summary>
+        /// Divisor de multiples direcciones en un permiso
+        /// </summary>
+        private const string DIV_DIRECCIONES = ",";
+        /// <summary>
+        /// Divisor de multiples permisos
+        /// </summary>
+        private const string DIV_PERMISOS = "|";
+        /// <summary>
+        /// Divisor de herarquia de direccion URL
+        /// </summary>
+        private const string DIV_DIRECCION = "/";
         public FaAuthorizeAttribute():base()
         {
 
@@ -29,29 +41,6 @@ namespace Fondos_Antiguos
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            //ApplicationUserManager man = httpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            //if(man != null)
-            //{
-            //    ApplicationUser user = man.FindByNameAsync(httpContext.User.Identity.Name).Result;
-            //    CuentaDataService ds = new CuentaDataService(user, man, null);
-            //    List<IdentityRolPermit> views = ds.GetViewsPermitidas(user.IdRol, httpContext).Result;
-            //    foreach (IdentityRolPermit item in views)
-            //    {
-            //        if(item.TodasLasVistas == 0)
-            //        {
-            //            string[] vista = item.ViewPath.Split('/');
-            //            if(httpContext.)
-            //        }
-            //        else
-            //        {
-            //            if (item.TodasLasVistas == 2)
-            //                return false;
-            //            else if(item.TodasLasVistas == 1)
-            //                return true;
-            //            break;
-            //        }
-            //    }
-            //}
             return base.AuthorizeCore(httpContext);
         }
 
@@ -97,11 +86,31 @@ namespace Fondos_Antiguos
                     {
                         if (item.TodasLasVistas == 0)
                         {
-                            string[] vista = ViewUtil.ObtenerDireccionDeView(item.ViewPath).Split('/');
-                            if (vista[0] == controller && vista[1] == action)
+                            string direcciones = ViewUtil.ObtenerDireccionDeView(item.ViewPath);
+
+                            if (!direcciones.Contains(DIV_DIRECCIONES))
                             {
-                                found = true;
-                                break;
+                                string[] vista = direcciones.Split(new string[] { DIV_DIRECCION }, StringSplitOptions.RemoveEmptyEntries);
+                                if (vista[0] == controller && vista[1] == action)
+                                {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                string[] vistas = direcciones.Split(new string[] { DIV_DIRECCIONES }, StringSplitOptions.RemoveEmptyEntries);
+                                foreach (string vista in vistas)
+                                {
+                                    string[] div = vista.Split(new string[] { DIV_DIRECCION }, StringSplitOptions.RemoveEmptyEntries);
+                                    if (div[0] == controller && div[1] == action)
+                                    {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (found)
+                                    break;
                             }
                         }
                         else

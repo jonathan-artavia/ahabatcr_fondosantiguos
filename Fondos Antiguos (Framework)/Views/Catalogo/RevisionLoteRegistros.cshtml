@@ -1,0 +1,250 @@
+﻿@model Fondos_Antiguos.Models.RevisionCatalogoPaginadoModel
+
+@{
+    ViewBag.Title = "Revisión de lote";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<script type="text/javascript">
+    function PaginaSeleccionada(numPagina) {
+        //var urlNueva = document.location.pathname + '?archivoId=' + $('#ArchivoId').val() + '&pagina=' + numPagina;
+        var urlNueva = document.location.pathname;
+        //document.location.assign(urlNueva);
+        $('#frmRevision').attr('action', '/Catalogo/RevisionLoteRegistros')
+        $('#SelectedPage').val(numPagina);
+        $('#frmRevision').submit();
+    }
+
+    function DescartarRevision() {
+        $('#DescartarSN').val(true);
+        $('#frmRevision').submit();
+    }
+</script>
+
+<div class="text-danger">
+    @Html.ValidationSummary()
+</div>
+
+<div class="container">
+
+    @if (Model.Registros != null)
+    {
+        using (Html.BeginForm("PersistirRevisionLoteRegistros", "Catalogo", FormMethod.Post, new { id = "frmRevision" }))
+        {
+            @Html.HiddenFor(model => model.ArchivoId);
+            @Html.HiddenFor(modelItem => modelItem.DescartarSN)
+            <div class="table-responsive-md">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th colspan="15">
+                                <nav class="navbar navbar-expand-md navbar-light bg-light">
+                                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                        <span class="navbar-toggler-icon"></span>
+                                    </button>
+                                    <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
+                                        <ul class="navbar-nav mr-auto">
+                                            <li>
+                                                @if (Model.Registros.Count > 0)
+                                                {
+                                                    <input type="submit" class="btn btn-primary" value="@Fondos_Antiguos.Localization.ComunResource.btnGuardar" />
+                                                }
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </nav>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.colBorrarSN
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.Contenido
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.Fecha
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.Materias
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.SeriesNombre
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.Fichero
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.NumCaja
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.NumTomo
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.Folio
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.Libro
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.NumExpediente
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.NumCarpeta
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.Lugar
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.Año
+                            </th>
+                            <th>
+                                @Fondos_Antiguos.Localization.CatalogoRes.Observaciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Registros.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.CheckBoxFor(modelItem => Model.Registros[i].Seleccionado, new { @class = "form-control" })
+                                    @Html.HiddenFor(modelItem => Model.Registros[i].ID)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].Contenido)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].Fecha)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].Materias)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].SeriesNombre)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].Fichero)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].NumCaja)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].NumTomo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].Folio)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].Libro)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].NumExpediente)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].NumCarpeta)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].Lugar)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].Año)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model.Registros[i].Observaciones)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="15" aria-label="Paginación del Catálogo">
+                                @Html.HiddenFor(modelItem => modelItem.PaginaActual)
+                                @Html.HiddenFor(modelItem => modelItem.SelectedPage)
+                                @Html.HiddenFor(modelItem => modelItem.PageTotal)
+                                @Html.HiddenFor(modelItem => modelItem.RecordTotal)
+                                <ul class="pagination">
+                                    @{
+                                        if (Model.Registros.Count > 0)
+                                        {
+                                            if (Model.SelectedPage != 1)
+                                            {
+                                                <li>
+                                                    <a id="btnPage" style="width:auto" class="page-link" href="#" onclick="PaginaSeleccionada(1)">
+                                                        1
+                                                    </a>
+                                                </li>
+                                                if ((Model.SelectedPage - FaViewOptions.CantidadPaginasMostradas) > 1)
+                                                {
+                                                    <li><label class="page-link">...</label></li>
+                                                }
+                                            }
+                                            if (Model.PageTotal > 1)
+                                            {
+                                                long tr = (Model.SelectedPage > FaViewOptions.CantidadPaginasMostradas ? (FaViewOptions.CantidadPaginasMostradas - 1) + 2 : Model.SelectedPage);
+                                                for (long i = 2 + (Model.SelectedPage - tr); i < Model.SelectedPage; i++)
+                                                {
+                                                    <li>
+                                                        <a id="btnPage" style="width:auto" class="page-link" href="#" onclick="PaginaSeleccionada(@i)">
+                                                            @i
+                                                        </a>
+                                                    </li>
+                                                }
+                                                <li><a id="btnCurrent" class="page-link text-light bg-primary">@Model.SelectedPage</a></li>
+                                                for (long i = Model.SelectedPage + 1; i < Model.SelectedPage + FaViewOptions.CantidadPaginasMostradas && i < Model.PageTotal; i++)
+                                                {
+                                                    <li>
+                                                        <a id="btnPage" style="width:auto" class="page-link" href="#" onclick="PaginaSeleccionada(@i)">
+                                                            @i
+                                                        </a>
+                                                    </li>
+                                                }
+
+                                                if (Model.SelectedPage != Model.PageTotal)
+                                                {
+                                                    if ((Model.SelectedPage) < @Model.PageTotal - FaViewOptions.CantidadPaginasMostradas)
+                                                    {
+                                                        <li><label class="page-link">...</label></li>
+                                                    }
+                                                    <li>
+                                                        <a id="btnPage" style="width:auto" class="page-link" href="#" onclick="PaginaSeleccionada(@Model.PageTotal)">
+                                                            @Model.PageTotal
+                                                        </a>
+                                                    </li>
+                                                }
+                                            }
+                                        }
+                                    }
+                                </ul>
+                                @{
+                                    long reg_fin = 0;
+                                    long reg_ini = 0;
+                                    if (Model.PageTotal > 1)
+                                    {
+                                        reg_ini = 1 + (FaViewOptions.RegistrosPorPagina * (Model.PaginaActual - 1));
+                                        reg_fin = Model.PageSize < FaViewOptions.RegistrosPorPagina ? reg_ini + Model.PageSize : FaViewOptions.RegistrosPorPagina * (Model.PaginaActual);
+                                    }
+                                    else
+                                    {
+                                        reg_ini = 1;
+                                        reg_fin = Model.Count();
+                                    }
+                                    <label>@String.Format("Mostrando {0} a {1} de {2} registros.", reg_ini, reg_fin, Model.RecordTotal)</label>
+                                }
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="row">
+                    <div class="col-3">
+                        <input type="button" class="btn btn-outline-secondary" value="@Fondos_Antiguos.Localization.CatalogoRes.lnkDescartar" onclick="DescartarRevision()" />
+                    </div>
+                    <div class="col-md-9">
+
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

@@ -159,6 +159,9 @@ WHERE {0}</value>
   <data name="SqlHistCatalogoResource" xml:space="preserve">
     <value>SELECT * FROM `tblHistCatalogo` WHERE {0}</value>
   </data>
+  <data name="SqlLastInsertedId" xml:space="preserve">
+    <value>SELECT LAST_INSERT_ID();</value>
+  </data>
   <data name="SqlPagingFormat" xml:space="preserve">
     <value>LIMIT {0}{1}</value>
   </data>
@@ -185,6 +188,9 @@ WHERE {0}</value>
   </data>
   <data name="SqlRolesVistasPermitidasByRol" xml:space="preserve">
     <value>SELECT * FROM `tblRolView` WHERE {0}</value>
+  </data>
+  <data name="SqlSeriesInsert" xml:space="preserve">
+    <value>INSERT INTO `tblSerie` (Nombre) VALUES (@series)</value>
   </data>
   <data name="SqlSeriesResource" xml:space="preserve">
     <value>SELECT * FROM tblSerie WHERE {0}</value>

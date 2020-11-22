@@ -232,7 +232,7 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Crear Registro (Catálogo):Catalogo/Insertar|Editar Registro (Catálogo):Catalogo/Editar|Eliminar Registro (Catálogo):Catalogo/Eliminar|Lista (Cuentas):Cuenta/ListaCuentas|Crear a otro (Cuenta):Cuenta/Registrar|Eliminar (Cuenta):Cuenta/Eliminar|Lista (Rol):Cuenta/ListaRoles|Crear (Rol):Cuenta/RegistrarRol|Ver/Editar (Rol):Cuenta/VerRol.
+        ///   Looks up a localized string similar to Crear Registro (Catálogo):Catalogo/Insertar|Editar Registro (Catálogo):Catalogo/Editar|Eliminar Registro (Catálogo):Catalogo/Eliminar|Insertar por lote (Catálogo):Catalogo/SubirLoteRegistros,Catalogo/RevisionLoteRegistros|Lista (Cuentas):Cuenta/ListaCuentas|Crear a otro (Cuenta):Cuenta/Registrar|Eliminar (Cuenta):Cuenta/Eliminar|Lista (Rol):Cuenta/ListaRoles|Crear (Rol):Cuenta/RegistrarRol|Ver/Editar (Rol):Cuenta/VerRol.
         /// </summary>
         public static string Views {
             get {

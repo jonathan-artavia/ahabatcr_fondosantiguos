@@ -48,6 +48,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=3.1.6.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.3.1.6\lib\netstandard2.0\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
@@ -92,6 +98,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.2\lib\netstandard2.0\System.Memory.dll</HintPath>
@@ -249,13 +256,9 @@
     <Compile Include="App_Start\Identity\FaAuthorize.cs" />
     <Compile Include="App_Start\Identity\FaIdentityOptions.cs" />
     <Compile Include="App_Start\Identity\FaSignInManager.cs" />
-    <Compile Include="App_Start\Identity\FaIdentityRole.cs" />
     <Compile Include="App_Start\Identity\RoleStore.cs" />
     <Compile Include="App_Start\Identity\RoleTable.cs" />
-    <Compile Include="App_Start\Identity\UserClaimsTable.cs" />
     <Compile Include="App_Start\Identity\UserRolesTable.cs" />
-    <Compile Include="App_Start\Identity\UserStore.cs" />
-    <Compile Include="App_Start\Identity\UserTable.cs" />
     <Compile Include="App_Start\MySqlHistoryContext.cs" />
     <Compile Include="App_Start\QueryExpression.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -299,6 +302,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CambiarContraseñaModel.cs" />
     <Compile Include="Models\CatalogoModel.cs" />
+    <Compile Include="Models\CatalogoPaginadoModel.cs" />
     <Compile Include="Models\CuentaModel.cs" />
     <Compile Include="Models\ErrorViewModel.cs" />
     <Compile Include="Models\HistCatalogoModel.cs" />
@@ -306,7 +310,10 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PagingResult.cs" />
     <Compile Include="Models\PermitirViewModel.cs" />
+    <Compile Include="Models\RevisionCatalogoPaginadoModel.cs" />
     <Compile Include="Models\SerieModel.cs" />
+    <Compile Include="Models\SubirLoteRegistrosModel.cs" />
+    <Compile Include="Models\SeleccionableCatalogoModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -375,16 +382,20 @@
     <Content Include="Views\Catalogo\Crear.cshtml" />
     <Content Include="Views\Catalogo\Editar.cshtml" />
     <Content Include="Views\Catalogo\Index.cshtml" />
-    <Content Include="Views\Catalogo\VerView.cshtml" />
+    <Content Include="Views\Catalogo\Ver.cshtml" />
     <Content Include="Views\Cuenta\CambiarContraseña.cshtml" />
     <Content Include="Views\Cuenta\ListaCuentas.cshtml" />
     <Content Include="Views\Cuenta\Editar.cshtml" />
     <Content Include="Views\Cuenta\ListaRoles.cshtml" />
     <Content Include="Views\Cuenta\RegistrarRol.cshtml" />
     <Content Include="Views\Cuenta\VerRol.cshtml" />
+    <Content Include="Views\Catalogo\SubirLoteRegistros.cshtml" />
+    <Content Include="temp\Ejemplo Lote Registros.xlsx" />
+    <Content Include="Views\Catalogo\RevisionLoteRegistros.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Subidas\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

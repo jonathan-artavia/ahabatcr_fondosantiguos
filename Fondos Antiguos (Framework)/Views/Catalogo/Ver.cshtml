@@ -1,0 +1,123 @@
+﻿@model Fondos_Antiguos.Models.CatalogoModel
+
+@{
+    if (Model != null)
+    {
+        ViewData["Title"] = "Registro: " + @Model.ID;
+    }
+    else
+    {
+        ViewData["Title"] = "Registro no existe";
+    }
+}
+<div>
+    <div class="card-body text-danger">
+        @Html.ValidationMessage("")
+    </div>
+    @if (Model != null && !Model.ID.Equals(0))
+    {
+
+        <h4>@Html.DisplayFor(model => model.Signatura)</h4>
+        <hr />
+        @Html.HiddenFor(model => model.ID)
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
+                <ul class="navbar-nav mr-auto">
+                    @if (FaAuthorizeAttribute.IsAuthorized(User, "Catalogo", "Editar", Context))
+                    {
+                        @Html.ActionLink("Editar", "Editar", new { id = Model.ID, origen = Model.Origen }, new { @class = "btn btn-outline-secondary" });
+                    }
+                </ul>
+            </div>
+        </nav>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Fecha)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Fecha)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Contenido)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Contenido)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.SeriesNombre)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SeriesNombre)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NumCaja)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NumCaja)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NumTomo)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NumTomo)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Folio)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Folio)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Libro)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Libro)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NumExpediente)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NumExpediente)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NumCarpeta)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NumCarpeta)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Lugar)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Lugar)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Materias)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Materias)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Observaciones)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Observaciones)
+            </dd>
+        </dl>
+    }
+    <div class="container">
+    <a href="@{
+        if(Context.Request.Headers["Referer"]!= null)
+        {
+            @Context.Request.Headers["Referer"].ToString();
+        }
+        else
+        {
+            @Url.Action("Index");
+        }
+        }" class="btn btn-outline-secondary">@Fondos_Antiguos.Localization.ComunResource.lnkVolverALista</a>
+    </div>
+</div>
