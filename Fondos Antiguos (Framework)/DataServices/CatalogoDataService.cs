@@ -32,14 +32,10 @@ namespace Fondos_Antiguos.DataService
             switch (includeHist)
             {
                 case 0: //sin hist
-                    read = this.GetOrCreateValue<IDataReader>(
-                        this.GetOrCreateKey(context),
-                        () => DataConnection.Instance.ExecuteQuery(
+                    read = DataConnection.Instance.ExecuteQuery(
                             string.Format(SqlResource.SqlCatalogoResource, expr?.ToString() ?? "1=1"),
                             parameters,
-                            context, 0)
-                        , "GetCatalogo", expr?.ToString(), 0
-                        );
+                            context, 0);
                     if(read.Read())
                     {
                         CatalogoModel nc = new CatalogoModel();
@@ -51,14 +47,10 @@ namespace Fondos_Antiguos.DataService
                     }
                     break;
                 case 1:
-                    read = this.GetOrCreateValue<IDataReader>(
-                        this.GetOrCreateKey(context),
-                        () => DataConnection.Instance.ExecuteQuery(
+                    read = DataConnection.Instance.ExecuteQuery(
                             string.Format(SqlResource.SqlCatalogoAmbosResource, expr?.ToString() ?? "1=1"),
                             parameters,
-                            context,0)
-                        , "GetCatalogo", expr?.ToString(), 1
-                        );
+                            context,0);
                     if (read.Read())
                     {
                         CatalogoModel nc = new CatalogoModel();
@@ -70,14 +62,10 @@ namespace Fondos_Antiguos.DataService
                     }
                     break;
                 case 2:
-                    read = this.GetOrCreateValue<IDataReader>(
-                        this.GetOrCreateKey(context),
-                        () => DataConnection.Instance.ExecuteQuery(
+                    read = DataConnection.Instance.ExecuteQuery(
                             string.Format(SqlResource.SqlHistCatalogoResource, expr?.ToString() ?? "1=1"),
                             parameters,
-                            context,0),
-                        "GetCatalogo", expr?.ToString(), 2
-                        );
+                            context,0);
                     
                     if (read.Read())
                     {

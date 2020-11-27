@@ -170,8 +170,11 @@ namespace Fondos_Antiguos.DataService
                     QueryExpresion expr = new QueryExpresion(SqlUtil.Equals("IdRol", "@idRol")).And($"{SqlUtil.Equals("All", "@all1")} {SqlUtil.OR} {SqlUtil.Equals("All", "@all2")}");
                     DataConnection.Instance.ExecuteNonQuery(string.Format("DELETE FROM `tblRolView` WHERE {0}", expr.ToString()), new Dictionary<string, object>() { { "@idRol", idRol }, { "@all1", 1 }, { "@all2", 2 } }, httpContext);
                 }
-                if(todas != 0 || !string.IsNullOrEmpty(dirView))
-                    DataConnection.Instance.ExecuteNonQuery("INSERT INTO `tblRolView` (`View`, `IdRol`, `All`) VALUES (@view, @idRol, @all)", new Dictionary<string, object>() { { "@view", todas != 0 ? "*" : dirView }, { "@idRol", idRol }, { "@all",todas } }, httpContext);
+                if (todas != 0 || !string.IsNullOrEmpty(dirView))
+                {
+                    DataConnection.Instance.ExecuteNonQuery("INSERT INTO `tblRolView` (`View`, `IdRol`, `All`) VALUES (@view, @idRol, @all)", new Dictionary<string, object>() { { "@view", todas != 0 ? "*" : dirView }, { "@idRol", idRol }, { "@all", todas } }, httpContext);
+                }
+                this.RemoveValueIfExists(this.GetOrCreateKey(httpContext), "GetViewsPermitidas");
             }
             else
             {
@@ -188,6 +191,8 @@ namespace Fondos_Antiguos.DataService
                 QueryExpresion expr = new QueryExpresion(SqlUtil.Equals("IdRol", "@idRol")).And(SqlUtil.Equals("ID", "@idView"));
 
                 DataConnection.Instance.ExecuteNonQuery(string.Format("DELETE FROM `tblRolView` WHERE {0}", expr.ToString()), new Dictionary<string, object>() { { "@idRol", idRol }, { "@idView", idView } }, httpContext);
+
+                this.RemoveValueIfExists(this.GetOrCreateKey(httpContext), "GetViewsPermitidas");
             }
             else
             {

@@ -393,6 +393,7 @@ namespace Fondos_Antiguos.Controllers
 
         [FaAuthorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> RevisionLoteRegistros(RevisionCatalogoPaginadoModel res)
         {
             List<SeleccionableCatalogoModel> catalogosNuevos = (List<SeleccionableCatalogoModel>)this.dataService.GetCatalogoSinRevisar(res.ArchivoId, this.HttpContext);
@@ -404,6 +405,7 @@ namespace Fondos_Antiguos.Controllers
 
         [FaAuthorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> PersistirRevisionLoteRegistros(RevisionCatalogoPaginadoModel res)
         {
             if (!res.DescartarSN)

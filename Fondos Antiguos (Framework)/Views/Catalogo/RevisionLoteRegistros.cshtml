@@ -32,6 +32,7 @@
     {
         using (Html.BeginForm("PersistirRevisionLoteRegistros", "Catalogo", FormMethod.Post, new { id = "frmRevision" }))
         {
+            @Html.AntiForgeryToken()
             @Html.HiddenFor(model => model.ArchivoId);
             @Html.HiddenFor(modelItem => modelItem.DescartarSN)
             <div class="table-responsive-md">
