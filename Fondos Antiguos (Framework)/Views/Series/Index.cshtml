@@ -1,0 +1,120 @@
+﻿@using Fondos_Antiguos.Models
+@model ResultadoListaSimpleModel<Fondos_Antiguos.Models.SerieModel>
+
+@{
+    ViewBag.Title = "Lista de Series";
+}
+
+<h2>@ViewBag.Title</h2>
+<script src="~/Scripts/SeriesScripts.js"></script>
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+    <div id="navbarSupportedContent" aria-expanded="true">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                @if (FaAuthorizeAttribute.IsAuthorized(User, "Series", "Crear", Context))
+                {
+                    <button id="crearModalActivate" type="button" class="btn btn-outline-secondary col" data-toggle="modal" data-target="#crearModal" style="vertical-align: middle; margin-right: 5px">
+                        @Fondos_Antiguos.Localization.ComunResource.btnAgregarNuevo
+                    </button>
+                }
+            </li>
+        </ul>
+    </div>
+</nav>
+@{
+    if (Model.TipoMensaje.HasValue)
+    {
+        if (Model.TipoMensaje == 0 && !string.IsNullOrEmpty(Model.Mensaje))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Completado!</strong> @Model.Mensaje
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+        else if (Model.TipoMensaje == 1 && !string.IsNullOrEmpty(Model.Mensaje))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>¡Hubo un Problema!</strong> @Model.Mensaje
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+    }
+
+}
+<table class="table">
+    <tr>
+        <th>
+            @Fondos_Antiguos.Localization.CatalogoRes.SeriesNombre
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @if (FaAuthorizeAttribute.IsAuthorized(User, "Series", "Eliminar", Context))
+                {
+                    <button id="modalActivate" type="button" class="btn btn-outline-secondary col" data-toggle="modal" data-target="#borrarModal" style="vertical-align: middle; margin-right: 5px" onclick="OnBtnBorrarClick(@item.ID)">
+                        @Fondos_Antiguos.Localization.ComunResource.btnBorrar
+                    </button>
+                }
+            </td>
+        </tr>
+    }
+</table>
+
+@if (FaAuthorizeAttribute.IsAuthorized(User, "Series", "Eliminar", Context))
+{
+    <!-- Modal -->
+    <div class="modal fade left" id="borrarModal" tabindex="-1" role="dialog" aria-labelledby="modalTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-side modal-bottom-left" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitulo">¿Esta seguro que desea borrar la serie?</h5>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <form method="POST" action="@Url.Action("Eliminar")">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="BorrarRegistroID" name="id" />
+                        <input type="submit" class="btn btn-secondary" value="@Fondos_Antiguos.Localization.ComunResource.btnSi" />
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">@Fondos_Antiguos.Localization.ComunResource.btnNo</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (FaAuthorizeAttribute.IsAuthorized(User, "Series", "Crear", Context))
+{
+    <!-- Modal -->
+    <div class="modal fade left" id="crearModal" tabindex="-1" role="dialog" aria-labelledby="modalTitulo2" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-side modal-bottom-left" role="document">
+            <div class="modal-content">
+                <form method="POST" action="@Url.Action("Crear")">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitulo2">Agregar nueva serie</h5>
+                    </div>
+                    <div class="modal-body align-content-center">
+                        @Html.AntiForgeryToken()
+                        @Html.TextBox("nuevo_nombre", null, new { @class = "form-control" })
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-secondary" value="@Fondos_Antiguos.Localization.ComunResource.btnAgregar" />
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">@Fondos_Antiguos.Localization.ComunResource.btnCancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

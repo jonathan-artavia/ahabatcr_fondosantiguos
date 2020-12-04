@@ -88,6 +88,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancelar.
+        /// </summary>
+        public static string btnCancelar {
+            get {
+                return ResourceManager.GetString("btnCancelar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Editar.
         /// </summary>
         public static string btnEditar {

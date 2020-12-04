@@ -3,26 +3,21 @@
     ViewData["Title"] = "Lista de cuentas";
 }
 @Html.ValidationSummary()
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" href="#">Lista de Cuentas</a>
+    </li>
+    @if (FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "ListaRoles", Context))
+    {
+        <li class="nav-item">
+            @Html.ActionLink("Lista de Roles", "ListaRoles", null, new { @class = "nav-link" })
+        </li>
+    }
+</ul>
 <div class="row">
-    <div class="col-2">
-        <ul class="nav nav-pills nav-stacked">
-            <li>
-                <label>Lista de Cuentas</label>
-            </li>
-            @if (FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "ListaRoles", Context))
-            {
-                <li>
-                    @Html.ActionLink("Lista de Roles", "ListaRoles")
-                </li>
-            }
-        </ul>
-    </div>
-    <div class="col-10">
+    <div class="col-12">
         <nav class="navbar navbar-expand-md navbar-light bg-light">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent" aria-expanded="true">
+            <div id="navbarSupportedContent" aria-expanded="true">
                 <ul class="navbar-nav mr-auto">
                     @if (FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "Registrar", Context))
                     {
@@ -42,7 +37,7 @@
                     <th>
                         @Fondos_Antiguos.Localization.CuentaResource.RolNombre
                     </th>
-                    <th>
+                    <th class="d-none d-sm-table-cell">
                         @Fondos_Antiguos.Localization.CuentaResource.FechaIngreso
                     </th>
                     <th></th>
@@ -58,7 +53,7 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Roles)
                         </td>
-                        <td>
+                        <td class="d-none d-sm-table-cell">
                             @Html.DisplayFor(modelItem => item.FechaIngreso)
                         </td>
                         <td>
@@ -70,7 +65,6 @@
                                     using (Html.BeginForm("Eliminar", "Cuenta", FormMethod.Post, new { id = "frmDelete" + item.IdUsuario }))
                                     {
                                         var r = "frmDelete" + item.IdUsuario;
-                                        @*@Html.HiddenFor(modelItem => item.IdUsuario, new { id = "borrarIdUsuario" })*@
                                         <input type="hidden" form="@r" name="borrarIdusuario" value="@item.IdUsuario" />
                                         <button type="submit" class="btn btn-link">Borrar</button>
                                     }

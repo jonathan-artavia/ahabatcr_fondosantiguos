@@ -8,14 +8,13 @@ namespace Fondos_Antiguos.Models
 {
     public class SerieModel
     {
-
-        #region Properties
+        #region Propiedades
         public long ID { get; set; }
         public string Nombre { get; set; }
         #endregion
 
-        #region public
-        public void Fill(IDataReader dr)
+        #region Metodos
+        public virtual void Fill(IDataReader dr)
         {
             if (!dr.IsClosed && dr.FieldCount > 0)
             {

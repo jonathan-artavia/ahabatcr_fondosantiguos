@@ -147,6 +147,19 @@ WHERE {0}</value>
   <data name="SqlCatalogoInsert" xml:space="preserve">
     <value>INSERT INTO `tblCatalogo`(`Contenido`, `Fecha`, `Signatura`, `Observaciones`, `IdSerie`, `Fichero`, `NumCaja`, `NumTomo`, `Folio`,`Libro`,`NumExpediente`,`NumCarpeta`,`Lugar`,`Año`,`Mes`,`FechaIngreso`) VALUES (@contenido,@Fecha,@Signatura,@Observaciones,@IdSerie,@Fichero,@NumCaja,@NumTomo,@Folio,@Libro,@NumExpediente,@NumCarpeta,@Lugar,@Año,@Mes,@FechaIngreso);</value>
   </data>
+  <data name="SqlCatalogoMateriasEliminar" xml:space="preserve">
+    <value>DELETE FROM `tblCatalogoMateria` WHERE `Catalogo_ID` = @catalogoId AND `Materia_ID` = @materiaId</value>
+  </data>
+  <data name="SqlCatalogoMateriasInsertar" xml:space="preserve">
+    <value>INSERT INTO `tblCatalogoMateria`
+(`Materia_ID`,`Catalogo_ID`) VALUES(@materiaId,@catalogoId);</value>
+  </data>
+  <data name="SqlCatalogoMateriasResource" xml:space="preserve">
+    <value>SELECT cm.*, m.`Nombre` 
+FROM `tblCatalogoMateria` as cm
+ INNER JOIN `tblMateria` AS m ON m.ID = cm.`Materia_ID`
+WHERE cm.Catalogo_ID = @catalogoId</value>
+  </data>
   <data name="SqlCatalogoResource" xml:space="preserve">
     <value>SELECT * FROM `tblCatalogo` WHERE {0}</value>
   </data>
@@ -161,6 +174,15 @@ WHERE {0}</value>
   </data>
   <data name="SqlLastInsertedId" xml:space="preserve">
     <value>SELECT LAST_INSERT_ID();</value>
+  </data>
+  <data name="SqlMateriasDelete" xml:space="preserve">
+    <value>DELETE FROM `tblMateria` WHERE Id = @id</value>
+  </data>
+  <data name="SqlMateriasInsert" xml:space="preserve">
+    <value>INSERT INTO `tblMateria` (Nombre) VALUES (@nombre)</value>
+  </data>
+  <data name="SqlMateriasResource" xml:space="preserve">
+    <value>SELECT * FROM `tblMateria` WHERE {0}</value>
   </data>
   <data name="SqlPagingFormat" xml:space="preserve">
     <value>LIMIT {0}{1}</value>
@@ -188,6 +210,9 @@ WHERE {0}</value>
   </data>
   <data name="SqlRolesVistasPermitidasByRol" xml:space="preserve">
     <value>SELECT * FROM `tblRolView` WHERE {0}</value>
+  </data>
+  <data name="SqlSeriesDelete" xml:space="preserve">
+    <value>DELETE FROM `tblSerie` WHERE Id = @id</value>
   </data>
   <data name="SqlSeriesInsert" xml:space="preserve">
     <value>INSERT INTO `tblSerie` (Nombre) VALUES (@series)</value>

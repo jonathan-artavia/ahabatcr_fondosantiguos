@@ -295,11 +295,29 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Materia.
+        /// </summary>
+        public static string MateriaNombre {
+            get {
+                return ResourceManager.GetString("MateriaNombre", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Materias.
         /// </summary>
         public static string Materias {
             get {
                 return ResourceManager.GetString("Materias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ¡Materia con el nombre &apos;{0}&apos; ya existe!.
+        /// </summary>
+        public static string MateriaYaExisteFmt {
+            get {
+                return ResourceManager.GetString("MateriaYaExisteFmt", resourceCulture);
             }
         }
         
@@ -376,11 +394,47 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ¡Materia agregada!.
+        /// </summary>
+        public static string RegistroMateriaAgregadoMsg {
+            get {
+                return ResourceManager.GetString("RegistroMateriaAgregadoMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ¡Materia borrada!.
+        /// </summary>
+        public static string RegistroMateriaBorradoMsg {
+            get {
+                return ResourceManager.GetString("RegistroMateriaBorradoMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ¡Registro no existe!.
         /// </summary>
         public static string RegistroNoExisteError {
             get {
                 return ResourceManager.GetString("RegistroNoExisteError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ¡Serie agregado!.
+        /// </summary>
+        public static string RegistroSerieAgregadoMsg {
+            get {
+                return ResourceManager.GetString("RegistroSerieAgregadoMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ¡Serie borrada!.
+        /// </summary>
+        public static string RegistroSerieBorradoMsg {
+            get {
+                return ResourceManager.GetString("RegistroSerieBorradoMsg", resourceCulture);
             }
         }
         
@@ -408,6 +462,15 @@ namespace Fondos_Antiguos.Localization {
         public static string SeriesNombre {
             get {
                 return ResourceManager.GetString("SeriesNombre", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ¡Serie con el nombre &apos;{0}&apos; ya existe!.
+        /// </summary>
+        public static string SerieYaExisteFmt {
+            get {
+                return ResourceManager.GetString("SerieYaExisteFmt", resourceCulture);
             }
         }
         

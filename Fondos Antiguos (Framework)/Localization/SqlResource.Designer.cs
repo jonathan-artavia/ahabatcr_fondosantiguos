@@ -123,6 +123,37 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DELETE FROM `tblCatalogoMateria` WHERE `Catalogo_ID` = @catalogoId AND `Materia_ID` = @materiaId.
+        /// </summary>
+        public static string SqlCatalogoMateriasEliminar {
+            get {
+                return ResourceManager.GetString("SqlCatalogoMateriasEliminar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO `tblCatalogoMateria`
+        ///(`Materia_ID`,`Catalogo_ID`) VALUES(@materiaId,@catalogoId);.
+        /// </summary>
+        public static string SqlCatalogoMateriasInsertar {
+            get {
+                return ResourceManager.GetString("SqlCatalogoMateriasInsertar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT cm.*, m.`Nombre` 
+        ///FROM `tblCatalogoMateria` as cm
+        /// INNER JOIN `tblMateria` AS m ON m.ID = cm.`Materia_ID`
+        ///WHERE cm.Catalogo_ID = @catalogoId.
+        /// </summary>
+        public static string SqlCatalogoMateriasResource {
+            get {
+                return ResourceManager.GetString("SqlCatalogoMateriasResource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT * FROM `tblCatalogo` WHERE {0}.
         /// </summary>
         public static string SqlCatalogoResource {
@@ -164,6 +195,33 @@ namespace Fondos_Antiguos.Localization {
         public static string SqlLastInsertedId {
             get {
                 return ResourceManager.GetString("SqlLastInsertedId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DELETE FROM `tblMateria` WHERE Id = @id.
+        /// </summary>
+        public static string SqlMateriasDelete {
+            get {
+                return ResourceManager.GetString("SqlMateriasDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO `tblMateria` (Nombre) VALUES (@nombre).
+        /// </summary>
+        public static string SqlMateriasInsert {
+            get {
+                return ResourceManager.GetString("SqlMateriasInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT * FROM `tblMateria` WHERE {0}.
+        /// </summary>
+        public static string SqlMateriasResource {
+            get {
+                return ResourceManager.GetString("SqlMateriasResource", resourceCulture);
             }
         }
         
@@ -245,6 +303,15 @@ namespace Fondos_Antiguos.Localization {
         public static string SqlRolesVistasPermitidasByRol {
             get {
                 return ResourceManager.GetString("SqlRolesVistasPermitidasByRol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DELETE FROM `tblSerie` WHERE Id = @id.
+        /// </summary>
+        public static string SqlSeriesDelete {
+            get {
+                return ResourceManager.GetString("SqlSeriesDelete", resourceCulture);
             }
         }
         

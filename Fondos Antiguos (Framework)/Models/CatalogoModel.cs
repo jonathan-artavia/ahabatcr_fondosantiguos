@@ -126,6 +126,7 @@ namespace Fondos_Antiguos.Models
         public byte Origen { get; set; }
         public string Exception { get; set; }
         public List<SerieModel> Series { get; set; }
+        public IEnumerable<MateriaModel> ListaMaterias { get; set; }
         #endregion
     }
 }

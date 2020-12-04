@@ -126,6 +126,9 @@
   <data name="btnBorrar" xml:space="preserve">
     <value>Borrar</value>
   </data>
+  <data name="btnCancelar" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
   <data name="btnEditar" xml:space="preserve">
     <value>Editar</value>
   </data>

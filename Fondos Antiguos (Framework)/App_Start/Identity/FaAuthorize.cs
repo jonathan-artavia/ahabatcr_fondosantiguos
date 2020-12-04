@@ -15,6 +15,7 @@ using System.Web.Mvc;
 
 namespace Fondos_Antiguos
 {
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class FaAuthorizeAttribute : AuthorizeAttribute
     {
         /// <summary>

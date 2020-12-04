@@ -64,6 +64,24 @@
                                     @Html.ActionLink("Manejar Cuentas", "ListaCuentas", "Cuenta", null, new { @class = "nav-link text-dark" })
                                 </li>
                             }
+                            bool autorizadoSeries = FaAuthorizeAttribute.IsAuthorized(this.User, "Series", "Index", Context);
+                            bool autorizadoMaterias = FaAuthorizeAttribute.IsAuthorized(this.User, "Materias", "Index", Context);
+                            if (autorizadoSeries || autorizadoMaterias)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarListas" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Listas</a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarListas">
+                                        @if (autorizadoSeries)
+                                        {
+                                            @Html.ActionLink("Series", "Index", "Series", null, new { @class = "dropdown-item" })
+                                        }
+                                        @if (autorizadoMaterias)
+                                        {
+                                            @Html.ActionLink("Materias", "Index", "Materias", null, new { @class = "dropdown-item" })
+                                        }
+                                    </div>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>

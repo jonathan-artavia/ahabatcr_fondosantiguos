@@ -77,7 +77,7 @@ namespace Fondos_Antiguos.Controllers
             {
                 msg = this.TempData["Msg"].ToString();
             }
-            var seriesList = new SeriesDataService().GetSeries(null, null, this.HttpContext);
+            var seriesList = new SeriesDataService().ObtenerSeries(null, null, this.HttpContext);
             this.ViewBag.SerieList = seriesList;
 
             //iniciar armado de filtros
@@ -204,7 +204,7 @@ namespace Fondos_Antiguos.Controllers
         public ActionResult Editar(long id, byte origen)
         {
             var dataServiceSeries = new SeriesDataService();
-            var seriesList = dataServiceSeries.GetSeries(null, null, this.HttpContext);
+            var seriesList = dataServiceSeries.ObtenerSeries(null, null, this.HttpContext);
             try
             {
                 var results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
@@ -250,7 +250,7 @@ namespace Fondos_Antiguos.Controllers
         [HttpGet]
         public ActionResult Crear()
         {
-            ViewBag.SerieList = new SeriesDataService().GetSeries(null, null, this.HttpContext);
+            ViewBag.SerieList = new SeriesDataService().ObtenerSeries(null, null, this.HttpContext);
             return View("Crear");
         }
 

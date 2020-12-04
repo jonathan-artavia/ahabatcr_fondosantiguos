@@ -20,29 +20,52 @@ namespace Fondos_Antiguos.DataService
         #endregion
 
         #region Public
-        public virtual IEnumerable<SerieModel> GetSeries(QueryExpresion expr, Dictionary<string, object> parameters, HttpContextBase context)
+        public virtual IEnumerable<SerieModel> ObtenerSeries(QueryExpresion expr, Dictionary<string, object> parameters, HttpContextBase context)
         {
             List<SerieModel> result = this.GetOrCreateValue<List<SerieModel>>(
                 this.GetOrCreateKey(context),
-                () => this.FillModels(DataConnection.Instance.ExecuteQuery(
+                () => this.LlenarModels(DataConnection.Instance.ExecuteQuery(
                     string.Format(SqlResource.SqlSeriesResource, expr?.ToString() ?? "1=1"),
                     parameters,
                     context,0)),
-                "GetSeries", expr?.ToString()
+                nameof(ObtenerSeries), expr?.ToString()
                 );
 
             return result;
         }
 
-        public virtual void Insert(SerieModel model, HttpContextBase context)
+        public virtual void Insertar(SerieModel model, HttpContextBase context)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("@series", model.Nombre);
             try
             {
+                SerieModel dup = this.ObtenerSeries(new QueryExpresion($"lcase({SqlUtil.SurroundColumn("Nombre")}) = @nombre"), new Dictionary<string, object>() { { "@nombre", model.Nombre.ToLower() } }, context)?.FirstOrDefault();
+
+                //buscar por duplicados
+                if (dup != null)
+                    throw new Exception(string.Format(CatalogoRes.SerieYaExisteFmt, dup.Nombre));
+
                 DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlSeriesInsert, parameters, context);
                 ulong id = (ulong)DataConnection.Instance.ExecuteScalar(SqlResource.SqlLastInsertedId, default(Dictionary<string,object>), context, transaction: null);
                 model.ID = (long)id;
+                this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(ObtenerSeries));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public virtual void Borrar(long id, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@id", id);
+            try
+            {
+                DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlSeriesDelete, parameters, context);
+
+                this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(ObtenerSeries));
             }
             catch (Exception ex)
             {
@@ -52,7 +75,7 @@ namespace Fondos_Antiguos.DataService
         #endregion
 
         #region Protected
-        protected virtual List<SerieModel> FillModels(IDataReader reader)
+        protected virtual List<SerieModel> LlenarModels(IDataReader reader)
         {
             List<SerieModel> result = new List<SerieModel>();
             while (reader.Read())

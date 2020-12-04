@@ -27,6 +27,7 @@ namespace Fondos_Antiguos
         }
         #endregion
 
+        #region Overrides
         protected override void OnActionExecuting(ActionExecutingContext context)
         {
             foreach (var item in context.ActionParameters)
@@ -58,6 +59,41 @@ namespace Fondos_Antiguos
             }
             base.OnActionExecuting(context);
         }
+        #endregion
+
+        #region Metodos
+        protected virtual void AgregarErrorParaRedir(Exception ex)
+        {
+            if (this.TempData.ContainsKey("RedirError"))
+                this.TempData.Remove("RedirError");
+            this.TempData.Add("RedirError", ex.Message);
+        }
+
+        protected virtual void AgregarMensajeSuccessParaRedir(string msj)
+        {
+            if (this.TempData.ContainsKey("RedirSucessMsj"))
+                this.TempData.Remove("RedirSucessMsj");
+            this.TempData.Add("RedirSucessMsj", msj);
+        }
+
+        protected virtual Exception ObtenerErrorRedir()
+        {
+            if (!this.TempData.ContainsKey("RedirError"))
+                return null;
+            string error = this.TempData["RedirError"].ToString();
+            this.TempData.Remove("RedirError");
+            return new Exception(error);
+        }
+
+        protected virtual string ObtenerMensajeRedir()
+        {
+            if (!this.TempData.ContainsKey("RedirSucessMsj"))
+                return null;
+            string error = this.TempData["RedirSucessMsj"].ToString();
+            this.TempData.Remove("RedirSucessMsj");
+            return error;
+        }
+        #endregion
 
         #region Properties
         public virtual IdentityDbContext<ApplicationUser> Store { get; set; }

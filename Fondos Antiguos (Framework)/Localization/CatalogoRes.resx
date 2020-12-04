@@ -195,8 +195,14 @@
   <data name="Lugar" xml:space="preserve">
     <value>Lugar</value>
   </data>
+  <data name="MateriaNombre" xml:space="preserve">
+    <value>Materia</value>
+  </data>
   <data name="Materias" xml:space="preserve">
     <value>Materias</value>
+  </data>
+  <data name="MateriaYaExisteFmt" xml:space="preserve">
+    <value>¡Materia con el nombre '{0}' ya existe!</value>
   </data>
   <data name="Mes" xml:space="preserve">
     <value>Mes</value>
@@ -222,8 +228,20 @@
   <data name="RegistroBorradoMsg" xml:space="preserve">
     <value>¡Registro borrado!</value>
   </data>
+  <data name="RegistroMateriaAgregadoMsg" xml:space="preserve">
+    <value>¡Materia agregada!</value>
+  </data>
+  <data name="RegistroMateriaBorradoMsg" xml:space="preserve">
+    <value>¡Materia borrada!</value>
+  </data>
   <data name="RegistroNoExisteError" xml:space="preserve">
     <value>¡Registro no existe!</value>
+  </data>
+  <data name="RegistroSerieAgregadoMsg" xml:space="preserve">
+    <value>¡Serie agregado!</value>
+  </data>
+  <data name="RegistroSerieBorradoMsg" xml:space="preserve">
+    <value>¡Serie borrada!</value>
   </data>
   <data name="RevisionNoExisteMsg" xml:space="preserve">
     <value>Revisión invalida o no existe.</value>
@@ -233,6 +251,9 @@
   </data>
   <data name="SeriesNombre" xml:space="preserve">
     <value>Serie</value>
+  </data>
+  <data name="SerieYaExisteFmt" xml:space="preserve">
+    <value>¡Serie con el nombre '{0}' ya existe!</value>
   </data>
   <data name="Signatura" xml:space="preserve">
     <value>Signatura</value>

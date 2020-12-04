@@ -27,7 +27,7 @@ namespace Fondos_Antiguos.DataService
         public virtual CatalogoModel GetCatalogo(QueryExpresion expr, Dictionary<string, object> parameters, byte includeHist, HttpContextBase context)
         {
             SeriesDataService ds = new SeriesDataService();
-            var seriesList = ds.GetSeries(null, null, context);
+            var seriesList = ds.ObtenerSeries(null, null, context);
             IDataReader read;
             switch (includeHist)
             {
@@ -43,6 +43,7 @@ namespace Fondos_Antiguos.DataService
                         if (seriesList.Count() > 0)
                             nc.SeriesNombre = seriesList.FirstOrDefault(sm => sm.ID == nc.IdSerie.GetValueOrDefault(0))?.Nombre;
                         nc.EstablecerSignaturaPorDefecto();
+                        nc.ListaMaterias = this.ObtenerMateriasDeCatalogo(nc.ID, context);
                         return nc;
                     }
                     break;
@@ -53,11 +54,16 @@ namespace Fondos_Antiguos.DataService
                             context,0);
                     if (read.Read())
                     {
+                        int origen = read.GetInt32(read.GetOrdinal("Hist"));
                         CatalogoModel nc = new CatalogoModel();
                         nc.Fill(read);
                         if (seriesList.Count() > 0)
                             nc.SeriesNombre = seriesList.FirstOrDefault(sm => sm.ID == nc.IdSerie.GetValueOrDefault(0))?.Nombre;
                         nc.EstablecerSignaturaPorDefecto();
+                        if(origen == 0)
+                        {
+                            nc.ListaMaterias = this.ObtenerMateriasDeCatalogo(nc.ID, context);
+                        }
                         return nc;
                     }
                     break;
@@ -93,7 +99,7 @@ namespace Fondos_Antiguos.DataService
         public virtual IEnumerable<CatalogoModel> GetCatalogos(QueryExpresion expr, Dictionary<string,object> parameters, long? page, byte includeHist, bool limitarStrings, HttpContextBase context)
         {
             SeriesDataService ds = new SeriesDataService();
-            IEnumerable<SerieModel> seriesList = ds.GetSeries(null, null, context);
+            IEnumerable<SerieModel> seriesList = ds.ObtenerSeries(null, null, context);
             List<CatalogoModel> read = new List<CatalogoModel>();
             switch (includeHist)
             {
@@ -247,6 +253,57 @@ namespace Fondos_Antiguos.DataService
             }
         }
 
+        #region Materias
+        public virtual IEnumerable<MateriaModel> ObtenerMateriasDeCatalogo(long catalogo_id, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@catalogoId", catalogo_id);
+            List<MateriaModel> result = this.GetOrCreateValue<List<MateriaModel>>(
+                this.GetOrCreateKey(context),
+                () => this.LlenarMateriasDelCatalogo(DataConnection.Instance.ExecuteQuery(
+                    SqlResource.SqlCatalogoMateriasResource,
+                    parameters,
+                    context, 0), catalogo_id),
+                nameof(ObtenerMateriasDeCatalogo), catalogo_id
+                );
+
+            return result;
+        }
+
+        public virtual void EliminarMateriasDeCatalogo(long catalogo_id, long materia_id, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@catalogoId", catalogo_id);
+            parameters.Add("@materiaId", materia_id);
+            try
+            {
+                DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoMateriasEliminar, parameters, context);
+
+                this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(ObtenerMateriasDeCatalogo), catalogo_id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public virtual void AsignarMateriaDeCatalogo(long catalogo_id, long materia_id, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@catalogoId", catalogo_id);
+            parameters.Add("@materiaId", materia_id);
+            try
+            {
+                DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoMateriasInsertar, parameters, context);
+                this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(ObtenerMateriasDeCatalogo), catalogo_id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
         #region Lotes
         /// <summary>
         /// Convertir el DataReader y la convierte en una lista del tipo <typeparamref name="T"/>
@@ -257,7 +314,7 @@ namespace Fondos_Antiguos.DataService
         /// <returns></returns>
         public virtual IEnumerable<T> ConvertirLoteDataReader<T>(IDataReader reader, HttpContextBase context) where T : CatalogoModel, new()
         {
-            IEnumerable<SerieModel> seriesList = new SeriesDataService().GetSeries(null, null, context);
+            IEnumerable<SerieModel> seriesList = new SeriesDataService().ObtenerSeries(null, null, context);
             List<T> modelos = new List<T>();
             DataSet ds = ((ExcelDataReader.IExcelDataReader)reader).AsDataSet(new ExcelDataSetConfiguration()
             {
@@ -406,7 +463,7 @@ namespace Fondos_Antiguos.DataService
                     if (serie == null)
                     {
                         serie = new SerieModel() { Nombre = reader["Series"].ToString() };
-                        serieDs.Insert(serie, context);
+                        serieDs.Insertar(serie, context);
                     }
                     nc.IdSerie = serie?.ID;
                     nc.SeriesNombre = serie?.Nombre;
@@ -437,6 +494,18 @@ namespace Fondos_Antiguos.DataService
                 nc.Fill(reader, limitarStrings);
                 if (seriesList.Count() > 0)
                     nc.SeriesNombre = seriesList.FirstOrDefault(sm => sm.ID == nc.IdSerie.GetValueOrDefault(0))?.Nombre;
+                result.Add(nc);
+            }
+            return result;
+        }
+
+        protected virtual List<MateriaModel> LlenarMateriasDelCatalogo(IDataReader reader, long catalogo_id)
+        {
+            List<MateriaModel> result = new List<MateriaModel>();
+            while (reader.Read())
+            {
+                MateriaModel nc = new MateriaModel();
+                nc.Fill(reader);
                 result.Add(nc);
             }
             return result;
