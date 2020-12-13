@@ -9,8 +9,8 @@ using System.Web.Mvc;
 
 namespace Fondos_Antiguos.Models
 {
-	public class MateriaModel
-	{
+    public class LugarModel
+    {
 		#region Propiedades
 		[Required]
 		[HiddenInput]
@@ -25,17 +25,17 @@ namespace Fondos_Antiguos.Models
 		/// 0 = Sin Cambios, 1 = Cambiado, 2 = Borrado, 3 = Nuevo
 		/// </summary>
 		[HiddenInput]
-        public byte Estado { get; set; }
-        #endregion
+		public byte Estado { get; set; }
+		#endregion
 
 
-        #region "Constructors"
-        public MateriaModel()
+		#region "Constructors"
+		public LugarModel()
 		{
 
 		}
 
-		public MateriaModel(long id, string nombre)
+		public LugarModel(long id, string nombre)
 		{
 			this.ID = id;
 			this.Nombre = nombre;
@@ -53,6 +53,5 @@ namespace Fondos_Antiguos.Models
 			}
 		}
 		#endregion
-
 	}
 }

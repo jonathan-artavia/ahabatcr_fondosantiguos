@@ -9,20 +9,21 @@ using System.Web.Mvc;
 
 namespace Fondos_Antiguos.Controllers
 {
-    public class MateriasController : FaController
+    [FaAuthorize]
+    public class LugaresController : FaController
     {
         #region Properties
-        public MateriasDataService DataService { get; set; }
+        public LugaresDataService DataService { get; set; }
         #endregion
 
         #region Constructors
-        public MateriasController() : this(FaApplicationDbContext.Create())
+        public LugaresController() : this(FaApplicationDbContext.Create())
         {
 
         }
-        public MateriasController(FaApplicationDbContext context) : base(context)
+        public LugaresController(FaApplicationDbContext context) : base(context)
         {
-            this.DataService = new MateriasDataService();
+            this.DataService = new LugaresDataService();
         }
         #endregion
 
@@ -31,7 +32,7 @@ namespace Fondos_Antiguos.Controllers
         public virtual ActionResult Index()
         {
             Exception redirError = this.ObtenerErrorRedir();
-            ResultadoListaSimpleModel<MateriaModel> res = new ResultadoListaSimpleModel<MateriaModel>(this.DataService.ObtenerMaterias(null, null, this.HttpContext));
+            ResultadoListaSimpleModel<LugarModel> res = new ResultadoListaSimpleModel<LugarModel>(this.DataService.ObtenerLugares(null, null, this.HttpContext));
             if (redirError != null)
             {
                 this.ModelState.AddModelError("Mensaje", redirError.Message);
@@ -53,7 +54,7 @@ namespace Fondos_Antiguos.Controllers
         {
             try
             {
-                this.DataService.Insertar(new MateriaModel() { Nombre = nuevo_nombre }, this.HttpContext);
+                this.DataService.Insertar(new LugarModel() { Nombre = nuevo_nombre }, this.HttpContext);
                 this.AgregarMensajeSuccessParaRedir(CatalogoRes.RegistroMateriaAgregadoMsg);
             }
             catch (Exception ex)

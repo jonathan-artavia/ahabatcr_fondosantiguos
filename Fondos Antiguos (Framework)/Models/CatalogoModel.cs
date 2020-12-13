@@ -47,7 +47,7 @@ namespace Fondos_Antiguos.Models
                 this.NumTomo = Convert.IsDBNull(dr["NumTomo"]) ? (int?)null : Convert.ToInt32(dr["NumTomo"]);
                 this.Observaciones = Convert.IsDBNull(dr["Observaciones"]) ? null : dr["Observaciones"].ToString();
                 this.Signatura = Convert.IsDBNull(dr["Signatura"]) ? null : dr["Signatura"].ToString();
-                this.Materias = Convert.IsDBNull(dr["Materias"]) ? null : dr["Materias"].ToString();
+                //this.Materias = Convert.IsDBNull(dr["Materias"]) ? null : dr["Materias"].ToString();
                 this.Origen = 1;
             }
         }
@@ -68,6 +68,11 @@ namespace Fondos_Antiguos.Models
             {
                 this.Signatura = string.Join(", ", parts);
             }
+        }
+
+        public virtual string ObtenerListaPlanaMaterias()
+        {
+            return this.ListaMaterias != null && this.ListaMaterias.Count>0 ? string.Join(" / ", this.ListaMaterias?.Select(m => m.Nombre)) : null;
         }
         #endregion
 
@@ -119,14 +124,15 @@ namespace Fondos_Antiguos.Models
         public byte? Mes { get; set; }
         [Display(ResourceType = typeof(CatalogoRes), Name = nameof(FechaIngreso))]
         public DateTime FechaIngreso { get; set; }
+        
         [Display(ResourceType = typeof(CatalogoRes), Name = nameof(SeriesNombre))]
         public string SeriesNombre { get; set; }
-        [Display(ResourceType = typeof(CatalogoRes), Name = nameof(Materias))]
-        public string Materias { get; set; }
+        
         public byte Origen { get; set; }
         public string Exception { get; set; }
         public List<SerieModel> Series { get; set; }
-        public IEnumerable<MateriaModel> ListaMaterias { get; set; }
+        public List<MateriaModel> ListaMaterias { get; set; }
+        public List<SeleccionableMateriaModel> ListaMateriasSeleccionables { get; set; }
         #endregion
     }
 }

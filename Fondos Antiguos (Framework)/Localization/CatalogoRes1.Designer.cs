@@ -295,6 +295,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lugar.
+        /// </summary>
+        public static string LugarNombre {
+            get {
+                return ResourceManager.GetString("LugarNombre", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Materia.
         /// </summary>
         public static string MateriaNombre {
@@ -390,6 +399,24 @@ namespace Fondos_Antiguos.Localization {
         public static string RegistroBorradoMsg {
             get {
                 return ResourceManager.GetString("RegistroBorradoMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ¡Lugar agregado!.
+        /// </summary>
+        public static string RegistroLugarAgregadoMsg {
+            get {
+                return ResourceManager.GetString("RegistroLugarAgregadoMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ¡Lugar borrado!.
+        /// </summary>
+        public static string RegistroLugarBorradoMsg {
+            get {
+                return ResourceManager.GetString("RegistroLugarBorradoMsg", resourceCulture);
             }
         }
         

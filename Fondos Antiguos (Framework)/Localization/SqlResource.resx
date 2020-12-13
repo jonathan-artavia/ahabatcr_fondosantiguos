@@ -147,8 +147,27 @@ WHERE {0}</value>
   <data name="SqlCatalogoInsert" xml:space="preserve">
     <value>INSERT INTO `tblCatalogo`(`Contenido`, `Fecha`, `Signatura`, `Observaciones`, `IdSerie`, `Fichero`, `NumCaja`, `NumTomo`, `Folio`,`Libro`,`NumExpediente`,`NumCarpeta`,`Lugar`,`Año`,`Mes`,`FechaIngreso`) VALUES (@contenido,@Fecha,@Signatura,@Observaciones,@IdSerie,@Fichero,@NumCaja,@NumTomo,@Folio,@Libro,@NumExpediente,@NumCarpeta,@Lugar,@Año,@Mes,@FechaIngreso);</value>
   </data>
+  <data name="SqlCatalogoLugarEliminar" xml:space="preserve">
+    <value>DELETE FROM `tblCatalogoLugar` WHERE `Catalogo_ID` = @catalogoId AND `Lugar_ID` = @lugarId</value>
+  </data>
+  <data name="SqlCatalogoLugarEliminarTodo" xml:space="preserve">
+    <value>DELETE FROM `tblCatalogoLugar` WHERE `Catalogo_ID` = @catalogoId</value>
+  </data>
+  <data name="SqlCatalogoLugarInsertar" xml:space="preserve">
+    <value>INSERT INTO `tblCatalogoLugar`
+(`Lugar_ID`,`Catalogo_ID`) VALUES(@lugarId,@catalogoId);</value>
+  </data>
+  <data name="SqlCatalogoLugarResource" xml:space="preserve">
+    <value>SELECT cm.*, m.`Nombre` 
+FROM `tblCatalogoLugar` as cm
+ INNER JOIN `tblLugar` AS m ON m.ID = cm.`Lugar_ID`
+WHERE cm.Catalogo_ID = @catalogoId</value>
+  </data>
   <data name="SqlCatalogoMateriasEliminar" xml:space="preserve">
     <value>DELETE FROM `tblCatalogoMateria` WHERE `Catalogo_ID` = @catalogoId AND `Materia_ID` = @materiaId</value>
+  </data>
+  <data name="SqlCatalogoMateriasEliminarTodo" xml:space="preserve">
+    <value>DELETE FROM `tblCatalogoMateria` WHERE `Catalogo_ID` = @catalogoId</value>
   </data>
   <data name="SqlCatalogoMateriasInsertar" xml:space="preserve">
     <value>INSERT INTO `tblCatalogoMateria`
@@ -174,6 +193,15 @@ WHERE cm.Catalogo_ID = @catalogoId</value>
   </data>
   <data name="SqlLastInsertedId" xml:space="preserve">
     <value>SELECT LAST_INSERT_ID();</value>
+  </data>
+  <data name="SqlLugarDelete" xml:space="preserve">
+    <value>DELETE FROM `tblLugar` WHERE Id = @id</value>
+  </data>
+  <data name="SqlLugarInsert" xml:space="preserve">
+    <value>INSERT INTO `tblLugar` (Nombre) VALUES (@nombre)</value>
+  </data>
+  <data name="SqlLugarResource" xml:space="preserve">
+    <value>SELECT * FROM `tblLugar` WHERE {0}</value>
   </data>
   <data name="SqlMateriasDelete" xml:space="preserve">
     <value>DELETE FROM `tblMateria` WHERE Id = @id</value>

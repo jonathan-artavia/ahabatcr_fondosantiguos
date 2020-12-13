@@ -120,7 +120,7 @@
                                     @Html.DisplayFor(modelItem => Model.Registros[i].Fecha)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => Model.Registros[i].Materias)
+                                    @Model.Registros[i].ObtenerListaPlanaMaterias()
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => Model.Registros[i].SeriesNombre)

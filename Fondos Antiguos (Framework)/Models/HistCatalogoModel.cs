@@ -37,7 +37,7 @@ namespace Fondos_Antiguos.Models
                 this.Folio = Convert.IsDBNull(dr["Fichero"]) ? null : dr["Fichero"].ToString();
                 this.ID = Convert.IsDBNull(dr["ID"]) ? 0 : Convert.ToInt64(dr["ID"]);
                 this.IdSerie = null;
-                this.Materias = Convert.IsDBNull(dr["materias"]) ? null : dr["Materias"].ToString();
+                //this.Materias = Convert.IsDBNull(dr["materias"]) ? null : dr["Materias"].ToString();
                 this.Libro = null;
                 this.Lugar = Convert.IsDBNull(dr["Lugar"]) ? null : dr["Lugar"].ToString();
                 this.Mes = !fecha.HasValue ? (byte?)null : (byte)fecha.Value.Month;

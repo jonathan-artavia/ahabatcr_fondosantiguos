@@ -98,10 +98,10 @@
                         @Html.DisplayFor(model => model.Lugar)
                     </dd>
                     <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Materias)
+                        @Fondos_Antiguos.Localization.CatalogoRes.MateriaNombre
                     </dt>
                     <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Materias)
+                        @Model.ObtenerListaPlanaMaterias()
                     </dd>
                     <dt class="col-sm-2">
                         @Html.DisplayNameFor(model => model.Observaciones)

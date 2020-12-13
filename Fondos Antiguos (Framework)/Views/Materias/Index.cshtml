@@ -53,19 +53,30 @@
         <th class="col-4"></th>
     </tr>
 
-    @foreach (var item in Model)
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td class="col-8">
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td class="col-4">
+                    @if (FaAuthorizeAttribute.IsAuthorized(User, "Materias", "Eliminar", Context))
+                    {
+                        <button id="modalActivate" type="button" class="btn btn-outline-secondary col" data-toggle="modal" data-target="#borrarModal" style="vertical-align: middle; margin-right: 5px" onclick="OnBtnBorrarClick(@item.ID)">
+                            @Fondos_Antiguos.Localization.ComunResource.btnBorrar
+                        </button>
+                    }
+                </td>
+            </tr>
+        }
+    }
+    else
     {
         <tr>
-            <td class="col-8">
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td class="col-4">
-                @if (FaAuthorizeAttribute.IsAuthorized(User, "Materias", "Eliminar", Context))
-                {
-                    <button id="modalActivate" type="button" class="btn btn-outline-secondary col" data-toggle="modal" data-target="#borrarModal" style="vertical-align: middle; margin-right: 5px" onclick="OnBtnBorrarClick(@item.ID)">
-                        @Fondos_Antiguos.Localization.ComunResource.btnBorrar
-                    </button>
-                }
+            <td colspan="2">
+                <em>@string.Format(Fondos_Antiguos.Localization.ComunResource.NoHayEnLaListaFmtMsg, "materias")</em>
             </td>
         </tr>
     }
@@ -78,7 +89,7 @@
         <div class="modal-dialog modal-sm modal-side modal-bottom-left" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitulo">¿Esta seguro que desea borrar la serie?</h5>
+                    <h5 class="modal-title" id="modalTitulo">¿Esta seguro que desea borrar esta materia?</h5>
                 </div>
                 <div class="modal-body">
 

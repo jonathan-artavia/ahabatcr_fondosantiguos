@@ -267,11 +267,13 @@
     <Compile Include="Controllers\CatalogoController.cs" />
     <Compile Include="Controllers\CuentaController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LugaresController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MateriasController.cs" />
     <Compile Include="Controllers\SeriesController.cs" />
     <Compile Include="DataServices\CatalogoDataService.cs" />
     <Compile Include="DataServices\CuentaDataService.cs" />
+    <Compile Include="DataServices\LugaresDataService.cs" />
     <Compile Include="DataServices\MateriasDataService.cs" />
     <Compile Include="DataServices\SeriesDataService.cs" />
     <Compile Include="Global.asax.cs">
@@ -297,6 +299,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalizedIdentityErrorDescriberResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Localization\HtmlResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HtmlResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="Localization\SqlResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -310,12 +317,14 @@
     <Compile Include="Models\ErrorViewModel.cs" />
     <Compile Include="Models\HistCatalogoModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\LugarModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MateriaModel.cs" />
     <Compile Include="Models\PagingResult.cs" />
     <Compile Include="Models\PermitirViewModel.cs" />
     <Compile Include="Models\ResultadoListaSimpleModel.cs" />
     <Compile Include="Models\RevisionCatalogoPaginadoModel.cs" />
+    <Compile Include="Models\SeleccionableMateriaModel.cs" />
     <Compile Include="Models\SerieModel.cs" />
     <Compile Include="Models\SubirLoteRegistrosModel.cs" />
     <Compile Include="Models\SeleccionableCatalogoModel.cs" />
@@ -401,6 +410,9 @@
     <Content Include="Views\Series\Index.cshtml" />
     <Content Include="Views\Materias\Index.cshtml" />
     <Content Include="Views\Catalogo\VerMateria.cshtml" />
+    <Content Include="Views\Catalogo\EditarMateria.cshtml" />
+    <Content Include="Views\Catalogo\CrearMateria.cshtml" />
+    <Content Include="Views\Lugares\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -437,6 +449,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedIdentityErrorDescriberResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\HtmlResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>HtmlResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\SqlResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

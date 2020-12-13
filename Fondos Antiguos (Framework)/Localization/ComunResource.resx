@@ -153,6 +153,9 @@
   <data name="lnkVolverALista" xml:space="preserve">
     <value>&lt; Volver a lista</value>
   </data>
+  <data name="NoHayEnLaListaFmtMsg" xml:space="preserve">
+    <value>No hay {0} en la lista.</value>
+  </data>
   <data name="Operacion" xml:space="preserve">
     <value>Operación</value>
   </data>

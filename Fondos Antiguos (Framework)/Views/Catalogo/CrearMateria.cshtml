@@ -1,0 +1,72 @@
+﻿@model Fondos_Antiguos.Models.CatalogoModel
+<label class="col-md-4 control-label">@Fondos_Antiguos.Localization.CatalogoRes.MateriaNombre</label>
+<table class="table-borderless table-sm table-striped col-lg-6" id="tblMaterias">
+    @if (Model != null && Model.ListaMaterias.Count > 0)
+    {
+        <tbody id="bodyMaterias">
+            @for (int i = 0; i < Model.ListaMaterias.Count; i++)
+            {
+                <tr id="@string.Format("row{0}", Model.ListaMaterias[i].ID)">
+                    <td class="col-11">
+                        @Html.HiddenFor(modelItem => Model.ListaMaterias[i].Estado, new { id = "Estado" + Model.ListaMaterias[i].ID })
+                        @Html.HiddenFor(modelItem => Model.ListaMaterias[i].ID)
+                        @Html.DisplayFor(modelItem => Model.ListaMaterias[i].Nombre, new { @class = "form-control" })
+                    </td>
+                    <td class="col-1">
+                        <button type="button" class="btn btn-outline-danger border-0" aria-label="Delete" onclick="OnMateriaBorrada(@Model.ListaMaterias[i].ID, '@Model.ListaMaterias[i].Nombre')" id="@string.Format("btnBorrar{0}", Model.ListaMaterias[i].ID)">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </td>-
+                </tr>
+            }
+        </tbody>
+    }
+    else
+    {
+        <tbody id="bodyMaterias">
+            <tr>
+                <td id="tdVacio">
+                    <sub>No hay materias asignadas.</sub>
+                </td>
+            </tr>
+        </tbody>
+    }
+    <tfoot>
+        <tr>
+            <td colspan="2">
+                <div class="col-sm-4 text-center" style="display: flex; align-items: flex-end; justify-content: right;">
+                    <button id="modal2Activate" type="button" class="btn btn-danger" data-toggle="modal" data-target="#nuevaMateriaModal" style="vertical-align: middle">
+                        @Fondos_Antiguos.Localization.ComunResource.btnAgregar
+                    </button>
+                </div>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<script type="text/javascript">
+    var contMaterias = 0;
+    function OnMateriaBorrada(id, materia) {
+        $('#tblMaterias tbody').children("#row" + id).remove();
+        $('#IdMateriaDropDown').append('<option value"' + id + '">' + materia.trim() + '</option> ');
+        contMaterias--;
+        if (contMaterias === 0) {
+            $('#tblMaterias tbody').append('<tr><td id="tdVacio"><sub>No hay materias asignadas.</sub></td></tr>')
+        }
+    }
+    function OnMateriaAgregada() {
+        var id = $('#IdMateriaDropDown').val();
+        if (id !== null || id !== '' || id !== undefined) {
+
+            if (document.getElementById("tdVacio") !== null) {
+                $('#bodyMaterias').empty();
+            }
+            var materia = $('#IdMateriaDropDown option:selected').text().trim();
+            var extracto = ' @Html.Raw(Fondos_Antiguos.Localization.HtmlResource.CatalogoMateriaCrear_NuevoTableRow) ';
+
+            $('#tblMaterias tbody').append(extracto.replace(/\{0\}/g, id).replace(/\{1\}/g, materia).replace(/\{2\}/g, 3).replace(/\{i\}/g, contMaterias));
+            $("option[value='" + id + "']").remove();
+            contMaterias++;
+        }
+    }
+</script>

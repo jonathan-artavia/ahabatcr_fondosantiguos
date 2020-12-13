@@ -169,6 +169,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No hay {0} en la lista..
+        /// </summary>
+        public static string NoHayEnLaListaFmtMsg {
+            get {
+                return ResourceManager.GetString("NoHayEnLaListaFmtMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operación.
         /// </summary>
         public static string Operacion {

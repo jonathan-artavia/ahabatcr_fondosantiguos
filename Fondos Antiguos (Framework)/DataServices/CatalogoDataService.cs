@@ -24,7 +24,7 @@ namespace Fondos_Antiguos.DataService
 
         #region Public
 
-        public virtual CatalogoModel GetCatalogo(QueryExpresion expr, Dictionary<string, object> parameters, byte includeHist, HttpContextBase context)
+        public virtual CatalogoModel GetCatalogo(QueryExpresion expr, Dictionary<string, object> parameters, bool paraEditar, byte includeHist, HttpContextBase context)
         {
             SeriesDataService ds = new SeriesDataService();
             var seriesList = ds.ObtenerSeries(null, null, context);
@@ -43,7 +43,8 @@ namespace Fondos_Antiguos.DataService
                         if (seriesList.Count() > 0)
                             nc.SeriesNombre = seriesList.FirstOrDefault(sm => sm.ID == nc.IdSerie.GetValueOrDefault(0))?.Nombre;
                         nc.EstablecerSignaturaPorDefecto();
-                        nc.ListaMaterias = this.ObtenerMateriasDeCatalogo(nc.ID, context);
+                        nc.ListaMaterias = !paraEditar ? this.ObtenerMateriasDeCatalogo(nc.ID, context) : null;
+                        nc.ListaMateriasSeleccionables = paraEditar ? this.ObtenerMateriasSeleccionablesDeCatalogo(nc.ID, context) : null;
                         return nc;
                     }
                     break;
@@ -62,7 +63,8 @@ namespace Fondos_Antiguos.DataService
                         nc.EstablecerSignaturaPorDefecto();
                         if(origen == 0)
                         {
-                            nc.ListaMaterias = this.ObtenerMateriasDeCatalogo(nc.ID, context);
+                            nc.ListaMaterias = !paraEditar ? this.ObtenerMateriasDeCatalogo(nc.ID, context) : null;
+                            nc.ListaMateriasSeleccionables = paraEditar ? this.ObtenerMateriasSeleccionablesDeCatalogo(nc.ID, context) : null;
                         }
                         return nc;
                     }
@@ -199,13 +201,20 @@ namespace Fondos_Antiguos.DataService
             parameters.Add("@NumExpediente", model.NumExpediente);
             parameters.Add("@NumCarpeta", model.NumCarpeta);
             parameters.Add("@Lugar", model.Lugar);
-            parameters.Add("@Año", model.Año);
-            parameters.Add("@Mes", model.Mes);
+            parameters.Add("@Año", model.Año ?? model.Fecha?.Year);
+            parameters.Add("@Mes", model.Mes ?? model.Fecha?.Month);
             parameters.Add("@FechaIngreso", model.FechaIngreso);
             try
             {
                 DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoInsert, parameters, context);
+                model.ID = (long)((ulong)DataConnection.Instance.ExecuteScalar(SqlResource.SqlLastInsertedId, default(Dictionary<string, object>), context));
+                foreach (var item in model.ListaMaterias)
+                {
+                    if (item.Estado == 3)
+                        this.AsignarMateriaDeCatalogo(model.ID, item.ID.Value, context);
+                }
                 this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(GetCatalogos));
+
             }
             catch (Exception ex)
             {
@@ -239,13 +248,21 @@ namespace Fondos_Antiguos.DataService
             parameters.Add("@NumExpediente", model.NumExpediente);
             parameters.Add("@NumCarpeta", model.NumCarpeta);
             parameters.Add("@Lugar", model.Lugar);
-            parameters.Add("@Año", model.Año);
-            parameters.Add("@Mes", model.Mes);
+            parameters.Add("@Año", model.Año ?? model.Fecha?.Year);
+            parameters.Add("@Mes", model.Mes ?? model.Fecha?.Month);
             parameters.Add("@FechaIngreso", model.FechaIngreso);
             parameters.Add("@id", model.ID);
             try
             {
                 DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoActualizarResource, parameters, context);
+                foreach (var item in model.ListaMateriasSeleccionables)
+                {
+                    if (item.Estado == 3)
+                        this.AsignarMateriaDeCatalogo(model.ID, item.ID.Value, context);
+                    if (item.Estado == 2)
+                        this.EliminarMateriasDeCatalogo(model.ID, item.ID.Value, context);
+                }
+                this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(GetCatalogos));
             }
             catch (Exception ex)
             {
@@ -254,13 +271,29 @@ namespace Fondos_Antiguos.DataService
         }
 
         #region Materias
-        public virtual IEnumerable<MateriaModel> ObtenerMateriasDeCatalogo(long catalogo_id, HttpContextBase context)
+        public virtual List<MateriaModel> ObtenerMateriasDeCatalogo(long catalogo_id, HttpContextBase context)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("@catalogoId", catalogo_id);
             List<MateriaModel> result = this.GetOrCreateValue<List<MateriaModel>>(
                 this.GetOrCreateKey(context),
                 () => this.LlenarMateriasDelCatalogo(DataConnection.Instance.ExecuteQuery(
+                    SqlResource.SqlCatalogoMateriasResource,
+                    parameters,
+                    context, 0), catalogo_id),
+                nameof(ObtenerMateriasDeCatalogo), catalogo_id
+                );
+
+            return result;
+        }
+
+        public virtual List<SeleccionableMateriaModel> ObtenerMateriasSeleccionablesDeCatalogo(long catalogo_id, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@catalogoId", catalogo_id);
+            List<SeleccionableMateriaModel> result = this.GetOrCreateValue<List<SeleccionableMateriaModel>>(
+                this.GetOrCreateKey(context),
+                () => this.LlenarMateriasSeleccionablesDelCatalogo(DataConnection.Instance.ExecuteQuery(
                     SqlResource.SqlCatalogoMateriasResource,
                     parameters,
                     context, 0), catalogo_id),
@@ -278,6 +311,22 @@ namespace Fondos_Antiguos.DataService
             try
             {
                 DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoMateriasEliminar, parameters, context);
+
+                this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(ObtenerMateriasDeCatalogo), catalogo_id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public virtual void EliminarMateriasDeCatalogo(long catalogo_id, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@catalogoId", catalogo_id);
+            try
+            {
+                DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoMateriasEliminarTodo, parameters, context);
 
                 this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(ObtenerMateriasDeCatalogo), catalogo_id);
             }
@@ -315,6 +364,7 @@ namespace Fondos_Antiguos.DataService
         public virtual IEnumerable<T> ConvertirLoteDataReader<T>(IDataReader reader, HttpContextBase context) where T : CatalogoModel, new()
         {
             IEnumerable<SerieModel> seriesList = new SeriesDataService().ObtenerSeries(null, null, context);
+            IEnumerable<MateriaModel> materiasList = new MateriasDataService().ObtenerMaterias(null, null, context);
             List<T> modelos = new List<T>();
             DataSet ds = ((ExcelDataReader.IExcelDataReader)reader).AsDataSet(new ExcelDataSetConfiguration()
             {
@@ -325,7 +375,7 @@ namespace Fondos_Antiguos.DataService
                     }
             });
             using (DataTableReader dsReader = ds.Tables[0].CreateDataReader())
-                modelos = this.FillCatalogoListExcel<T>(dsReader, new SeriesDataService(), seriesList, false, context);
+                modelos = this.FillCatalogoListExcel<T>(dsReader, new SeriesDataService(), seriesList, new MateriasDataService(), materiasList, false, context);
             //this.InsertarLote(modelos, context);
             return modelos;
         }
@@ -444,7 +494,7 @@ namespace Fondos_Antiguos.DataService
             return result;
         }
 
-        protected virtual List<T> FillCatalogoListExcel<T>(IDataReader reader, SeriesDataService serieDs , IEnumerable<SerieModel> seriesList, bool limitarStrings, HttpContextBase context) where T : CatalogoModel, new()
+        protected virtual List<T> FillCatalogoListExcel<T>(IDataReader reader, SeriesDataService serieDs , IEnumerable<SerieModel> seriesList, MateriasDataService materiaDs, IEnumerable<MateriaModel> materiasList, bool limitarStrings, HttpContextBase context) where T : CatalogoModel, new()
         {
             List<T> result = new List<T>();
             long count = 0;
@@ -469,6 +519,34 @@ namespace Fondos_Antiguos.DataService
                     nc.SeriesNombre = serie?.Nombre;
                 }
 
+                if(materiasList.Count() > 0)
+                {
+                    string materiaExt = Convert.IsDBNull(reader["Materias"]) ? null : reader["Materias"].ToString();
+                    if (!string.IsNullOrEmpty(materiaExt))
+                    {
+                        nc.ListaMaterias = new List<MateriaModel>();
+                        string[] valoresSeparados = null;
+                        if(materiaExt.Contains(" / "))
+                        {
+                            valoresSeparados = materiaExt.Split(new string[] { " / " }, StringSplitOptions.RemoveEmptyEntries);
+                        }
+                        else
+                        {
+                            valoresSeparados = new string[] { materiaExt };
+                        }
+                        foreach (string item in valoresSeparados)
+                        {
+                            MateriaModel materia = materiasList.FirstOrDefault(m => m.Nombre.Trim().Equals(item.Trim()));
+                            if(materia == null)
+                            {
+                                materia = new MateriaModel() { Nombre = item };
+                                materiaDs.Insertar(materia, context);
+                            }
+                            nc.ListaMaterias.Add(materia);
+                        }
+                    }
+                }
+
                 nc.Libro = Convert.IsDBNull(reader["Libro"]) ? (int?)null : Convert.ToInt32(reader["Libro"]);
                 nc.Lugar = Convert.IsDBNull(reader["Lugar"]) ? null : reader["Lugar"].ToString();
                 nc.NumCaja = Convert.IsDBNull(reader["Caja"]) ? null : reader["Caja"].ToString();
@@ -476,7 +554,7 @@ namespace Fondos_Antiguos.DataService
                 nc.NumExpediente = Convert.IsDBNull(reader["Expediente"]) ? null : reader["Expediente"].ToString();
                 nc.NumTomo = Convert.IsDBNull(reader["Tomo"]) ? (int?)null : Convert.ToInt32(reader["Tomo"]);
                 nc.Observaciones = Convert.IsDBNull(reader["Observaciones"]) ? null : reader["Observaciones"].ToString();
-                nc.Materias = Convert.IsDBNull(reader["Materias"]) ? null : reader["Materias"].ToString();
+                //nc.Materias = Convert.IsDBNull(reader["Materias"]) ? null : reader["Materias"].ToString();
                 nc.Origen = 1;
                 nc.ID = count++;
                 //--------------------------\\
@@ -511,6 +589,18 @@ namespace Fondos_Antiguos.DataService
             return result;
         }
 
+        protected virtual List<SeleccionableMateriaModel> LlenarMateriasSeleccionablesDelCatalogo(IDataReader reader, long catalogo_id)
+        {
+            List<SeleccionableMateriaModel> result = new List<SeleccionableMateriaModel>();
+            while (reader.Read())
+            {
+                SeleccionableMateriaModel nc = new SeleccionableMateriaModel();
+                nc.Fill(reader);
+                result.Add(nc);
+            }
+            return result;
+        }
+
         protected virtual void EliminarNuevas(long id, HttpContextBase context)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -518,8 +608,8 @@ namespace Fondos_Antiguos.DataService
 
             try
             {
-                DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoEliminar, parameters, context);
-                
+                this.EliminarMateriasDeCatalogo(id, context);
+                DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoEliminar, parameters, context);                
             }
             catch (Exception ex)
             {

@@ -188,7 +188,7 @@ namespace Fondos_Antiguos.Controllers
         {
             try
             {
-                var results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
+                var results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, false, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
                 if (results == null)
                     throw new Exception(CatalogoRes.RegistroNoExisteError);
                 return this.View(nameof(Ver), results);
@@ -204,13 +204,16 @@ namespace Fondos_Antiguos.Controllers
         public ActionResult Editar(long id, byte origen)
         {
             var dataServiceSeries = new SeriesDataService();
+            var materiaDataService = new MateriasDataService();
             var seriesList = dataServiceSeries.ObtenerSeries(null, null, this.HttpContext);
+            IEnumerable<MateriaModel> materiasList = materiaDataService.ObtenerMaterias(null, null, this.HttpContext);
             try
             {
-                var results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
+                CatalogoModel results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, true, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
                 if (results == null)
                     throw new Exception(CatalogoRes.RegistroNoExisteError);
                 ViewBag.SerieList = seriesList;
+                ViewBag.MateriaList = materiasList.Where(x => results.ListaMateriasSeleccionables.Find(m => m.ID == x.ID) == null).ToList();
                 return this.View(nameof(Editar), results);
             }
             catch (Exception ex)
@@ -243,6 +246,10 @@ namespace Fondos_Antiguos.Controllers
                     //throw ex;
                 }
             }
+            else
+            {
+                return View(model);
+            }
             return this.RedirectToAction(nameof(Index));
         }
 
@@ -251,6 +258,7 @@ namespace Fondos_Antiguos.Controllers
         public ActionResult Crear()
         {
             ViewBag.SerieList = new SeriesDataService().ObtenerSeries(null, null, this.HttpContext);
+            ViewBag.MateriaList = new MateriasDataService().ObtenerMaterias(null, null, this.HttpContext);
             return View("Crear");
         }
 
