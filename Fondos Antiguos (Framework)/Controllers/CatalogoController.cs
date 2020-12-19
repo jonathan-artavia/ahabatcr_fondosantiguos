@@ -52,6 +52,15 @@ namespace Fondos_Antiguos.Controllers
             if (!string.IsNullOrEmpty(filtroTexto) && filtroTexto.Equals("undefined", StringComparison.InvariantCultureIgnoreCase))
                 filtroTexto = null;
 
+            if (this.TempData.ContainsKey("Error") && (this.TempData.ContainsKey("guardoInsertoReg") && (bool)this.TempData["guardoInsertoReg"]))
+            {
+                error = this.TempData["Error"].ToString();
+            }
+            if (this.TempData.ContainsKey("Msg"))
+            {
+                msg = this.TempData["Msg"].ToString();
+            }
+
             if (incluirHist.HasValue)
             {
                 if (!this.TempData.ContainsKey("includeHist"))
@@ -67,15 +76,6 @@ namespace Fondos_Antiguos.Controllers
                     this.TempData.Remove("includeHist");
                     this.TempData.Remove("guardoInsertoReg");
                 }
-            }
-
-            if (this.TempData.ContainsKey("Error") && (this.TempData.ContainsKey("guardoInsertoReg") && (bool)this.TempData["guardoInsertoReg"]))
-            {
-                error = this.TempData["Error"].ToString();
-            }
-            if (this.TempData.ContainsKey("Msg"))
-            {
-                msg = this.TempData["Msg"].ToString();
             }
             var seriesList = new SeriesDataService().ObtenerSeries(null, null, this.HttpContext);
             this.ViewBag.SerieList = seriesList;
@@ -188,7 +188,7 @@ namespace Fondos_Antiguos.Controllers
         {
             try
             {
-                var results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, false, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
+                var results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, false, origen, this.HttpContext);
                 if (results == null)
                     throw new Exception(CatalogoRes.RegistroNoExisteError);
                 return this.View(nameof(Ver), results);
@@ -205,15 +205,18 @@ namespace Fondos_Antiguos.Controllers
         {
             var dataServiceSeries = new SeriesDataService();
             var materiaDataService = new MateriasDataService();
+            var lugarDataService = new LugaresDataService();
             var seriesList = dataServiceSeries.ObtenerSeries(null, null, this.HttpContext);
             IEnumerable<MateriaModel> materiasList = materiaDataService.ObtenerMaterias(null, null, this.HttpContext);
+            IEnumerable<LugarModel> lugaresList = lugarDataService.ObtenerLugares(null, null, this.HttpContext);
             try
             {
-                CatalogoModel results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, true, origen == 1 ? (byte)0 : (byte)2, this.HttpContext);
+                CatalogoModel results = this.dataService.GetCatalogo(new QueryExpresion("AND", SqlUtil.Equals("ID", "@id", false)), new Dictionary<string, object>() { { "@id", id } }, true, origen, this.HttpContext);
                 if (results == null)
                     throw new Exception(CatalogoRes.RegistroNoExisteError);
                 ViewBag.SerieList = seriesList;
                 ViewBag.MateriaList = materiasList.Where(x => results.ListaMateriasSeleccionables.Find(m => m.ID == x.ID) == null).ToList();
+                ViewBag.LugarList = lugaresList.Where(x => results.ListaLugares.Find(m => m.ID == x.ID) == null).ToList();
                 return this.View(nameof(Editar), results);
             }
             catch (Exception ex)
@@ -232,12 +235,20 @@ namespace Fondos_Antiguos.Controllers
             {
                 try
                 {
-                    this.dataService.Actualizar(model, this.HttpContext);
-
+                    if (model.Origen == 0)
+                    {
+                        this.dataService.Actualizar(model, this.HttpContext);
+                    }
+                    else
+                    {
+                        this.dataService.ActualizarHist(model, this.HttpContext);
+                    }
                     if (!this.TempData.ContainsKey("guardoInsertoReg"))
                         this.TempData.Add("guardoInsertoReg", true);
                     else
                         this.TempData["guardoInsertoReg"] = true;
+
+                    return this.RedirectToAction(nameof(Ver), new { id = model.ID, origen = model.Origen });
                 }
                 catch (Exception ex)
                 {
@@ -250,7 +261,6 @@ namespace Fondos_Antiguos.Controllers
             {
                 return View(model);
             }
-            return this.RedirectToAction(nameof(Index));
         }
 
         [FaAuthorize]
@@ -259,6 +269,7 @@ namespace Fondos_Antiguos.Controllers
         {
             ViewBag.SerieList = new SeriesDataService().ObtenerSeries(null, null, this.HttpContext);
             ViewBag.MateriaList = new MateriasDataService().ObtenerMaterias(null, null, this.HttpContext);
+            ViewBag.LugarList = new LugaresDataService().ObtenerLugares(null, null, this.HttpContext);
             return View("Crear");
         }
 

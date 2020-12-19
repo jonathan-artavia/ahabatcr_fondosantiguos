@@ -18,6 +18,9 @@ namespace Fondos_Antiguos.Models
         public CatalogoModel()
         {
             this.FechaIngreso = DateTime.Now;
+            this.ListaMateriasSeleccionables = new List<SeleccionableMateriaModel>();
+            this.ListaMaterias = new List<MateriaModel>();
+            this.ListaLugares = new List<LugarModel>();
         }
         #endregion
 
@@ -127,11 +130,14 @@ namespace Fondos_Antiguos.Models
         
         [Display(ResourceType = typeof(CatalogoRes), Name = nameof(SeriesNombre))]
         public string SeriesNombre { get; set; }
-        
+
+        [Display(ResourceType = typeof(CatalogoRes), Name = "Materias")]
+        public string HistMaterias { get; set; }
         public byte Origen { get; set; }
         public string Exception { get; set; }
         public List<SerieModel> Series { get; set; }
         public List<MateriaModel> ListaMaterias { get; set; }
+        public List<LugarModel> ListaLugares { get; set; }
         public List<SeleccionableMateriaModel> ListaMateriasSeleccionables { get; set; }
         #endregion
     }

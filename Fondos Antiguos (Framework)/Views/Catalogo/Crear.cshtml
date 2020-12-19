@@ -22,32 +22,30 @@
     @{
         using (Html.BeginForm("Crear", "Catalogo", FormMethod.Post, new { @class = "row", @id = "frmCrear" }))
         {
-            <div class="col-lg-6">
-                @Html.ValidationSummary()
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Fecha, new { @class = "control-label" })
-                    @Html.EditorFor(m => m.Fecha, null, new { @htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(m => m.Fecha, null, new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Contenido, new { @class = "control-label" })
-                    @Html.TextAreaFor(m => m.Contenido, 2, 1, new Dictionary<string, object>() { { "class", "form-control" } })
-                    @Html.ValidationMessageFor(m => m.Contenido, null, new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Observaciones, new { @class = "control-label" })
-                    @Html.TextAreaFor(m => m.Observaciones, 2, 1, new Dictionary<string, object>() { { "class", "form-control" } })
-                    @Html.ValidationMessageFor(m => m.Observaciones, null, new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Lugar, new { @class = "control-label" })
-                    @Html.TextBoxFor(m => m.Lugar, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Lugar, null, new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.Partial("CrearMateria", Model)
-                </div>
+        <div class="col-lg-6">
+            @Html.ValidationSummary()
+            <div class="form-group">
+                @Html.LabelFor(m => m.Fecha, new { @class = "control-label" })
+                @Html.EditorFor(m => m.Fecha, null, new { @htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Fecha, null, new { @class = "text-danger" })
             </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Contenido, new { @class = "control-label" })
+                @Html.TextAreaFor(m => m.Contenido, 2, 1, new Dictionary<string, object>() { { "class", "form-control" } })
+                @Html.ValidationMessageFor(m => m.Contenido, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Observaciones, new { @class = "control-label" })
+                @Html.TextAreaFor(m => m.Observaciones, 2, 1, new Dictionary<string, object>() { { "class", "form-control" } })
+                @Html.ValidationMessageFor(m => m.Observaciones, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.Partial("CrearLugar", Model)
+            </div>
+            <div class="form-group">
+                @Html.Partial("CrearMateria", Model)
+            </div>
+        </div>
             <div class="col-lg-6">
                 <div class="form-group">
                     <div class="form-row">
@@ -154,6 +152,32 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="OnMateriaAgregada()">Elejir</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Lugar Modal -->
+<div class="modal fade left" id="nuevaLugarModal" tabindex="-1" role="dialog" aria-labelledby="modalTitulo3" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-side modal-bottom-left" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitulo3">Seleccione un lugar existente...</h5>
+            </div>
+            <div class="modal-body">
+                @{
+                    if (ViewBag.LugarList != null)
+                    {
+                        IEnumerable<Fondos_Antiguos.Models.LugarModel> list = ViewBag.LugarList;
+                        var r = list.Select(x =>
+                        {
+                            return new SelectListItem() { Text = x.Nombre, Value = x.ID.ToString() };
+                        });
+                        @Html.DropDownList("IdLugarDropDown", r, "", new { @class = "form-control" });
+                    }
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="OnLugarAgregada()">Elejir</button>
             </div>
         </div>
     </div>

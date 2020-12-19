@@ -61,6 +61,24 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;tr id=&quot;row{0}&quot;&gt;&lt;td class=&quot;col-11&quot;&gt; &lt;input data-val=&quot;true&quot; data-val-number=&quot;The field Estado must be a number.&quot;  data-val-required=&quot;The Estado field is required.&quot;  id=&quot;Estado{0}&quot; name=&quot;ListaMaterias[{i}].Estado&quot; type=&quot;hidden&quot; value=&quot;{2}&quot;&gt; &lt;input data-val=&quot;true&quot; data-val-required=&quot;The ID field is required.&quot; id=&quot;ListaLugares_{i}__ID&quot; name=&quot;ListaLugares[{i}].ID&quot; type=&quot;hidden&quot; value=&quot;{0}&quot;&gt;{1}&lt;/td&gt;&lt;td class=&quot;col-1&quot;&gt; &lt;button type=&quot;button&quot; class=&quot;btn btn-outline-danger border-0&quot; aria-label=&quot;Delete&quot; onclick=&quot;OnLuga [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string CatalogoLugarCrear_NuevoTableRow {
+            get {
+                return ResourceManager.GetString("CatalogoLugarCrear_NuevoTableRow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;tr id=&quot;row{0}&quot;&gt;&lt;td class=&quot;col-11&quot;&gt; &lt;input data-val=&quot;true&quot; data-val-number=&quot;The field Estado must be a number.&quot;  data-val-required=&quot;The Estado field is required.&quot;  id=&quot;Estado{0}&quot; name=&quot;ListaLugares[{i}].Estado&quot; type=&quot;hidden&quot; value=&quot;{2}&quot;&gt; &lt;input data-val=&quot;true&quot; data-val-required=&quot;The ID field is required.&quot; id=&quot;ListaLugares_{i}__ID&quot; name=&quot;ListaLugares[{i}].ID&quot; type=&quot;hidden&quot; value=&quot;{0}&quot;&gt;{1}&lt;/td&gt;&lt;td class=&quot;col-1&quot;&gt; &lt;button type=&quot;button&quot; class=&quot;btn btn-outline-danger border-0&quot; aria-label=&quot;Delete&quot; onclick=&quot;OnLugar [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string CatalogoLugarEditar_NuevoTableRow {
+            get {
+                return ResourceManager.GetString("CatalogoLugarEditar_NuevoTableRow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;tr id=&quot;row{0}&quot;&gt;&lt;td class=&quot;col-11&quot;&gt; &lt;input data-val=&quot;true&quot; data-val-number=&quot;The field Estado must be a number.&quot;  data-val-required=&quot;The Estado field is required.&quot;  id=&quot;Estado{0}&quot; name=&quot;ListaMaterias[{i}].Estado&quot; type=&quot;hidden&quot; value=&quot;{2}&quot;&gt; &lt;input data-val=&quot;true&quot; data-val-required=&quot;The ID field is required.&quot; id=&quot;ListaMaterias_{i}__ID&quot; name=&quot;ListaMaterias[{i}].ID&quot; type=&quot;hidden&quot; value=&quot;{0}&quot;&gt;{1}&lt;/td&gt;&lt;td class=&quot;col-1&quot;&gt; &lt;button type=&quot;button&quot; class=&quot;btn btn-outline-danger border-0&quot; aria-label=&quot;Delete&quot; onclick=&quot;OnMa [rest of string was truncated]&quot;;.
         /// </summary>
         public static string CatalogoMateriaCrear_NuevoTableRow {

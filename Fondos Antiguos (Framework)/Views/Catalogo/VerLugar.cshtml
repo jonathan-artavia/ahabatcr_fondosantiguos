@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Fondos_Antiguos.Models.LugarModel>
+<dt>Lugares</dt>
+<hr />
+<dd>
+    <table class="table-borderless table-sm table-striped">
+        @if (Model.Any())
+        {
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        }
+        else
+        {
+            <tbody>
+                <tr>
+                    <td>
+                        <sub>No hay lugares asignados.</sub>
+                    </td>
+                </tr>
+            </tbody>
+        }
+    </table>
+</dd>

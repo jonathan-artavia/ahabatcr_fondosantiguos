@@ -422,6 +422,11 @@ namespace Fondos_Antiguos.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            if (this.DataService == null)
+                this.DataService = new CuentaDataService(this.GetIdentityUser(this.User.Identity.Name).Result, this.UserManager, this.RoleManager);
+
+            this.DataService.RemoverCache(this.HttpContext);
+
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
         }

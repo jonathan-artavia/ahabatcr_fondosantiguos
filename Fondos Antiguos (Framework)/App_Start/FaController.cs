@@ -64,9 +64,15 @@ namespace Fondos_Antiguos
         #region Metodos
         protected virtual void AgregarErrorParaRedir(Exception ex)
         {
+            Exception nex = null;
+
+            if (ex is MySql.Data.MySqlClient.MySqlException _sqlEx && (_sqlEx.Number == 1451 || _sqlEx.Message.Contains("foreign key constraint fails")))
+                nex = new Exception(Localization.CatalogoRes.ErrorNoSePudoBorrarForeignKey);
+            else
+                nex = ex;
             if (this.TempData.ContainsKey("RedirError"))
                 this.TempData.Remove("RedirError");
-            this.TempData.Add("RedirError", ex.Message);
+            this.TempData.Add("RedirError", nex);
         }
 
         protected virtual void AgregarMensajeSuccessParaRedir(string msj)
@@ -81,6 +87,8 @@ namespace Fondos_Antiguos
             if (!this.TempData.ContainsKey("RedirError"))
                 return null;
             string error = this.TempData["RedirError"].ToString();
+            if (this.TempData["RedirError"] is Exception ex)
+                error = ex.Message;
             this.TempData.Remove("RedirError");
             return new Exception(error);
         }

@@ -1,0 +1,74 @@
+﻿@model Fondos_Antiguos.Models.CatalogoModel
+<label class="col-md-4 control-label">@Fondos_Antiguos.Localization.CatalogoRes.LugarNombre</label>
+<table class="table-borderless table-sm table-striped col-lg-6" id="tblLugares">
+    @if (Model != null && Model.ListaLugares.Count > 0)
+    {
+        <tbody id="bodyLugares">
+            @for (int i = 0; i < Model.ListaLugares.Count; i++)
+            {
+                <tr id="@string.Format("row{0}", Model.ListaLugares[i].ID)">
+                    <td class="col-11">
+                        @Html.HiddenFor(modelItem => Model.ListaLugares[i].Estado, new { id = "EstadoLugar" + Model.ListaLugares[i].ID })
+                        @Html.HiddenFor(modelItem => Model.ListaLugares[i].ID)
+                        @Html.DisplayFor(modelItem => Model.ListaLugares[i].Nombre, new { @class = "form-control" })
+                    </td>
+                    <td class="col-1">
+                        <button type="button" class="btn btn-outline-danger border-0" aria-label="Delete" onclick="OnLugarBorrada(@Model.ListaLugares[i].ID, '@Model.ListaLugares[i].Nombre')" id="@string.Format("btnBorrarLugar{0}", Model.ListaLugares[i].ID)">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    }
+    else
+    {
+        <tbody id="bodyLugares">
+            <tr>
+                <td id="tdLugarVacio">
+                    <sub>No hay lugares asignados.</sub>
+                </td>
+            </tr>
+        </tbody>
+    }
+    <tfoot>
+        <tr>
+            <td colspan="2">
+                <div class="col-sm-4 text-center" style="display: flex; align-items: flex-end; justify-content: right;">
+                    <button id="modal3Activate" type="button" class="btn btn-danger" data-toggle="modal" data-target="#nuevoLugarModal" style="vertical-align: middle">
+                        @Fondos_Antiguos.Localization.ComunResource.btnAgregar
+                    </button>
+                </div>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<script type="text/javascript">
+    var contLugares = @Model.ListaLugares.Count ;
+    function OnLugarBorrada(id, materia) {
+        if ($('#EstadoLugar' + id).val() !== '3') {
+            $('#EstadoLugar' + id).val(2);
+            $('#btnBorrarLugar' + id).parent().parent().children('td:first').html('<del>' + $('#btnBorrarLugar' + id).parent().parent().children('td:first').html() + '</del>')
+            $('#btnBorrarLugar' + id).hide();
+        } else {
+            $('#tblLugares tbody').children("#row" + id).remove();
+            $('#IdLugarDropDown').append('<option value"' + id + '">' + materia.trim() + '</option> ');
+        }
+    }
+    function OnLugarAgregada() {
+        var id = $('#IdLugarDropDown').val();
+        if (id !== null || id !== '' || id !== undefined) {
+
+            if (document.getElementById("tdLugarVacio") !== null) {
+                $('#bodyLugares').empty();
+            }
+            var lugar = $('#IdLugarDropDown option:selected').text().trim();
+            var extracto = ' @Html.Raw(Fondos_Antiguos.Localization.HtmlResource.CatalogoLugarEditar_NuevoTableRow) ';
+
+            $('#tblLugares tbody').append(extracto.replace(/\{0\}/g, id).replace(/\{1\}/g, lugar).replace(/\{2\}/g, 3).replace(/\{i\}/g, contLugares));
+            $("option[value='" + id + "']").remove();
+            contLugares++;
+        }
+    }
+</script>

@@ -215,6 +215,11 @@ namespace Fondos_Antiguos.DataService
                         );
             return read;
         }
+
+        public virtual async Task RemoverCache(HttpContextBase context)
+        {
+            this.RemoveValueIfExists(this.GetOrCreateKey(context), null);
+        }
         #endregion
 
         #region protected

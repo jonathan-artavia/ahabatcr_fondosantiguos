@@ -91,18 +91,22 @@
                     <dd class="col-sm-10">
                         @Html.DisplayFor(model => model.NumCarpeta)
                     </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Lugar)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Lugar)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Fondos_Antiguos.Localization.CatalogoRes.MateriaNombre
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Model.ObtenerListaPlanaMaterias()
-                    </dd>
+                    @if (Model.Origen == 2)
+                    {
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.Lugar)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(model => model.Lugar)
+                        </dd>
+
+                        <dt class="col-sm-2">
+                            @Fondos_Antiguos.Localization.CatalogoRes.MateriaNombre
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Model.HistMaterias
+                        </dd>
+                    }
                     <dt class="col-sm-2">
                         @Html.DisplayNameFor(model => model.Observaciones)
                     </dt>
@@ -111,9 +115,13 @@
                     </dd>
                 </dl>
             </div>
-            <div class="col-sm-2 py-3 border-left border-bottom">
-                @Html.Partial("VerMateria", Model.ListaMaterias)
-            </div>
+            @if (Model.Origen == 0)
+            {
+                <div class="col-sm-2 py-3 border-left border-bottom">
+                    @Html.Partial("VerMateria", Model.ListaMaterias)
+                    @Html.Partial("VerLugar", Model.ListaLugares)
+                </div>
+            }
         </div>
     }
 </div>

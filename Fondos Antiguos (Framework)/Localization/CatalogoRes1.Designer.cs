@@ -124,6 +124,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No se pudo borrar porque esta siendo usado en algún catálogo. Busque cuales registros de catálogo los tienen asignados, bórrelos y luego intente de nuevo..
+        /// </summary>
+        public static string ErrorNoSePudoBorrarForeignKey {
+            get {
+                return ResourceManager.GetString("ErrorNoSePudoBorrarForeignKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fecha.
         /// </summary>
         public static string Fecha {

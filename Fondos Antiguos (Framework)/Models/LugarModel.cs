@@ -43,11 +43,11 @@ namespace Fondos_Antiguos.Models
 		#endregion "Constructors"
 
 		#region Metodos
-		public virtual void Fill(IDataReader dr)
+		public virtual void Fill(IDataReader dr, bool esDeTablaCruzada = false)
 		{
 			if (!dr.IsClosed && dr.FieldCount > 0)
 			{
-				this.ID = Convert.IsDBNull(dr["ID"]) ? 0 : Convert.ToInt64(dr["ID"]);
+				this.ID = Convert.IsDBNull(dr[esDeTablaCruzada ? "Lugar_ID" : "ID"]) ? 0 : Convert.ToInt64(dr[esDeTablaCruzada ? "Lugar_ID" : "ID"]);
 
 				this.Nombre = Convert.IsDBNull(dr["Nombre"]) ? null : dr["Nombre"].ToString();
 			}

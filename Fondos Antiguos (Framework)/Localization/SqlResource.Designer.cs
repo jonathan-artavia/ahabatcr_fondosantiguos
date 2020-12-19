@@ -61,7 +61,7 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UPDATE `tblCatalogo` SET `Contenido` = @contenido, `Fecha` = @Fecha, `Signatura` = @Signatura, `Observaciones` = @Observaciones, `IdSerie` = @IdSerie, `Fichero` = @Fichero, `NumCaja` = @NumCaja, `NumTomo` = @NumTomo, `Folio` = @Folio, `Libro` = @Libro, `NumExpediente` = @NumExpediente, `NumCarpeta` = @NumCarpeta,`Lugar` = @Lugar, `Año` = @Año,`Mes` = @Mes, `FechaIngreso` = @FechaIngreso WHERE `ID` = @id.
+        ///   Looks up a localized string similar to UPDATE `tblCatalogo` SET `Contenido` = @contenido, `Fecha` = @Fecha, `Signatura` = @Signatura, `Observaciones` = @Observaciones, `IdSerie` = @IdSerie, `Fichero` = @Fichero, `NumCaja` = @NumCaja, `NumTomo` = @NumTomo, `Folio` = @Folio, `Libro` = @Libro, `NumExpediente` = @NumExpediente, `NumCarpeta` = @NumCarpeta, `Año` = @Año,`Mes` = @Mes, `FechaIngreso` = @FechaIngreso WHERE `ID` = @id.
         /// </summary>
         public static string SqlCatalogoActualizarResource {
             get {
@@ -84,10 +84,11 @@ namespace Fondos_Antiguos.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to SELECT * FROM
-        ///(SELECT ID, Contenido, Signatura, Fecha, Materias, IdSerie, Fichero, Libro, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, Lugar, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, NULL as FechaOrig, 0 as `Hist`
-        ///FROM `tblCatalogo`
-        ///UNION
-        ///SELECT ID, Descripcion as Contenido, Signatura, Fecha, Materias, NULL as IdSerie, Fichero, NULL as Libro, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones`, `FechaC [rest of string was truncated]&quot;;.
+        ///(SELECT c.ID, Contenido, Signatura, Fecha, group_concat(DISTINCT m.Nombre ORDER BY cm.ID SEPARATOR &apos; / &apos;) as `Materias`, IdSerie, Fichero, Libro, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, group_concat(DISTINCT l.Nombre ORDER BY cl.ID SEPARATOR &apos; / &apos;) as `Lugar`, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, NULL as FechaOrig, 0 as `Hist`
+        ///FROM `tblCatalogo` c
+        ///LEFT JOIN `tblCatalogoMateria` cm ON cm.Catalogo_ID = c.ID
+        ///LEFT JOIN `tblCatalogoLugar` cl ON cl.Catalogo_ID = c.ID
+        ///L [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SqlCatalogoAmbosResource {
             get {
@@ -203,11 +204,34 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT * FROM `tblCatalogo` WHERE {0}.
+        ///   Looks up a localized string similar to SELECT * 
+        ///FROM (SELECT c.`ID`, `Contenido`, `Fecha`, `Signatura`, `Observaciones`, `IdSerie`, `Fichero`, `NumCaja`, `NumTomo`, `Folio`, `Libro`, `NumExpediente`, `NumCarpeta`, group_concat(DISTINCT l.Nombre ORDER BY cl.ID SEPARATOR &apos; / &apos;) as `Lugar`, `Año`, `Mes`, `FechaIngreso`, group_concat(DISTINCT m.Nombre ORDER BY cm.ID SEPARATOR &apos; / &apos;) as `Materias`, 0 as `Hist`
+        ///FROM `tblCatalogo` c
+        ///LEFT JOIN `tblCatalogoMateria` cm ON cm.Catalogo_ID = c.ID
+        ///LEFT JOIN `tblCatalogoLugar` cl ON cl.Catalogo_ID = c.ID        /// [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SqlCatalogoResource {
             get {
                 return ResourceManager.GetString("SqlCatalogoResource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE `tblHistCatalogo`
+        ///SET
+        ///`Descripcion` = @descr,
+        ///`Fecha` = @fecha,
+        ///`Signatura` = @signatura,
+        ///`Datos` = @datos,
+        ///`Lugar` = @lugar,
+        ///`Materias` = @materias,
+        ///`Año` = @año,
+        ///`Mes` = @mes
+        ///WHERE `ID` = @id;.
+        /// </summary>
+        public static string SqlHistCatalogoActualizar {
+            get {
+                return ResourceManager.GetString("SqlHistCatalogoActualizar", resourceCulture);
             }
         }
         
@@ -230,7 +254,7 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT * FROM `tblHistCatalogo` WHERE {0}.
+        ///   Looks up a localized string similar to SELECT *, 1 AS `Hist` FROM `tblHistCatalogo` WHERE {0}.
         /// </summary>
         public static string SqlHistCatalogoResource {
             get {

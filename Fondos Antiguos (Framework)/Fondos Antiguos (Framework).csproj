@@ -413,6 +413,9 @@
     <Content Include="Views\Catalogo\EditarMateria.cshtml" />
     <Content Include="Views\Catalogo\CrearMateria.cshtml" />
     <Content Include="Views\Lugares\Index.cshtml" />
+    <Content Include="Views\Catalogo\CrearLugar.cshtml" />
+    <Content Include="Views\Catalogo\EditarLugar.cshtml" />
+    <Content Include="Views\Catalogo\VerLugar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

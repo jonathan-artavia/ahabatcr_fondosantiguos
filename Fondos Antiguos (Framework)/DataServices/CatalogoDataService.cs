@@ -45,6 +45,8 @@ namespace Fondos_Antiguos.DataService
                         nc.EstablecerSignaturaPorDefecto();
                         nc.ListaMaterias = !paraEditar ? this.ObtenerMateriasDeCatalogo(nc.ID, context) : null;
                         nc.ListaMateriasSeleccionables = paraEditar ? this.ObtenerMateriasSeleccionablesDeCatalogo(nc.ID, context) : null;
+                        nc.ListaLugares = this.ObtenerLugaresDeCatalogo(nc.ID, context);
+                        nc.Origen = 0;
                         return nc;
                     }
                     break;
@@ -55,16 +57,18 @@ namespace Fondos_Antiguos.DataService
                             context,0);
                     if (read.Read())
                     {
-                        int origen = read.GetInt32(read.GetOrdinal("Hist"));
+                        int origen = (int)read.GetInt64(read.GetOrdinal("Hist"));
                         CatalogoModel nc = new CatalogoModel();
                         nc.Fill(read);
                         if (seriesList.Count() > 0)
                             nc.SeriesNombre = seriesList.FirstOrDefault(sm => sm.ID == nc.IdSerie.GetValueOrDefault(0))?.Nombre;
                         nc.EstablecerSignaturaPorDefecto();
+                        nc.Origen = origen == 0 ? (byte)0 : (byte)2;
                         if(origen == 0)
                         {
                             nc.ListaMaterias = !paraEditar ? this.ObtenerMateriasDeCatalogo(nc.ID, context) : null;
                             nc.ListaMateriasSeleccionables = paraEditar ? this.ObtenerMateriasSeleccionablesDeCatalogo(nc.ID, context) : null;
+                            nc.ListaLugares = this.ObtenerLugaresDeCatalogo(nc.ID, context);
                         }
                         return nc;
                     }
@@ -116,7 +120,7 @@ namespace Fondos_Antiguos.DataService
                         , "GetCatalogos", expr?.ToString(), page.GetValueOrDefault(1), 0
                         );
                     break;
-                case 1: //con hist
+                case 1: //ambos
                     read = this.GetOrCreateValue(
                         this.GetOrCreateKey(context),
                         () => this.FillCatalogoList(DataConnection.Instance.ExecuteQuery(
@@ -247,7 +251,7 @@ namespace Fondos_Antiguos.DataService
             parameters.Add("@Libro", model.Libro);
             parameters.Add("@NumExpediente", model.NumExpediente);
             parameters.Add("@NumCarpeta", model.NumCarpeta);
-            parameters.Add("@Lugar", model.Lugar);
+            //parameters.Add("@Lugar", model.Lugar);
             parameters.Add("@Año", model.Año ?? model.Fecha?.Year);
             parameters.Add("@Mes", model.Mes ?? model.Fecha?.Month);
             parameters.Add("@FechaIngreso", model.FechaIngreso);
@@ -262,6 +266,37 @@ namespace Fondos_Antiguos.DataService
                     if (item.Estado == 2)
                         this.EliminarMateriasDeCatalogo(model.ID, item.ID.Value, context);
                 }
+                foreach (var item in model.ListaLugares)
+                {
+                    if (item.Estado == 3)
+                        this.AsignarLugaresDeCatalogo(model.ID, item.ID.Value, context);
+                    if (item.Estado == 2)
+                        this.EliminarLugaresDeCatalogo(model.ID, item.ID.Value, context);
+                }
+                this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(GetCatalogos));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public virtual void ActualizarHist(CatalogoModel model, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@descr", model.Contenido);
+            parameters.Add("@fecha", model.Fecha);
+            parameters.Add("@signatura", model.Signatura);
+            parameters.Add("@datos", model.Observaciones);
+            //parameters.Add("@fichero", model.Fichero);
+            parameters.Add("@lugar", model.Lugar);
+            parameters.Add("@materias", model.HistMaterias);
+            parameters.Add("@año", model.Año ?? model.Fecha?.Year);
+            parameters.Add("@mes", model.Mes ?? model.Fecha?.Month);
+            parameters.Add("@id", model.ID);
+            try
+            {
+                DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlHistCatalogoActualizar, parameters, context);
                 this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(GetCatalogos));
             }
             catch (Exception ex)
@@ -297,7 +332,23 @@ namespace Fondos_Antiguos.DataService
                     SqlResource.SqlCatalogoMateriasResource,
                     parameters,
                     context, 0), catalogo_id),
-                nameof(ObtenerMateriasDeCatalogo), catalogo_id
+                nameof(ObtenerMateriasSeleccionablesDeCatalogo), catalogo_id
+                );
+
+            return result;
+        }
+
+        protected virtual List<LugarModel> ObtenerLugaresDeCatalogo(long catalogo_id, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@catalogoId", catalogo_id);
+            List<LugarModel> result = this.GetOrCreateValue<List<LugarModel>>(
+                this.GetOrCreateKey(context),
+                () => this.LlenarLugaresDelCatalogo(DataConnection.Instance.ExecuteQuery(
+                    SqlResource.SqlCatalogoLugarResource,
+                    parameters,
+                    context, 0), catalogo_id),
+                nameof(ObtenerLugaresDeCatalogo), catalogo_id
                 );
 
             return result;
@@ -345,6 +396,55 @@ namespace Fondos_Antiguos.DataService
             {
                 DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoMateriasInsertar, parameters, context);
                 this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(ObtenerMateriasDeCatalogo), catalogo_id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public virtual void EliminarLugaresDeCatalogo(long catalogo_id, long lugar_id, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@catalogoId", catalogo_id);
+            parameters.Add("@lugarId", lugar_id);
+            try
+            {
+                DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoLugarEliminar, parameters, context);
+
+                this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(ObtenerLugaresDeCatalogo), catalogo_id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public virtual void EliminarLugaresDeCatalogo(long catalogo_id, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@catalogoId", catalogo_id);
+            try
+            {
+                DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoLugarEliminarTodo, parameters, context);
+
+                this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(ObtenerLugaresDeCatalogo), catalogo_id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public virtual void AsignarLugaresDeCatalogo(long catalogo_id, long materia_id, HttpContextBase context)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@catalogoId", catalogo_id);
+            parameters.Add("@lugarId", materia_id);
+            try
+            {
+                DataConnection.Instance.ExecuteNonQuery(SqlResource.SqlCatalogoLugarInsertar, parameters, context);
+                this.RemoveValueIfExists(this.GetOrCreateKey(context), nameof(ObtenerLugaresDeCatalogo), catalogo_id);
             }
             catch (Exception ex)
             {
@@ -487,8 +587,23 @@ namespace Fondos_Antiguos.DataService
             {
                 CatalogoModel nc = new CatalogoModel();
                 nc.Fill(reader, limitarStrings);
+                int? origen = null;
+                try
+                {
+                    origen = reader.GetInt32(reader.GetOrdinal("Hist"));
+                }
+                catch (Exception ex)
+                {
+                }
+                try
+                {
+                    origen = (int)reader.GetInt64(reader.GetOrdinal("Hist"));
+                }
+                catch (Exception ex) { }
                 if (seriesList.Count() > 0)
                     nc.SeriesNombre = seriesList.FirstOrDefault(sm => sm.ID == nc.IdSerie.GetValueOrDefault(0))?.Nombre;
+                if(origen.HasValue)
+                    nc.Origen = origen.Value == 0 ? (byte)0 : (byte)2;
                 result.Add(nc);
             }
             return result;
@@ -568,10 +683,13 @@ namespace Fondos_Antiguos.DataService
             List<HistCatalogoModel> result = new List<HistCatalogoModel>();
             while (reader.Read())
             {
+                int origen = (int)reader.GetInt64(reader.GetOrdinal("Hist"));
+
                 HistCatalogoModel nc = new HistCatalogoModel();
                 nc.Fill(reader, limitarStrings);
                 if (seriesList.Count() > 0)
                     nc.SeriesNombre = seriesList.FirstOrDefault(sm => sm.ID == nc.IdSerie.GetValueOrDefault(0))?.Nombre;
+                nc.Origen = origen == 0 ? (byte)0 : (byte)2;
                 result.Add(nc);
             }
             return result;
@@ -596,6 +714,18 @@ namespace Fondos_Antiguos.DataService
             {
                 SeleccionableMateriaModel nc = new SeleccionableMateriaModel();
                 nc.Fill(reader);
+                result.Add(nc);
+            }
+            return result;
+        }
+
+        protected virtual List<LugarModel> LlenarLugaresDelCatalogo(IDataReader reader, long catalogo_id)
+        {
+            List<LugarModel> result = new List<LugarModel>();
+            while (reader.Read())
+            {
+                LugarModel nc = new LugarModel();
+                nc.Fill(reader, true);
                 result.Add(nc);
             }
             return result;
