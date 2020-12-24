@@ -6,14 +6,14 @@
         <tbody id="bodyMaterias">
             @for (int i = 0; i < Model.ListaMaterias.Count; i++)
             {
-                <tr id="@string.Format("row{0}", Model.ListaMaterias[i].ID)">
+                <tr id="@string.Format("rowMateria{0}", Model.ListaMaterias[i].ID)">
                     <td class="col-11">
-                        @Html.HiddenFor(modelItem => Model.ListaMaterias[i].Estado, new { id = "Estado" + Model.ListaMaterias[i].ID })
+                        @Html.HiddenFor(modelItem => Model.ListaMaterias[i].Estado, new { id = "EstadoMateria" + Model.ListaMaterias[i].ID })
                         @Html.HiddenFor(modelItem => Model.ListaMaterias[i].ID)
                         @Html.DisplayFor(modelItem => Model.ListaMaterias[i].Nombre, new { @class = "form-control" })
                     </td>
                     <td class="col-1">
-                        <button type="button" class="btn btn-outline-danger border-0" aria-label="Delete" onclick="OnMateriaBorrada(@Model.ListaMaterias[i].ID, '@Model.ListaMaterias[i].Nombre')" id="@string.Format("btnBorrar{0}", Model.ListaMaterias[i].ID)">
+                        <button type="button" class="btn btn-outline-danger border-0" aria-label="Delete" onclick="OnMateriaBorrada(@Model.ListaMaterias[i].ID, '@Model.ListaMaterias[i].Nombre')" id="@string.Format("btnBorrarMateria{0}", Model.ListaMaterias[i].ID)">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </td>-
@@ -25,7 +25,7 @@
     {
         <tbody id="bodyMaterias">
             <tr>
-                <td id="tdVacio">
+                <td id="tdMateriaVacio">
                     <sub>No hay materias asignadas.</sub>
                 </td>
             </tr>
@@ -58,7 +58,7 @@
         var id = $('#IdMateriaDropDown').val();
         if (id !== null || id !== '' || id !== undefined) {
 
-            if (document.getElementById("tdVacio") !== null) {
+            if (document.getElementById("tdMateriaVacio") !== null) {
                 $('#bodyMaterias').empty();
             }
             var materia = $('#IdMateriaDropDown option:selected').text().trim();

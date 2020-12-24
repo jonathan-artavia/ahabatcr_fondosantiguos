@@ -6,14 +6,14 @@
         <tbody id="bodyLugares">
             @for (int i = 0; i < Model.ListaLugares.Count; i++)
             {
-                <tr id="@string.Format("row{0}", Model.ListaLugares[i].ID)">
+                <tr id="@string.Format("rowLugar{0}", Model.ListaLugares[i].ID)">
                     <td class="col-11">
-                        @Html.HiddenFor(modelItem => Model.ListaLugares[i].Estado, new { id = "Estado" + Model.ListaLugares[i].ID })
+                        @Html.HiddenFor(modelItem => Model.ListaLugares[i].Estado, new { id = "EstadoLugar" + Model.ListaLugares[i].ID })
                         @Html.HiddenFor(modelItem => Model.ListaLugares[i].ID)
                         @Html.DisplayFor(modelItem => Model.ListaLugares[i].Nombre, new { @class = "form-control" })
                     </td>
                     <td class="col-1">
-                        <button type="button" class="btn btn-outline-danger border-0" aria-label="Delete" onclick="OnLugarBorrada(@Model.ListaLugares[i].ID, '@Model.ListaLugares[i].Nombre')" id="@string.Format("btnBorrar{0}", Model.ListaLugares[i].ID)">
+                        <button type="button" class="btn btn-outline-danger border-0" aria-label="Delete" onclick="OnLugarBorrada(@Model.ListaLugares[i].ID, '@Model.ListaLugares[i].Nombre')" id="@string.Format("btnBorrarLugar{0}", Model.ListaLugares[i].ID)">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </td>-
@@ -25,7 +25,7 @@
     {
         <tbody id="bodyLugares">
             <tr>
-                <td id="tdVacio">
+                <td id="tdLugarVacio">
                     <sub>No hay lugares asignados.</sub>
                 </td>
             </tr>
@@ -35,7 +35,7 @@
         <tr>
             <td colspan="2">
                 <div class="col-sm-4 text-center" style="display: flex; align-items: flex-end; justify-content: right;">
-                    <button id="modal2Activate" type="button" class="btn btn-danger" data-toggle="modal" data-target="#nuevaLugarModal" style="vertical-align: middle">
+                    <button id="modal3Activate" type="button" class="btn btn-danger" data-toggle="modal" data-target="#nuevaLugarModal" style="vertical-align: middle">
                         @Fondos_Antiguos.Localization.ComunResource.btnAgregar
                     </button>
                 </div>
@@ -51,20 +51,20 @@
         $('#IdLugarDropDown').append('<option value"' + id + '">' + materia.trim() + '</option> ');
         contLugares--;
         if (contLugares === 0) {
-            $('#tblLugares tbody').append('<tr><td id="tdVacio"><sub>No hay materias asignadas.</sub></td></tr>')
+            $('#tblLugares tbody').append('<tr><td id="tdLugarVacio"><sub>No hay materias asignadas.</sub></td></tr>')
         }
     }
     function OnLugarAgregada() {
         var id = $('#IdLugarDropDown').val();
         if (id !== null || id !== '' || id !== undefined) {
 
-            if (document.getElementById("tdVacio") !== null) {
+            if (document.getElementById("tdLugarVacio") !== null) {
                 $('#bodyLugares').empty();
             }
-            var materia = $('#IdLugarDropDown option:selected').text().trim();
+            var Lugar = $('#IdLugarDropDown option:selected').text().trim();
             var extracto = ' @Html.Raw(Fondos_Antiguos.Localization.HtmlResource.CatalogoLugarCrear_NuevoTableRow) ';
 
-            $('#tblLugares tbody').append(extracto.replace(/\{0\}/g, id).replace(/\{1\}/g, materia).replace(/\{2\}/g, 3).replace(/\{i\}/g, contLugares));
+            $('#tblLugares tbody').append(extracto.replace(/\{0\}/g, id).replace(/\{1\}/g, Lugar).replace(/\{2\}/g, 3).replace(/\{i\}/g, contLugares));
             $("option[value='" + id + "']").remove();
             contLugares++;
         }
