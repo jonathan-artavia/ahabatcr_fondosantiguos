@@ -5,8 +5,9 @@
 }
 
 <h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request. @Model.Exception.Message</h2>
+<h2 class="text-danger">Ha ocurrido un error al procesar tu pedido: @Model.Exception.Message</h2>
 @{
+
 #if DEBUG
     <small>@Model.Exception.StackTrace</small>
 #endif

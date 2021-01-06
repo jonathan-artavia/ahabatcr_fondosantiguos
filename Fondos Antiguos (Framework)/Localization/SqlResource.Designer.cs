@@ -84,11 +84,12 @@ namespace Fondos_Antiguos.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to SELECT * FROM
-        ///(SELECT c.ID, Contenido, Signatura, Fecha, group_concat(DISTINCT m.Nombre ORDER BY cm.ID SEPARATOR &apos; / &apos;) as `Materias`, IdSerie, Fichero, Libro, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, group_concat(DISTINCT l.Nombre ORDER BY cl.ID SEPARATOR &apos; / &apos;) as `Lugar`, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, NULL as FechaOrig, 0 as `Hist`
+        ///(SELECT c.ID, Contenido, Signatura, Fecha, materias.Nombres as Materias, IdSerie, Fichero, Libro, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, lugares.Nombres as Lugar, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, NULL as FechaOrig, 0 as `Hist`
         ///FROM `tblCatalogo` c
-        ///LEFT JOIN `tblCatalogoMateria` cm ON cm.Catalogo_ID = c.ID
-        ///LEFT JOIN `tblCatalogoLugar` cl ON cl.Catalogo_ID = c.ID
-        ///L [rest of string was truncated]&quot;;.
+        ///LEFT JOIN ( SELECT Catalogo_ID, GROUP_CONCAT(Nombre ORDER BY cl.ID SEPARATOR &apos; / &apos;) Nombres
+        ///           FROM `tblCatalogoLugar` cl
+        ///           LEFT JOIN `tblLugar` l ON l.ID = cl.Lugar_ID
+        ///           GROUP BY Catalog [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SqlCatalogoAmbosResource {
             get {
@@ -204,11 +205,13 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT * 
-        ///FROM (SELECT c.`ID`, `Contenido`, `Fecha`, `Signatura`, `Observaciones`, `IdSerie`, `Fichero`, `NumCaja`, `NumTomo`, `Folio`, `Libro`, `NumExpediente`, `NumCarpeta`, group_concat(DISTINCT l.Nombre ORDER BY cl.ID SEPARATOR &apos; / &apos;) as `Lugar`, `Año`, `Mes`, `FechaIngreso`, group_concat(DISTINCT m.Nombre ORDER BY cm.ID SEPARATOR &apos; / &apos;) as `Materias`, 0 as `Hist`
+        ///   Looks up a localized string similar to SELECT * FROM
+        ///(SELECT c.`ID`, `Contenido`, `Fecha`, `Signatura`, `Observaciones`, `IdSerie`, `Fichero`, `NumCaja`, `NumTomo`, `Folio`, `Libro`, `NumExpediente`, `NumCarpeta`, lugares.Nombres as `Lugar`, `Año`, `Mes`, `FechaIngreso`, materias.Nombres as `Materias`, 0 as `Hist`
         ///FROM `tblCatalogo` c
-        ///LEFT JOIN `tblCatalogoMateria` cm ON cm.Catalogo_ID = c.ID
-        ///LEFT JOIN `tblCatalogoLugar` cl ON cl.Catalogo_ID = c.ID        /// [rest of string was truncated]&quot;;.
+        ///LEFT JOIN ( SELECT Catalogo_ID, GROUP_CONCAT(Nombre ORDER BY cl.ID SEPARATOR &apos; / &apos;) Nombres
+        ///           FROM `tblCatalogoLugar` cl
+        ///           LEFT JOIN `tblLugar` l ON l.ID = cl.Lugar_ID
+        ///           GROUP BY Ca [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SqlCatalogoResource {
             get {

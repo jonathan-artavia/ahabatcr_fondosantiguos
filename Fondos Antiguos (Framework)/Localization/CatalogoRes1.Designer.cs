@@ -250,7 +250,7 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Catálogo UNA.
+        ///   Looks up a localized string similar to Catálogo AHABAT.
         /// </summary>
         public static string IncluirHistVal0 {
             get {
@@ -268,7 +268,7 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Catálogo AHABAT.
+        ///   Looks up a localized string similar to Catálogo UNA.
         /// </summary>
         public static string IncluirHistVal2 {
             get {

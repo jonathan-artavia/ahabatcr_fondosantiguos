@@ -201,6 +201,12 @@ namespace Fondos_Antiguos.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (string.IsNullOrEmpty(model.RolIdSeleccionado))
+                {
+                    this.ModelState.AddModelError("", CuentaResource.RolEsReq);
+                    return View(model);
+                }
+
                 var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this.DbContext));
                 var user = new ApplicationUser() { UserName = model.Usuario };
                 user.ReqCambioContraseña = true;
@@ -485,21 +491,30 @@ namespace Fondos_Antiguos.Controllers
             
             try
             {
-                var roles = await this.UserManager.GetRolesAsync(model.IdUsuario);
-                var r = await this.UserManager.RemoveFromRolesAsync(model.IdUsuario, roles.ToArray());
-                if (r.Succeeded)
+                if (!string.IsNullOrEmpty(model.RolSeleccionado))
                 {
-                    r = await this.UserManager.AddToRoleAsync(model.IdUsuario, model.RolSeleccionado);
+
+                    var roles = await this.UserManager.GetRolesAsync(model.IdUsuario);
+                    var r = await this.UserManager.RemoveFromRolesAsync(model.IdUsuario, roles.ToArray());
                     if (r.Succeeded)
                     {
-                        return RedirectToAction(nameof(ListaCuentas));
+                        r = await this.UserManager.AddToRoleAsync(model.IdUsuario, model.RolSeleccionado);
+                        if (r.Succeeded)
+                        {
+                            return RedirectToAction(nameof(ListaCuentas));
+                        }
+                        else
+                        {
+                            this.ModelState.AddModelError("", r.Errors.FirstOrDefault());
+                        }
                     }
-                    else
-                    {
-                        this.ModelState.AddModelError("", r.Errors.FirstOrDefault());
-                    }
+                    return View(model);
                 }
-                return View(model);
+                else
+                {
+                    this.ModelState.AddModelError("", CuentaResource.RolEsReq);
+                    return RedirectToAction(nameof(Editar), model);
+                }
             }
             catch (Exception ex)
             {

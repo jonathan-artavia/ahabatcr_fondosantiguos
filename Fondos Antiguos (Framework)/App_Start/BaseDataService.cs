@@ -15,7 +15,7 @@ namespace Fondos_Antiguos.Base
     {
         private static readonly Lazy<MemoryCache> lazy =
             new Lazy<MemoryCache>
-                (() => new MemoryCache(new MemoryCacheOptions() { CompactionPercentage = 0.5 }));
+                (() => new MemoryCache(new MemoryCacheOptions() { CompactionPercentage = 0.5, ExpirationScanFrequency = TimeSpan.FromHours(1) }));
         private bool disposedValue;
 
         public static MemoryCache DataCache { get { return lazy.Value; } }
@@ -156,9 +156,25 @@ namespace Fondos_Antiguos.Base
                 else
                 {
                     if (otherkeys != null)
-                        reg.Add($"Method_{method}0_Keys", otherkeys);
-                    reg.Add($"Method_{method}0_Values", value());
-                    reg.Add($"Method_{method}_Last", 0);
+                    {
+                        if (!reg.ContainsKey($"Method_{method}0_Keys"))
+                            reg.Add($"Method_{method}0_Keys", otherkeys);
+                        else
+                            reg[$"Method_{method}0_Keys"] = otherkeys;
+                    }
+                    else
+                    {
+                        if (reg.ContainsKey($"Method_{method}0_Keys"))
+                            reg.Remove($"Method_{method}0_Keys");
+                    }
+                    if (!reg.ContainsKey($"Method_{method}0_Values"))
+                        reg.Add($"Method_{method}0_Values", value());
+                    else
+                        reg[$"Method_{method}0_Values"] = value();
+                    if (reg.ContainsKey($"Method_{method}_Last"))
+                        reg.Add($"Method_{method}_Last", 0);
+                    else
+                        reg[$"Method_{method}_Last"] = 0;
                     return 0;
                 }
             }

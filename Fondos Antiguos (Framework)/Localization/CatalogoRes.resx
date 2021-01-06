@@ -181,13 +181,13 @@
     <value>ID Serie</value>
   </data>
   <data name="IncluirHistVal0" xml:space="preserve">
-    <value>Catálogo UNA</value>
+    <value>Catálogo AHABAT</value>
   </data>
   <data name="IncluirHistVal1" xml:space="preserve">
     <value>Ambos catálogos</value>
   </data>
   <data name="IncluirHistVal2" xml:space="preserve">
-    <value>Catálogo AHABAT</value>
+    <value>Catálogo UNA</value>
   </data>
   <data name="Libro" xml:space="preserve">
     <value>Libro</value>

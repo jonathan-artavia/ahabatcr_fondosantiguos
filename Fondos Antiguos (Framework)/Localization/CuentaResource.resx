@@ -148,6 +148,9 @@
   <data name="PwdEsReq" xml:space="preserve">
     <value>Contraseña es requerido</value>
   </data>
+  <data name="RolEsReq" xml:space="preserve">
+    <value>Rol es requerido</value>
+  </data>
   <data name="RolNombre" xml:space="preserve">
     <value>Rol</value>
   </data>

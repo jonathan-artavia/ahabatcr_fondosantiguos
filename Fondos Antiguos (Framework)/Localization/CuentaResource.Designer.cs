@@ -151,6 +151,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rol es requerido.
+        /// </summary>
+        public static string RolEsReq {
+            get {
+                return ResourceManager.GetString("RolEsReq", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rol.
         /// </summary>
         public static string RolNombre {

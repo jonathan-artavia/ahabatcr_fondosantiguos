@@ -11,7 +11,7 @@
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">
-        @Html.LabelFor(m => Model.Name, new { @class = "col-md-2 control-label" })
+        <label class="col-md-2 control-label">@Fondos_Antiguos.Localization.CuentaResource.NombreRol</label>
         <div class="col-md-10">
             @Html.TextBoxFor(m => Model.Name, new { @class = "form-control" })
         </div>
@@ -20,6 +20,7 @@
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" class="btn btn-primary btn-default" value="Registrar" />
+            @Html.ActionLink(Fondos_Antiguos.Localization.ComunResource.btnCancelar, "ListaRoles", null, new { @class = "btn btn-outline-secondary" })
         </div>
     </div>
 }
