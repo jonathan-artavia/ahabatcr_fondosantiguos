@@ -132,6 +132,9 @@
   <data name="btnEditar" xml:space="preserve">
     <value>Editar</value>
   </data>
+  <data name="btnElegir" xml:space="preserve">
+    <value>Elegir</value>
+  </data>
   <data name="btnGuardar" xml:space="preserve">
     <value>Guardar</value>
   </data>

@@ -106,6 +106,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Elegir.
+        /// </summary>
+        public static string btnElegir {
+            get {
+                return ResourceManager.GetString("btnElegir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Guardar.
         /// </summary>
         public static string btnGuardar {
