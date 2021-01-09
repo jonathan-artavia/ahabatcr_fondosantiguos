@@ -429,7 +429,7 @@
                     @{
                         long reg_fin = 0;
                         long reg_ini = 0;
-                        if (Model.PageTotal > FaViewOptions.RegistrosPorPagina)
+                        if (Model.RecordTotal > FaViewOptions.RegistrosPorPagina)
                         {
                             reg_ini = 1 + (FaViewOptions.RegistrosPorPagina * Model.SelectedPage) - Model.PagedResult.Count();
                             reg_fin = Model.PagedResult.Count() < FaViewOptions.RegistrosPorPagina ? (reg_ini + Model.PagedResult.Count() > Model.RecordTotal ? Model.RecordTotal : reg_ini + Model.PagedResult.Count()) : FaViewOptions.RegistrosPorPagina * (Model.SelectedPage); ; //FaViewOptions.RegistrosPorPagina * (Model.SelectedPage);

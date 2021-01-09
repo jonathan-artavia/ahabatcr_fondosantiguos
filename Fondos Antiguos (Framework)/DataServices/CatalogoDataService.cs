@@ -117,7 +117,7 @@ namespace Fondos_Antiguos.DataService
                             parameters,
                             context,
                             page.GetValueOrDefault(1)), seriesList, limitarStrings)
-                        , "GetCatalogos", expr?.ToString(), page.GetValueOrDefault(1), 0
+                        , "GetCatalogos", 0, expr?.ToString(), parameters, page.GetValueOrDefault(1)
                         );
                     break;
                 case 1: //ambos
@@ -128,14 +128,14 @@ namespace Fondos_Antiguos.DataService
                             parameters,
                             context,
                             page.GetValueOrDefault(1)), seriesList, limitarStrings)
-                        , "GetCatalogos", expr?.ToString(), page.GetValueOrDefault(1), 1
+                        , "GetCatalogos", 1, expr?.ToString(), parameters, page.GetValueOrDefault(1)
                         );
                     break;
                 case 2: //solo hist
                     read = this.GetOrCreateValue<List<HistCatalogoModel>>(
                         this.GetOrCreateKey(context),
                         () => this.FillHistCatalogoList(DataConnection.Instance.ExecuteQuery( string.Format(SqlResource.SqlHistCatalogoResource, expr?.ToString() ?? "1=1"), parameters, context, page.GetValueOrDefault(1)), seriesList, limitarStrings)
-                        , "GetCatalogos", expr?.ToString(), page.GetValueOrDefault(1), 2
+                        , "GetCatalogos", 2, expr?.ToString(), parameters, page.GetValueOrDefault(1)
                         ).Cast<CatalogoModel>().ToList();
                     break;
             }
@@ -158,7 +158,7 @@ namespace Fondos_Antiguos.DataService
                     count = this.GetOrCreateValue<long>(
                         this.GetOrCreateKey(context),
                         () => Convert.ToInt64(DataConnection.Instance.ExecuteScalar(string.Format(SqlResource.SqlCatalogoCountResource, expr?.ToString() ?? "1=1"), parameters, context))
-                        , "GetCatalogosCount", expr?.ToString(), page.GetValueOrDefault(1), 0
+                        , "GetCatalogosCount", 0, expr?.ToString(), parameters, page.GetValueOrDefault(1)
                         );
                     break;
                 case 1:
@@ -168,7 +168,7 @@ namespace Fondos_Antiguos.DataService
                             string.Format(SqlResource.SqlCatalogoAmbosCountResource, expr?.ToString() ?? "1=1"),
                             parameters,
                             context))
-                        , "GetCatalogosCount", expr?.ToString(), page.GetValueOrDefault(1), 1
+                        , "GetCatalogosCount", 1, expr?.ToString(), parameters, page.GetValueOrDefault(1)
                         );
                     break;
                 case 2:
@@ -178,7 +178,7 @@ namespace Fondos_Antiguos.DataService
                             string.Format(SqlResource.SqlHistCatalogoCountResource, expr?.ToString() ?? "1=1"),
                             parameters,
                             context))
-                        , "GetCatalogosCount", expr?.ToString(), page.GetValueOrDefault(1), 2
+                        , "GetCatalogosCount", 2, expr?.ToString(), parameters, page.GetValueOrDefault(1)
                         );
                     break;
             }
