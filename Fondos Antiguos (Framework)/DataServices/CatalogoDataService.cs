@@ -588,18 +588,12 @@ namespace Fondos_Antiguos.DataService
                 CatalogoModel nc = new CatalogoModel();
                 nc.Fill(reader, limitarStrings);
                 int? origen = null;
-                try
-                {
-                    origen = reader.GetInt32(reader.GetOrdinal("Hist"));
-                }
-                catch (Exception ex)
-                {
-                }
-                try
-                {
-                    origen = (int)reader.GetInt64(reader.GetOrdinal("Hist"));
-                }
-                catch (Exception ex) { }
+#if DEBUG
+                origen = (int)reader.GetInt64(reader.GetOrdinal("Hist"));
+#else
+                origen = (int)reader.GetInt32(reader.GetOrdinal("Hist"));
+#endif
+
                 if (seriesList.Count() > 0)
                     nc.SeriesNombre = seriesList.FirstOrDefault(sm => sm.ID == nc.IdSerie.GetValueOrDefault(0))?.Nombre;
                 if(origen.HasValue)
@@ -683,8 +677,12 @@ namespace Fondos_Antiguos.DataService
             List<HistCatalogoModel> result = new List<HistCatalogoModel>();
             while (reader.Read())
             {
-                int origen = (int)reader.GetInt64(reader.GetOrdinal("Hist"));
-
+                int origen = 0;
+#if DEBUG
+                origen = (int)reader.GetInt64(reader.GetOrdinal("Hist"));
+#else
+                origen = (int)reader.GetInt32(reader.GetOrdinal("Hist")); //en la computadora de desarrollo, el mysql, devuelve int64, pero en el servidor Plesk del host, devuelve int32
+#endif
                 HistCatalogoModel nc = new HistCatalogoModel();
                 nc.Fill(reader, limitarStrings);
                 if (seriesList.Count() > 0)
@@ -761,10 +759,10 @@ namespace Fondos_Antiguos.DataService
                 throw ex;
             }
         }
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
-        #endregion
+#endregion
     }
 }

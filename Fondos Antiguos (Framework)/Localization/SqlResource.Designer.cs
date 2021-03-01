@@ -74,7 +74,7 @@ namespace Fondos_Antiguos.Localization {
         ///FROM (SELECT ID, Contenido, Signatura, Fecha, Materias, IdSerie, Fichero, Libro, NumCaja, NumTomo, Folio, NumExpediente, NumCarpeta, Lugar, `Año`, `Mes`, `Observaciones`, NULL as `FechaCod`, NULL as FechaOrig, 0 as `Hist`
         ///FROM `tblCatalogo`
         ///UNION
-        ///SELECT ID, Descripcion as Contenido, Signatura, Fecha, Materias, NULL as IdSerie, Fichero, NULL as Libro, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones`, [rest of string was truncated]&quot;;.
+        ///SELECT ID, Descripcion as Contenido, Signatura, Fecha, Materias, NULL as IdSerie, Fichero, NULL as Libro, NULL as NumCaja, NULL as NumTomo, NULL as Folio, NULL as NumExpediente, NULL as NumCarpeta, Lugar, `Año`, `Mes`, Datos as `Observaciones` [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SqlCatalogoAmbosCountResource {
             get {
@@ -206,12 +206,12 @@ namespace Fondos_Antiguos.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to SELECT * FROM
-        ///(SELECT c.`ID`, `Contenido`, `Fecha`, `Signatura`, `Observaciones`, `IdSerie`, `Fichero`, `NumCaja`, `NumTomo`, `Folio`, `Libro`, `NumExpediente`, `NumCarpeta`, lugares.Nombres as `Lugar`, `Año`, `Mes`, `FechaIngreso`, materias.Nombres as `Materias`, 0 as `Hist`
+        ///(SELECT c.`ID`, `Contenido`, `Fecha`, `Signatura`, `Observaciones`, `IdSerie`, `Fichero`, `NumCaja`, `NumTomo`, `Folio`, `Libro`, `NumExpediente`, `NumCarpeta`, lugares.Nombres as `Lugar`, `Año`, `Mes`, `FechaIngreso`, materias.Nombres as `Materias`, CAST(0 as SIGNED) as `Hist`
         ///FROM `tblCatalogo` c
         ///LEFT JOIN ( SELECT Catalogo_ID, GROUP_CONCAT(Nombre ORDER BY cl.ID SEPARATOR &apos; / &apos;) Nombres
         ///           FROM `tblCatalogoLugar` cl
         ///           LEFT JOIN `tblLugar` l ON l.ID = cl.Lugar_ID
-        ///           GROUP BY Ca [rest of string was truncated]&quot;;.
+        ///       [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SqlCatalogoResource {
             get {
@@ -257,7 +257,7 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT *, 1 AS `Hist` FROM `tblHistCatalogo` WHERE {0}.
+        ///   Looks up a localized string similar to SELECT *, CAST(1 as SIGNED) AS `Hist` FROM `tblHistCatalogo` WHERE {0}.
         /// </summary>
         public static string SqlHistCatalogoResource {
             get {

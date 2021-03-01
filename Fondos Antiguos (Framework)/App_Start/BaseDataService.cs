@@ -245,7 +245,7 @@ namespace Fondos_Antiguos.Base
 
             for(int i=0; i < first.Length; i++)
             {
-                if (!Object.Equals(first[i], second[i]))
+                if (!Object.Equals(first[i], second[i]) && (!(first[i] is System.Collections.IDictionary) || !(second[i] is System.Collections.IDictionary) || !((System.Collections.IDictionary)first[i]).Cast<object>().SequenceEqual(((System.Collections.IDictionary)second[i]).Keys.Cast<object>())))
                     return false;
             }
             return true;

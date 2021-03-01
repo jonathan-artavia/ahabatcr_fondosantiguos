@@ -189,7 +189,7 @@ WHERE cm.Catalogo_ID = @catalogoId</value>
   </data>
   <data name="SqlCatalogoResource" xml:space="preserve">
     <value>SELECT * FROM
-(SELECT c.`ID`, `Contenido`, `Fecha`, `Signatura`, `Observaciones`, `IdSerie`, `Fichero`, `NumCaja`, `NumTomo`, `Folio`, `Libro`, `NumExpediente`, `NumCarpeta`, lugares.Nombres as `Lugar`, `Año`, `Mes`, `FechaIngreso`, materias.Nombres as `Materias`, 0 as `Hist`
+(SELECT c.`ID`, `Contenido`, `Fecha`, `Signatura`, `Observaciones`, `IdSerie`, `Fichero`, `NumCaja`, `NumTomo`, `Folio`, `Libro`, `NumExpediente`, `NumCarpeta`, lugares.Nombres as `Lugar`, `Año`, `Mes`, `FechaIngreso`, materias.Nombres as `Materias`, CAST(0 as SIGNED) as `Hist`
 FROM `tblCatalogo` c
 LEFT JOIN ( SELECT Catalogo_ID, GROUP_CONCAT(Nombre ORDER BY cl.ID SEPARATOR ' / ') Nombres
            FROM `tblCatalogoLugar` cl
@@ -222,7 +222,7 @@ WHERE `ID` = @id;</value>
     <value>DELETE FROM `tblHistCatalogo` WHERE ID = @id</value>
   </data>
   <data name="SqlHistCatalogoResource" xml:space="preserve">
-    <value>SELECT *, 1 AS `Hist` FROM `tblHistCatalogo` WHERE {0}</value>
+    <value>SELECT *, CAST(1 as SIGNED) AS `Hist` FROM `tblHistCatalogo` WHERE {0}</value>
   </data>
   <data name="SqlLastInsertedId" xml:space="preserve">
     <value>SELECT LAST_INSERT_ID();</value>
