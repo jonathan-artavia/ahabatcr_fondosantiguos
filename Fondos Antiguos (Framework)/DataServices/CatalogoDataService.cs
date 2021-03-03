@@ -73,7 +73,7 @@ namespace Fondos_Antiguos.DataService
                         return nc;
                     }
                     break;
-                case 2:
+                case 2://solo hist
                     read = DataConnection.Instance.ExecuteQuery(
                             string.Format(SqlResource.SqlHistCatalogoResource, expr?.ToString() ?? "1=1"),
                             parameters,
@@ -85,7 +85,8 @@ namespace Fondos_Antiguos.DataService
                         nc.Fill(read);
                         if (seriesList.Count() > 0)
                             nc.SeriesNombre = seriesList.FirstOrDefault(sm => sm.ID == nc.IdSerie.GetValueOrDefault(0))?.Nombre;
-                        nc.EstablecerSignaturaPorDefecto();
+                        if(string.IsNullOrEmpty(nc.Signatura))
+                            nc.EstablecerSignaturaPorDefecto();
                         return nc;
                     }
                     break;

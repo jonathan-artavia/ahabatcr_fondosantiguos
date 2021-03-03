@@ -169,6 +169,15 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to * Para listar multiples valores, utilizar &quot;|&quot; como separador de lista..
+        /// </summary>
+        public static string LeyendaFiltroMultiValor {
+            get {
+                return ResourceManager.GetString("LeyendaFiltroMultiValor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt; Volver a lista.
         /// </summary>
         public static string lnkVolverALista {

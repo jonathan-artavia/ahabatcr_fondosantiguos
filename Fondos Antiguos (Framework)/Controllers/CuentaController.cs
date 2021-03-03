@@ -16,7 +16,6 @@ using System.Collections.Generic;
 
 namespace Fondos_Antiguos.Controllers
 {
-    [Authorize]
     public class CuentaController : Controller
     {
         #region Fields
@@ -562,7 +561,6 @@ namespace Fondos_Antiguos.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [RequireHttps]
         [Authorize]
         public async Task<ActionResult> CambiarContraseña()
         {
@@ -570,7 +568,6 @@ namespace Fondos_Antiguos.Controllers
         }
 
         [HttpPost]
-        [RequireHttps]
         [Authorize]
         public async Task<ActionResult> CambiarContraseña(ChangePasswordViewModel model)
         {
@@ -685,6 +682,7 @@ namespace Fondos_Antiguos.Controllers
                 var result = await roleManager.CreateAsync(model);
                 if (result.Succeeded)
                 {
+                    FaAuthorizeAttribute.RolActualizado(model.Id);
                     return RedirectToAction(nameof(ListaRoles));
                 }
                 AddErrors(result);
@@ -706,6 +704,7 @@ namespace Fondos_Antiguos.Controllers
                 try
                 {
                     await this.DataService.CrearRolViewPermit(idRol, ViewUtil.ObtenerDireccionDeView(viewName), todas.GetValueOrDefault(0), this.HttpContext);
+                    FaAuthorizeAttribute.RolActualizado(idRol);
                     return RedirectToAction(nameof(VerRol), new { id = idRol });
                 }
                 catch (Exception ex)
@@ -728,6 +727,7 @@ namespace Fondos_Antiguos.Controllers
             try
             {
                 await this.DataService.Eliminar(borrarRolId);
+                FaAuthorizeAttribute.RolActualizado(borrarRolId);
                 return RedirectToAction(nameof(ListaRoles));
             }
             catch (Exception ex)
@@ -745,7 +745,7 @@ namespace Fondos_Antiguos.Controllers
             try
             {
                 await this.DataService.EliminarRolView(idRol, idView, this.HttpContext);
-                
+                FaAuthorizeAttribute.RolActualizado(idRol);
                 return RedirectToAction(nameof(VerRol), new { id = idRol });
             }
             catch (Exception ex)

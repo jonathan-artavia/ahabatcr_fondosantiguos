@@ -41,7 +41,37 @@
                         @Html.DisplayNameFor(model => model.Fecha)
                     </dt>
                     <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Fecha)
+                        @if (Model.Fecha.HasValue)
+                        {
+                            @Html.DisplayFor(model => model.Fecha)
+                        }
+                        else
+                        {
+                            string fechaSec = string.Empty;
+                            if (Model.Mes.HasValue)
+                            {
+                                fechaSec = Model.Mes.Value.ToString();
+                            }
+                            if (Model.Año.HasValue)
+                            {
+                                fechaSec += "-" + Model.Año.Value.ToString();
+                            }
+                            else if (Model.Mes.HasValue && Model.Mes.Value <= 12 && Model.Mes.Value > 0)
+                            {
+                                fechaSec = new DateTime(2015, Model.Mes.Value, 1).ToString("MMMM", System.Globalization.CultureInfo.CreateSpecificCulture("es"));
+                            }else
+                            {
+                                fechaSec = null;
+                            }
+                            if (string.IsNullOrEmpty(fechaSec))
+                            {
+                            @:S.F.
+                            }
+                            else
+                            {
+                                @fechaSec
+                            }
+                        }
                     </dd>
                     <dt class="col-sm-2">
                         @Html.DisplayNameFor(model => model.Contenido)

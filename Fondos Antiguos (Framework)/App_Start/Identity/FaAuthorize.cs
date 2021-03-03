@@ -134,6 +134,12 @@ namespace Fondos_Antiguos
             return true;
         }
 
+        public static void RolActualizado(string idRol)
+        {
+            if (Cache.Get(idRol) != null)
+                Cache.Remove(idRol);
+        }
+
         private static List<IdentityRolPermit> ObtenerPermits(CuentaDataService ds, string idRol, HttpContextBase context)
         {
             List<IdentityRolPermit> res = (List<IdentityRolPermit>)Cache.Get(idRol);

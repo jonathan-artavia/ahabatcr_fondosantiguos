@@ -95,7 +95,7 @@ namespace Fondos_Antiguos.Base
         {
             Dictionary<string, object> reg = DataCache.Get<Dictionary<string, object>>(key);
 
-            if (reg == null || !reg.ContainsKey($"Method_{method}_Last"))
+            if (reg == null || (!string.IsNullOrEmpty(method) && !reg.ContainsKey($"Method_{method}_Last")))
                 return;
 
             if(string.IsNullOrEmpty(method))

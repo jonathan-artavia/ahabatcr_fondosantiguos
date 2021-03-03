@@ -62,9 +62,12 @@
             <span class="navbar-brand">@Fondos_Antiguos.Localization.CuentaResource.ViewPath</span>
         </div>
         <hr />
-        <button id="modalActivate" type="button" class="btn btn-outline-dark navbar-right" data-toggle="modal" data-target="#viewModal" style="vertical-align: middle">
-            @Fondos_Antiguos.Localization.ComunResource.btnNueva
-        </button>
+        @if (FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "RegistrarRolViewPermit", Context))
+        {
+            <button id="modalActivate" type="button" class="btn btn-outline-dark navbar-right" data-toggle="modal" data-target="#viewModal" style="vertical-align: middle">
+                @Fondos_Antiguos.Localization.ComunResource.btnNueva
+            </button>
+        }
     </nav>
     <table class="table border-bottom">
         <tbody>
@@ -77,12 +80,15 @@
                     <td>
                         @Html.HiddenFor(modelItem => item.ID)
                         @{
-                            using (Html.BeginForm("EliminarRolView", "Cuenta", FormMethod.Post, new { id = "frmBorrarView" + item.ID.ToString() }))
+                            if (FaAuthorizeAttribute.IsAuthorized(this.User, "Cuenta", "EliminarRolView", Context))
                             {
-                                var r = "frmBorrarView" + item.ID.ToString();
-                                <input type="hidden" form="@r" name="idRol" value="@Model.Id" />
-                                <input type="hidden" form="@r" name="idView" value="@item.ID" />
-                                <button type="submit" class="btn btn-link">Borrar</button>
+                                using (Html.BeginForm("EliminarRolView", "Cuenta", FormMethod.Post, new { id = "frmBorrarView" + item.ID.ToString() }))
+                                {
+                                    var r = "frmBorrarView" + item.ID.ToString();
+                                    <input type="hidden" form="@r" name="idRol" value="@Model.Id" />
+                                    <input type="hidden" form="@r" name="idView" value="@item.ID" />
+                                    <button type="submit" class="btn btn-link">Borrar</button>
+                                }
                             }
                         }
                     </td>

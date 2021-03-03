@@ -855,19 +855,22 @@ namespace Fondos_Antiguos.Controllers
 
             QueryExpresion ExprHist(string val, int count, ref Dictionary<string, object> parametersIn) //Solo se usa LIKE como operador, porque Fichero puede tener cualquier cosa, no solo Caja
             {
-                string varName = "@filtroHistCaja" + count.ToString();
+                string varName = "@filtroHistCajaFich" + count.ToString();
+                string varName2 = "@filtroHistCaja" + count.ToString();
                 if (!String.IsNullOrEmpty(val))
                 {
                     if (!parametersIn.ContainsKey(varName))
-                        parametersIn.Add(varName, "%" + val + "%");
-                    return new QueryExpresion(SqlUtil.AND, String.Format("{0} LIKE {1}", SqlUtil.SurroundColumn("Fichero"), varName));
+                        parametersIn.Add(varName, "Caja%" + val.PadLeft(2, '0') + "%");
+                    if (!parametersIn.ContainsKey(varName2))
+                        parametersIn.Add(varName2, "Caja %" + val.PadLeft(2, '0') + "%");
+                    return new QueryExpresion(SqlUtil.AND, String.Format("{0} LIKE {1}", SqlUtil.SurroundColumn("Signatura"), varName2)).Or("" + new QueryExpresion(SqlUtil.AND, String.Format("{0} LIKE {1}", SqlUtil.SurroundColumn("Fichero"), varName)));
                 }
                 else
                 {
                     if (operacion == 0)
-                        return new QueryExpresion(SqlUtil.AND, string.Format("{0} IS NOT NULL", SqlUtil.SurroundColumn("Fichero")));
+                        return new QueryExpresion(SqlUtil.AND, string.Format("{0} LIKE {0}", SqlUtil.SurroundColumn("Signatura"), "Caja %")); //tiene Caja en la Signatura
                     else if (operacion == 1)
-                        return new QueryExpresion(SqlUtil.AND, string.Format("{0} IS NULL", SqlUtil.SurroundColumn("Fichero")));
+                        return new QueryExpresion(SqlUtil.AND, string.Format("{0} NOT LIKE {0}", SqlUtil.SurroundColumn("Signatura"), "Caja %")); //no tiene Caja en la Signatura.
                     this.ModelState.AddModelError("FiltroCaja", "Busqueda incorrecta. El Filtro de Caja en vacio solo se permite en operaciones de 'Igual A' y 'Diferente A'.");
                     return null;
                 }
@@ -1009,10 +1012,10 @@ namespace Fondos_Antiguos.Controllers
                     if (!parametersIn.ContainsKey("@filtroTexto"))
                         parametersIn.Add("@filtroTexto", "%" + valor + "%");
                     return new QueryExpresion(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Lugar")))
-                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Contenido"))) //Descripcion
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn(includeHist == 2? "Descripcion" : "Contenido"))) //Descripcion/Contenido
                         .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("FechaOrig")))
                         .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Signatura")))
-                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Observaciones"))) //datos
+                        .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn(includeHist == 2? "Datos" : "Observaciones"))) //datos
                         .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Fichero")))
                         .Or(String.Format("{0} like @filtroTexto", SqlUtil.SurroundColumn("Materias")));
                 }

@@ -174,7 +174,8 @@ namespace Fondos_Antiguos.DataService
                 {
                     DataConnection.Instance.ExecuteNonQuery("INSERT INTO `tblRolView` (`View`, `IdRol`, `All`) VALUES (@view, @idRol, @all)", new Dictionary<string, object>() { { "@view", todas != 0 ? "*" : dirView }, { "@idRol", idRol }, { "@all", todas } }, httpContext);
                 }
-                this.RemoveValueIfExists(this.GetOrCreateKey(httpContext), "GetViewsPermitidas");
+                //this.RemoveValueIfExists(this.GetOrCreateKey(httpContext), "GetViewsPermitidas");
+                await this.RemoverCache(httpContext);
             }
             else
             {
@@ -192,7 +193,8 @@ namespace Fondos_Antiguos.DataService
 
                 DataConnection.Instance.ExecuteNonQuery(string.Format("DELETE FROM `tblRolView` WHERE {0}", expr.ToString()), new Dictionary<string, object>() { { "@idRol", idRol }, { "@idView", idView } }, httpContext);
 
-                this.RemoveValueIfExists(this.GetOrCreateKey(httpContext), "GetViewsPermitidas");
+                //this.RemoveValueIfExists(this.GetOrCreateKey(httpContext), "GetViewsPermitidas");
+                await this.RemoverCache(httpContext);
             }
             else
             {
@@ -216,9 +218,9 @@ namespace Fondos_Antiguos.DataService
             return read;
         }
 
-        public virtual async Task RemoverCache(HttpContextBase context)
+        public virtual async Task RemoverCache(HttpContextBase context, string method = null)
         {
-            this.RemoveValueIfExists(this.GetOrCreateKey(context), null);
+            this.RemoveValueIfExists(this.GetOrCreateKey(context), method);
         }
         #endregion
 

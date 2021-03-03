@@ -153,6 +153,9 @@
   <data name="btnVer" xml:space="preserve">
     <value>Ver</value>
   </data>
+  <data name="LeyendaFiltroMultiValor" xml:space="preserve">
+    <value>* Para listar multiples valores, utilizar "|" como separador de lista.</value>
+  </data>
   <data name="lnkVolverALista" xml:space="preserve">
     <value>&lt; Volver a lista</value>
   </data>
