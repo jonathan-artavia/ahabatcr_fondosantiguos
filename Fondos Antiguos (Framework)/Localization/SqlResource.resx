@@ -202,6 +202,15 @@ LEFT JOIN ( SELECT Catalogo_ID, GROUP_CONCAT(Nombre ORDER BY cl.ID SEPARATOR ' /
 ) ds
 WHERE {0}</value>
   </data>
+  <data name="SqlEditorMensajesInsert" xml:space="preserve">
+    <value>INSERT INTO `tblMensaje` (`Nombre`, `Mensaje`, `UltimaModificacion`) VALUES (@nombre, @mensaje, @ultimaModificacion)</value>
+  </data>
+  <data name="SqlEditorMensajesResource" xml:space="preserve">
+    <value>SELECT `ID`, `Nombre`, `Mensaje`, `UltimaModificacion` FROM `tblMensaje` WHERE {0}</value>
+  </data>
+  <data name="SqlEditorMensajesUpdate" xml:space="preserve">
+    <value>UPDATE `tblMensaje` SET `Mensaje` = @mensaje, `UltimaModificacion` = @ultimaModificacion WHERE ID = @id</value>
+  </data>
   <data name="SqlHistCatalogoActualizar" xml:space="preserve">
     <value>UPDATE `tblHistCatalogo`
 SET

@@ -67,6 +67,8 @@ namespace Fondos_Antiguos
         {
             if (principal == null || string.IsNullOrEmpty(controller) || string.IsNullOrEmpty(action) || context == null)
                 return false;
+            if (controller.ToLower() == "home" && action.ToLower() == nameof(Controllers.HomeController.Index).ToLower())
+                return true;
             if (controller.EndsWith("Controller"))
                 controller = controller.Replace("Controller", string.Empty);
             ApplicationUserManager man = context.GetOwinContext().GetUserManager<ApplicationUserManager>();

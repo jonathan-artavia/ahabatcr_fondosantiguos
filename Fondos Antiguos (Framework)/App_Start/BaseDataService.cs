@@ -171,7 +171,7 @@ namespace Fondos_Antiguos.Base
                         reg.Add($"Method_{method}0_Values", value());
                     else
                         reg[$"Method_{method}0_Values"] = value();
-                    if (reg.ContainsKey($"Method_{method}_Last"))
+                    if (!reg.ContainsKey($"Method_{method}_Last"))
                         reg.Add($"Method_{method}_Last", 0);
                     else
                         reg[$"Method_{method}_Last"] = 0;
@@ -186,19 +186,33 @@ namespace Fondos_Antiguos.Base
                 if (!reg.ContainsKey($"Method_{method}_Last"))
                     return default(T);
                 int last = (int)reg[$"Method_{method}_Last"];
-                for(int i=0; i <= last; i++)
+                if (otherkeys != null)
                 {
-                    if(otherkeys != null && this.AreOtherKeysEqual((object[])reg[$"Method_{method}{i}_Keys"], otherkeys))
+                    for (int i = 0; i <= last; i++)
                     {
-                        return (T)reg[$"Method_{method}{i}_Values"];
+                        if (otherkeys != null && this.AreOtherKeysEqual((object[])reg[$"Method_{method}{i}_Keys"], otherkeys))
+                        {
+                            return (T)reg[$"Method_{method}{i}_Values"];
+                        }
                     }
+                }
+                else if(reg.ContainsKey($"Method_{method}{last}_Values"))
+                {
+                    return (T)reg[$"Method_{method}{last}_Values"];
                 }
                 return default(T);
             }
 
             T GetValueFromInnerRegIndex(int index)
             {
-                if(otherkeys != null && this.AreOtherKeysEqual((object[])reg[$"Method_{method}{index}_Keys"],otherkeys))
+                if (otherkeys != null)
+                {
+                    if (this.AreOtherKeysEqual((object[])reg[$"Method_{method}{index}_Keys"], otherkeys))
+                    {
+                        return (T)reg[$"Method_{method}{index}_Values"];
+                    }
+                }
+                else if(reg.ContainsKey($"Method_{method}{index}_Values"))
                 {
                     return (T)reg[$"Method_{method}{index}_Values"];
                 }

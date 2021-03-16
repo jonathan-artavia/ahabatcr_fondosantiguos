@@ -3,42 +3,9 @@
 }
 
 <div class="row">
-    <div class="col-sm-1"></div>
+    <div class="col-sm-1">@Html.BotonEditorTexto("Inicio")</div>
     <div class="col-sm-10">
-        <div class="text-justify">
-            <p class="h-100">
-                <strong>Fondos Antiguos</strong> es una de las agrupaciones documentales del Archivo Histórico Arquidiocesano de mayor variedad y riqueza informativa.
-            </p>
-            <p>
-                Agrupación documental de carácter misceláneo, reúne principalmente el fondo de la Vicaría Foránea de Cartago y los documentos de los tres primeros obispos de San José, de los vicarios capitulares en los periodos de sede vacante y de su curia diocesana, abarcando cronológicamente el periodo comprendido entre 1582 y 1920 (más algunos documentos de fecha posterior). Está dividida en dos grandes grupos: Documentos encuadernados (464 cajas que contienen 541 libros o volúmenes con documentos encuadernados, a veces muy diversos entre sí) y documentos sueltos (67 cajas).
-            </p>
-            <p>
-                Para conocer más sobre Fondos Antiguos, les invitamos a consultar la sección <a href="http://ahabatcr.org/fondos.html#info1-46" target="_blank">Principales agrupaciones documentales</a> de la web del Archivo Histórico Arquidiocesano.
-            </p>
-            <p>
-                Las 464 cajas de documentos encuadernados de Fondos Antiguos están actualmente descritas en el <a href="http://inventario.ahabatcr.org" target="_blank">Inventario General en Línea</a> del Archivo, que permite el acceso a la descripción de cada uno de los volúmenes. En el Catálogo de Fondos Antiguos, en cambio, los interesados pueden acceder a la descripción de cada uno de los documentos que componen los volúmenes de Fondos Antiguos.
-            </p>
-            <p>
-                La información del Catálogo de Fondos Antiguos, en su estado actual, procede de dos grandes proyectos realizados anteriormente:
-            </p>
-            <ul>
-                <li>
-                    El <strong>Catálogo de documentos del Archivo de la Curia Metropolitana</strong> (en adelante Catálogo UNA) fue realizado conjuntamente por la Universidad Nacional de Costa Rica y la Curia Metropolitana de San José  durante las décadas de 1980 y 1990 y publicado progresivamente en  8 volúmenes (conteniendo cada uno de ellos la catalogación de 10 cajas). La coordinación general del proyecto correspondió a Sandra María Chavarría Jiménez, entonces profesora de la Escuela de Historia de la Universidad Nacional. Este catálogo alcanza las primeras 80 cajas de Fondos Antiguos, que en general, comprenden la mayor parte de los documentos coloniales de “Fondos Antiguos”, junto con muy numerosos documentos del siglo XIX y principios del XX. Sus fechas extremas son 1582 (Ordenanzas de la Cofradía de la Santa Vera Cruz, en la Caja 7, que en el catálogo aparecen descritas como"Escritura de obligación de la Cofradía y hermandad de la Santa Vera Cruz") y 1920 (expediente promovido por el Alcalde de Palmares, en la Caja 6). El catálogo de la Universidad Nacional describe estas 80 cajas documento a documento, estructurando la información en 5 campos: Descripción, fecha, lugar, signatura (número de caja, de volumen cuando hay varios dentro de una caja y de folio o folios) y descriptores de materias.
-                </li>
-                <li>
-                    <strong>La catalogación informatizada realizada por el propio Archivo durante la primera década del 2000</strong> (en adelante Catálogo AHABAT) abarcó las cajas 171 a 429, que se corresponden cronológicamente con la segunda mitad del siglo XIX. Esta catálogo describe cada uno de los documentos de los volúmenes de Fondos Antiguos según una estructura de datos parecida a la del primer catálogo, pero con algunas diferencias: En la signatura incluye el número de expediente, cuando consta ese dato, y cuenta con los campos serie documental y observaciones, pero en cambio carece del campo materia.
-                </li>
-            </ul>
-            <p>
-                <strong>El presente catálogo en línea</strong> reúne los dos catálogos realizados anteriormente (el Catálogo UNA y el Catálogo AHABAT), de forma que el actual catálogo en línea suma un total de 63 071 registros comprendidos entre el siglo XVI y el XX y permitirá en el futuro continuar y completar la catalogación de tan importante agrupación documental.
-            </p>
-            <p>
-                El catálogo actual permite consultar separada o conjuntamente los catálogos UNA y AHABAT, así como realizar búsquedas por fecha, lugar, materia, serie documental, número de caja y texto libre. Es posible combinar varios de estos criterios de búsqueda. Debe tenerse en cuenta que mediante el criterio materia solo es posible buscar en el catálogo UNA, mientras que mediante el criterio serie documental únicamente se obtienen resultados del catálogo AHABAT.
-            </p>
-            <p>
-                En caso de consultas con respecto a la información contenida en el catálogo, es posible contactar con el Archivo a través del correo electrónico <a href="mailto:ahabatcr@gmail.com">ahabatcr@gmail.com</a>.
-            </p>
-        </div>
+        @Html.Raw(Fondos_Antiguos.ViewUtil.ObtenerMensaje("Home/Inicio", this.Context))
     </div>
     <div class="col-sm-1"></div>
 </div>

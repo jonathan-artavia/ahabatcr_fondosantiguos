@@ -89,6 +89,10 @@ namespace Fondos_Antiguos.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+            if (!this.TempData.ContainsKey("ReturnUrl"))
+                this.TempData.Add("ReturnUrl", returnUrl);
+            else
+                this.TempData["ReturnUrl"] = returnUrl;
             return View();
         }
 
@@ -110,7 +114,9 @@ namespace Fondos_Antiguos.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    if(this.TempData.ContainsKey("ReturnUrl"))
+                        return RedirectToLocal(this.TempData["ReturnUrl"]?.ToString());
+                    return RedirectToAction("Index", "Home");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:

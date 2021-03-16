@@ -220,6 +220,33 @@ namespace Fondos_Antiguos.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO `tblMensaje` (`Nombre`, `Mensaje`, `UltimaModificacion`) VALUES (@nombre, @mensaje, @ultimaModificacion).
+        /// </summary>
+        public static string SqlEditorMensajesInsert {
+            get {
+                return ResourceManager.GetString("SqlEditorMensajesInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT `ID`, `Nombre`, `Mensaje`, `UltimaModificacion` FROM `tblMensaje` WHERE {0}.
+        /// </summary>
+        public static string SqlEditorMensajesResource {
+            get {
+                return ResourceManager.GetString("SqlEditorMensajesResource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE `tblMensaje` SET `Mensaje` = @mensaje, `UltimaModificacion` = @ultimaModificacion WHERE ID = @id.
+        /// </summary>
+        public static string SqlEditorMensajesUpdate {
+            get {
+                return ResourceManager.GetString("SqlEditorMensajesUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UPDATE `tblHistCatalogo`
         ///SET
         ///`Descripcion` = @descr,

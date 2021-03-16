@@ -1,0 +1,21 @@
+﻿@using Fondos_Antiguos.Models
+<script src="~/Scripts/tinymce/tinymce.min.js" type="text/javascript"></script>
+<script src="~/Scripts/EditorScript.js" type="text/javascript"></script>
+@model EditorEnunciadoModel
+@{
+    ViewBag.Title = "Editar Inicio";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="h-100">
+    @using (Html.BeginForm("Inicio", "Editor", FormMethod.Post, new { id = "frmEditar" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Nombre)
+        @Html.TextAreaFor(m => m.Mensaje, new { @name = "editorTexto", @class = "col-sm-12 h-auto" })
+        <div class="text-muted">
+            @Html.LabelFor(m => m.UltimaModificacion): @Html.DisplayTextFor(m => m.UltimaModificacion)
+        </div>
+    }
+</div>

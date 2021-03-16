@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
+using System.Web.Mvc.Html;
 
 namespace Fondos_Antiguos
 {
@@ -65,6 +67,21 @@ namespace Fondos_Antiguos
         public static string ObtenerNombreDeView(string direccion)
         {
             return CuentaResource.Views.Split('|').FirstOrDefault(x => x.Split(':')[1].Equals(direccion))?.Split(':')[0];
+        }
+
+        public static string ObtenerMensaje(string nombre, HttpContextBase context)
+        {
+            DataServices.EditorDataService ds = new DataServices.EditorDataService();
+            var res = ds.ObtenerTexto(nombre, context);
+            return res.Mensaje;
+        }
+
+        public static MvcHtmlString BotonEditorTexto<T>(this HtmlHelper<T> helper, string actionName)
+        {
+            if(FaAuthorizeAttribute.IsAuthorized(helper.ViewContext.HttpContext.User, helper.ViewContext.RouteData.Values["Controller"].ToString(), helper.ViewContext.RouteData.Values["Action"].ToString(), helper.ViewContext.HttpContext)
+                && FaAuthorizeAttribute.IsAuthorized(helper.ViewContext.HttpContext.User, "Editor", actionName, helper.ViewContext.HttpContext))
+                return helper.ActionLink(Localization.EditorResource.btnEditar, actionName, "Editor", null, new { @class = "btn btn-info small" });
+            return MvcHtmlString.Empty;
         }
     }
 }
