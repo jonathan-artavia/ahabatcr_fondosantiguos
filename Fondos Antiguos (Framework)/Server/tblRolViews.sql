@@ -1,0 +1,7 @@
+CREATE TABLE `tblRolView` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `View` LONGTEXT NOT NULL,
+  `IdRol` char(37) NOT NULL,
+  `All` tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1

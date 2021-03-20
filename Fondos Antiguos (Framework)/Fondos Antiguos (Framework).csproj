@@ -506,6 +506,17 @@
     <Content Include="Scripts\tinymce\themes\silver\theme.min.js" />
     <Content Include="Scripts\tinymce\tinymce.js" />
     <Content Include="Scripts\tinymce\tinymce.min.js" />
+    <None Include="Server\dump\series respaldo.csv" />
+    <None Include="Server\tblCatalogo.sql" />
+    <None Include="Server\tblCatalogoLugar.sql" />
+    <None Include="Server\tblCatalogoMateria.sql" />
+    <None Include="Server\tblHistCatalogo.sql" />
+    <None Include="Server\tblLugar.sql" />
+    <None Include="Server\tblMateria.sql" />
+    <None Include="Server\tblRolViews.sql" />
+    <None Include="Server\tblSeries.sql" />
+    <None Include="Server\dump\dump_20201010.sql" />
+    <None Include="Server\dump\migracion de Materias y Lugares.sql" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
